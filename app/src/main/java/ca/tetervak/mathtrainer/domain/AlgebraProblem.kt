@@ -14,7 +14,7 @@ abstract class AlgebraProblem: Problem {
             } else {
                 ProblemGrade.WRONG_ANSWER
             }
-        } catch (e: NumberFormatException) {
+        } catch (_: NumberFormatException) {
             ProblemGrade.INVALID_INPUT
         }
 
