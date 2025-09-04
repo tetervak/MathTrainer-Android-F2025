@@ -1,5 +1,4 @@
-
-package ca.tetervak.mathtrainer
+package ca.tetervak.mathtrainer.ui
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
