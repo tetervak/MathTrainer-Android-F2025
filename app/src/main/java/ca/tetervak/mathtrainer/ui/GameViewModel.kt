@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import ca.tetervak.mathtrainer.data.AlgebraProblemFactory
 import ca.tetervak.mathtrainer.data.ProblemFactory
-import ca.tetervak.mathtrainer.domain.ProblemGrade
+import ca.tetervak.mathtrainer.domain.Problem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -61,7 +61,7 @@ class GameViewModel : ViewModel() {
     fun onSubmit() {
         val problem = uiState.value.problem
         _uiState.update { state ->
-            if (problem.checkAnswer(answerInput) == ProblemGrade.RIGHT_ANSWER) {
+            if (problem.checkAnswer(answerInput) == Problem.Grade.RIGHT_ANSWER) {
                 if (state.problemCount == numberOfProblems) {
                     state.copy(
                         score = state.score + 1,

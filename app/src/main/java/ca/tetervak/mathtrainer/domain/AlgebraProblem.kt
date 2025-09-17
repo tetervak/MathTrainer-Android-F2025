@@ -2,23 +2,55 @@ package ca.tetervak.mathtrainer.domain
 
 import kotlin.math.abs
 
-abstract class AlgebraProblem: Problem {
+sealed class AlgebraProblem: Problem {
 
     protected abstract val answer: Int
 
-    override fun checkAnswer(userAnswer: String): ProblemGrade =
+    override fun checkAnswer(userAnswer: String): Problem.Grade =
         try {
             val entered: Double = userAnswer.toDouble()
             if (abs(answer - entered) <= TOLERANCE) {
-                ProblemGrade.RIGHT_ANSWER
+                Problem.Grade.RIGHT_ANSWER
             } else {
-                ProblemGrade.WRONG_ANSWER
+                Problem.Grade.WRONG_ANSWER
             }
         } catch (_: NumberFormatException) {
-            ProblemGrade.INVALID_INPUT
+            Problem.Grade.INVALID_INPUT
         }
 
     companion object {
         const val TOLERANCE: Double = 0.000001
     }
+}
+
+data class AdditionProblem(
+    private val a: Int,
+    private val b: Int
+) : AlgebraProblem() {
+    public override val answer: Int = a + b
+    override val text: String = "$a + $b = ?"
+}
+
+data class SubtractionProblem(
+    private val a: Int,
+    private val b: Int
+) : AlgebraProblem() {
+    public override val answer: Int = a - b
+    override val text: String = "$a - $b = ?"
+}
+
+data class MultiplicationProblem(
+    private val a: Int,
+    private val b: Int
+) : AlgebraProblem() {
+    public override val answer: Int = a * b
+    override val text: String = "$a x $b = ?"
+}
+
+data class DivisionProblem(
+    private val a: Int,
+    private val b: Int
+) : AlgebraProblem() {
+    public override val answer: Int = a / b
+    override val text: String = "$a / $b = ?"
 }
