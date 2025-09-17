@@ -5,10 +5,11 @@ import ca.tetervak.mathtrainer.domain.Problem
 /**
  * Data class that represents the game UI state
  */
-data class GameUiState(
+data class QuizUiState(
+    val numberOfProblems: Int,
     val problem: Problem,
     val problemCount: Int,
-    val score: Int = 0,
-    val isWrongAnswer: Boolean = false,
-    val isGameOver: Boolean = false
+    val score: Int,
+    val wrongAnswer: Boolean,
+    val quizEnded: Boolean
 )

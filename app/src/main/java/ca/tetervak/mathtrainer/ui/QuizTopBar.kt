@@ -17,7 +17,7 @@ import ca.tetervak.mathtrainer.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GameTopBar(
+fun QuizTopBar(
     title: String,
     scrollBehavior: TopAppBarScrollBehavior,
     onHelpButtonClick: () -> Unit

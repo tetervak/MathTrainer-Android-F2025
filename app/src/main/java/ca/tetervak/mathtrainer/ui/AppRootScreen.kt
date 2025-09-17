@@ -68,8 +68,8 @@ import ca.tetervak.mathtrainer.ui.theme.MathTrainerTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppRootScreen(gameViewModel: GameViewModel = viewModel()) {
-    val gameUiState by gameViewModel.uiState.collectAsState()
+fun AppRootScreen(quizViewModel: QuizViewModel = viewModel()) {
+    val quizUiState by quizViewModel.uiState.collectAsState()
     val mediumPadding = dimensionResource(R.dimen.padding_medium)
 
     var showAboutDialog: Boolean by rememberSaveable {
@@ -79,7 +79,7 @@ fun AppRootScreen(gameViewModel: GameViewModel = viewModel()) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
         topBar = {
-            GameTopBar(
+            QuizTopBar(
                 title = stringResource(R.string.app_name),
                 onHelpButtonClick = { showAboutDialog = true },
                 scrollBehavior = scrollBehavior
@@ -101,13 +101,13 @@ fun AppRootScreen(gameViewModel: GameViewModel = viewModel()) {
         ) {
 
             ProblemLayout(
-                onUserAnswerChanged = gameViewModel::updateAnswerInput,
-                problemCount = gameUiState.problemCount,
-                numberOfProblems = gameViewModel.numberOfProblems,
-                userAnswer = gameViewModel.answerInput,
-                onKeyboardDone = gameViewModel::onSubmit,
-                currentProblemText = gameUiState.problem.text,
-                isWrongAnswer = gameUiState.isWrongAnswer,
+                onUserAnswerChanged = quizViewModel::updateAnswerInput,
+                problemCount = quizUiState.problemCount,
+                numberOfProblems = quizUiState.numberOfProblems,
+                userAnswer = quizViewModel.answerInput,
+                onKeyboardDone = quizViewModel::onSubmit,
+                currentProblemText = quizUiState.problem.text,
+                isWrongAnswer = quizUiState.wrongAnswer,
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
@@ -123,7 +123,7 @@ fun AppRootScreen(gameViewModel: GameViewModel = viewModel()) {
 
                 Button(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = gameViewModel::onSubmit
+                    onClick = quizViewModel::onSubmit
                 ) {
                     Text(
                         text = stringResource(R.string.submit),
@@ -132,7 +132,7 @@ fun AppRootScreen(gameViewModel: GameViewModel = viewModel()) {
                 }
 
                 OutlinedButton(
-                    onClick = gameViewModel::onSkip,
+                    onClick = quizViewModel::onSkip,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
@@ -142,14 +142,14 @@ fun AppRootScreen(gameViewModel: GameViewModel = viewModel()) {
                 }
             }
 
-            GameScore(score = gameUiState.score, modifier = Modifier.padding(20.dp))
+            GameScore(score = quizUiState.score, modifier = Modifier.padding(20.dp))
         }
     }
 
-    if (gameUiState.isGameOver) {
+    if (quizUiState.quizEnded) {
         FinalScoreDialog(
-            score = gameUiState.score,
-            onPlayAgain = gameViewModel::resetGame
+            score = quizUiState.score,
+            onPlayAgain = quizViewModel::resetGame
         )
     }
 
