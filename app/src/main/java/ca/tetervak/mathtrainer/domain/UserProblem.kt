@@ -1,6 +1,6 @@
 package ca.tetervak.mathtrainer.domain
 
-class QuizProblem(val problem: Problem) {
+class UserProblem(val problem: Problem) {
 
     val text: String
         get() = problem.text

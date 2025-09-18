@@ -3,16 +3,17 @@ package ca.tetervak.mathtrainer.domain
 import ca.tetervak.mathtrainer.data.AlgebraProblemFactory
 import ca.tetervak.mathtrainer.data.ProblemFactory
 
-class Quiz (
+class UserQuiz (
     val numberOfProblems: Int = 5,
     val problemFactory: ProblemFactory = AlgebraProblemFactory()
 ) {
     init {
         if (numberOfProblems < 1)
             throw IllegalArgumentException("The number of problems $numberOfProblems < 1")
+
     }
 
-    var quizProblem: QuizProblem = makeNewQuizProblem()
+    var userProblem: UserProblem = makeNewQuizProblem()
     private set
 
     var problemNumber: Int = 1
@@ -25,8 +26,8 @@ class Quiz (
     private set
 
     fun submitAnswer(userAnswer: String){
-        quizProblem.userAnswer = userAnswer
-        if(quizProblem.status == QuizProblem.Status.RIGHT_ANSWER){
+        userProblem.userAnswer = userAnswer
+        if(userProblem.status == UserProblem.Status.RIGHT_ANSWER){
             nextProblemOrEnd()
             score++
         }
@@ -37,7 +38,7 @@ class Quiz (
     }
 
     fun reset(){
-        quizProblem = makeNewQuizProblem()
+        userProblem = makeNewQuizProblem()
         score = 0
         problemNumber = 1
         quizEnded = false
@@ -47,11 +48,11 @@ class Quiz (
         if (problemNumber == numberOfProblems) {
             quizEnded = true
         } else {
-            quizProblem = makeNewQuizProblem()
+            userProblem = makeNewQuizProblem()
             problemNumber++
         }
     }
 
-    private fun makeNewQuizProblem(): QuizProblem =
-        QuizProblem(problem = problemFactory.createRandomProblem())
+    private fun makeNewQuizProblem(): UserProblem =
+        UserProblem(problem = problemFactory.createRandomProblem())
 }

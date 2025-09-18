@@ -4,8 +4,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import ca.tetervak.mathtrainer.domain.Quiz
-import ca.tetervak.mathtrainer.domain.QuizProblem
+import ca.tetervak.mathtrainer.domain.UserQuiz
+import ca.tetervak.mathtrainer.domain.UserProblem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
  */
 class QuizViewModel : ViewModel() {
 
-    val quiz: Quiz = Quiz()
+    val userQuiz: UserQuiz = UserQuiz()
 
     // Game UI state
     private val _uiState: MutableStateFlow<QuizUiState> = MutableStateFlow(makeQuizUiState())
@@ -28,34 +28,34 @@ class QuizViewModel : ViewModel() {
     }
 
     fun resetGame() {
-        quiz.reset()
+        userQuiz.reset()
         _uiState.value = makeQuizUiState()
     }
 
     fun onSkip() {
         updateAnswerInput("")
-        quiz.skipProblem()
+        userQuiz.skipProblem()
         _uiState.value = makeQuizUiState()
     }
 
     fun onSubmit() {
-        quiz.submitAnswer(answerInput)
+        userQuiz.submitAnswer(answerInput)
         _uiState.value = makeQuizUiState()
         updateAnswerInput("")
     }
 
     private fun makeQuizUiState(): QuizUiState =
         QuizUiState(
-            numberOfProblems = quiz.numberOfProblems,
-            problemCount = quiz.problemNumber,
-            problem = quiz.quizProblem.problem,
-            score = quiz.score,
-            wrongAnswer = when(quiz.quizProblem.status){
-                QuizProblem.Status.WRONG_ANSWER -> true
-                QuizProblem.Status.INVALID_INPUT -> true
+            numberOfProblems = userQuiz.numberOfProblems,
+            problemCount = userQuiz.problemNumber,
+            problem = userQuiz.userProblem.problem,
+            score = userQuiz.score,
+            wrongAnswer = when(userQuiz.userProblem.status){
+                UserProblem.Status.WRONG_ANSWER -> true
+                UserProblem.Status.INVALID_INPUT -> true
                 else -> false
             },
-            quizEnded = quiz.quizEnded
+            quizEnded = userQuiz.quizEnded
         )
 
 }
