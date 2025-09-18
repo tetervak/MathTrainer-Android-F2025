@@ -5,7 +5,7 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 
-class QuizProblemTest {
+class UserProblemTest {
 
     val problem: Problem = AdditionProblem(1,2)
     val userProblem: UserProblem = UserProblem(problem)
