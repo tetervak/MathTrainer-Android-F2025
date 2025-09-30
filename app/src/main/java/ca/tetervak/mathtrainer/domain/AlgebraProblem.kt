@@ -23,34 +23,22 @@ sealed class AlgebraProblem: Problem {
     }
 }
 
-data class AdditionProblem(
-    private val a: Int,
-    private val b: Int
-) : AlgebraProblem() {
+data class AdditionProblem(val a: Int, val b: Int) : AlgebraProblem() {
     public override val answer: Int = a + b
     override val text: String = "$a + $b = ?"
 }
 
-data class SubtractionProblem(
-    private val a: Int,
-    private val b: Int
-) : AlgebraProblem() {
+data class SubtractionProblem(val a: Int, val b: Int) : AlgebraProblem() {
     public override val answer: Int = a - b
     override val text: String = "$a - $b = ?"
 }
 
-data class MultiplicationProblem(
-    private val a: Int,
-    private val b: Int
-) : AlgebraProblem() {
+data class MultiplicationProblem(val a: Int, val b: Int) : AlgebraProblem() {
     public override val answer: Int = a * b
     override val text: String = "$a x $b = ?"
 }
 
-data class DivisionProblem(
-    private val a: Int,
-    private val b: Int
-) : AlgebraProblem() {
+data class DivisionProblem(val a: Int, val b: Int) : AlgebraProblem() {
     public override val answer: Int = a / b
     override val text: String = "$a / $b = ?"
 }

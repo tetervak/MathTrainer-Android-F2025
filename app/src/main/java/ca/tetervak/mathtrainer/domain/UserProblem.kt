@@ -1,6 +1,6 @@
 package ca.tetervak.mathtrainer.domain
 
-class UserProblem(val problem: Problem) {
+class UserProblem(val problem: Problem, val id: Int = 0) {
 
     val text: String
         get() = problem.text
