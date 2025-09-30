@@ -2,7 +2,6 @@ package ca.tetervak.mathtrainer.data.local
 
 import ca.tetervak.mathtrainer.data.UserProblemRepository
 import ca.tetervak.mathtrainer.domain.AdditionProblem
-import ca.tetervak.mathtrainer.domain.AlgebraProblem
 import ca.tetervak.mathtrainer.domain.DivisionProblem
 import ca.tetervak.mathtrainer.domain.MultiplicationProblem
 import ca.tetervak.mathtrainer.domain.SubtractionProblem
@@ -28,18 +27,16 @@ class LocalUserProblemRepository(val dao: LocalProblemDao): UserProblemRepositor
 
     override suspend fun updateUserProblemById(
         id: Int,
-        userAnswer: String?,
-        status: UserProblem.Status
+        userAnswer: String?
     ) = withContext(context = Dispatchers.IO){
-        dao.updateLocalProblemById(id, userAnswer, status)
+        dao.updateLocalProblemById(id, userAnswer)
     }
 
     override suspend fun resetUserProblemById(id: Int) =
         withContext(context = Dispatchers.IO){
             dao.updateLocalProblemById(
                 id = id,
-                userAnswer = null,
-                status = UserProblem.Status.NOT_ANSWERED
+                userAnswer = null
             )
         }
 
@@ -71,11 +68,10 @@ fun LocalProblem.toUserProblem(): UserProblem  =
                 'x' -> MultiplicationProblem(a, b)
                 '/' -> DivisionProblem(a, b)
                 else -> throw IllegalArgumentException("Invalid operator: $op")
-            }
-        ).also { userProblem ->
-            userProblem.userAnswer = userAnswer
-            userProblem.status = status
-        }
+            },
+            userAnswer = userAnswer,
+            id = id
+        )
 
 fun UserProblem.toLocalProblem(): LocalProblem =
     when(problem){
@@ -84,32 +80,28 @@ fun UserProblem.toLocalProblem(): LocalProblem =
             a = this.problem.a,
             op = '+',
             b = this.problem.b,
-            userAnswer = this.userAnswer,
-            status = this.status
+            userAnswer = this.userAnswer
         )
         is SubtractionProblem -> LocalProblem(
             id = this.id,
             a = this.problem.a,
             op = '-',
             b = this.problem.b,
-            userAnswer = this.userAnswer,
-            status = this.status
+            userAnswer = this.userAnswer
         )
         is MultiplicationProblem -> LocalProblem(
             id = this.id,
             a = this.problem.a,
             op = 'x',
             b = this.problem.b,
-            userAnswer = this.userAnswer,
-            status = this.status
+            userAnswer = this.userAnswer
         )
         is DivisionProblem -> LocalProblem(
             id = this.id,
             a = this.problem.a,
             op = '/',
             b = this.problem.b,
-            userAnswer = this.userAnswer,
-            status = this.status
+            userAnswer = this.userAnswer
         )
         else -> throw IllegalArgumentException("Invalid problem: $problem")
     }

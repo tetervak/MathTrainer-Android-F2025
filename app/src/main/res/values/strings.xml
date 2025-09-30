@@ -11,11 +11,17 @@
     <string name="you_scored">"You scored: %d"</string>
     <string name="exit">Exit</string>
     <string name="play_again">Play Again</string>
-    <string name="wrong_answer">Wrong Answer!</string>
-
     <string name="about">About</string>
     <string name="about_game">About Game</string>
     <string name="programming_example">This is a programming example from an Android application development course.</string>
     <string name="ok">OK</string>
     <string name="wrong_answer_try_again">Wrong Answer! Try Again!</string>
+
+    <string name="wrong_answer">Wrong Answer</string>
+    <string name="not_answered">Not answered</string>
+    <string name="right_answer">Right answer</string>
+    <string name="invalid_input">Invalid input</string>
+    <string name="problem_list">Problem List</string>
+
+
 </resources>

@@ -26,7 +26,7 @@ class UserQuiz (
     private set
 
     fun submitAnswer(userAnswer: String){
-        userProblem.userAnswer = userAnswer
+        userProblem = userProblem.copy(userAnswer)
         if(userProblem.status == UserProblem.Status.RIGHT_ANSWER){
             nextProblemOrEnd()
             score++

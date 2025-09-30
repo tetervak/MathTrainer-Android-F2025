@@ -1,34 +1,26 @@
 package ca.tetervak.mathtrainer.domain
 
-class UserProblem(val problem: Problem, val id: Int = 0) {
+class UserProblem(
+    val problem: Problem,
+    val userAnswer: String? = null,
+    val id: Int = 0,
+) {
 
     val text: String
         get() = problem.text
 
-    var userAnswer: String? = null
-        set(value) {
-            field = value
-            status =
-                if (value != null) {
-                    when (problem.checkAnswer(userAnswer = value)) {
-                        Problem.Grade.RIGHT_ANSWER -> Status.RIGHT_ANSWER
-                        Problem.Grade.WRONG_ANSWER -> Status.WRONG_ANSWER
-                        Problem.Grade.INVALID_INPUT -> Status.INVALID_INPUT
-                    }
-                } else {
-                    Status.NOT_ANSWERED
-                }
+    val status: Status = if (userAnswer != null) {
+        when (problem.checkAnswer(userAnswer = userAnswer)) {
+            Problem.Grade.RIGHT_ANSWER -> Status.RIGHT_ANSWER
+            Problem.Grade.WRONG_ANSWER -> Status.WRONG_ANSWER
+            Problem.Grade.INVALID_INPUT -> Status.INVALID_INPUT
         }
-
-    var status: Status = Status.NOT_ANSWERED
-
-    fun reset(){
-        userAnswer = null
+    } else {
+        Status.NOT_ANSWERED
     }
 
-    override fun toString(): String {
-        return "QuizProblem(problem=$problem, userAnswer=${userAnswer}, status=$status)"
-    }
+    fun copy(userAnswer: String? = this.userAnswer) =
+        UserProblem(problem = problem, userAnswer = userAnswer, id = id)
 
     enum class Status {
         NOT_ANSWERED, RIGHT_ANSWER, WRONG_ANSWER, INVALID_INPUT
