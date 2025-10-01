@@ -1,4 +1,4 @@
-package ca.tetervak.mathtrainer.data
+package ca.tetervak.mathtrainer.data.factory
 
 import ca.tetervak.mathtrainer.domain.Problem
 

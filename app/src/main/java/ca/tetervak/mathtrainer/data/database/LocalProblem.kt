@@ -1,4 +1,4 @@
-package ca.tetervak.mathtrainer.data.local
+package ca.tetervak.mathtrainer.data.database
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "user_problems")
 data class LocalProblem (
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     val id: Int = 0,
 
     val a: Int,

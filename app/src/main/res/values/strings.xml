@@ -4,7 +4,7 @@
     <string name="instructions">Solve the problem.</string>
     <string name="skip">Skip</string>
     <string name="submit">Submit</string>
-    <string name="score">Score: %d</string>
+    <string name="score">Score: %d/%d</string>
     <string name="problem_count">%d/%d</string>
     <string name="enter_your_answer">Enter your answer</string>
     <string name="congratulations">Congratulations!</string>
@@ -22,6 +22,16 @@
     <string name="right_answer">Right answer</string>
     <string name="invalid_input">Invalid input</string>
     <string name="problem_list">Problem List</string>
-
+    <string name="welcome">Welcome to Math Trainer!</string>
+    <string name="first_problem">First Problem</string>
+    <string name="list_all_problems">List All Problems</string>
+    <string name="make_new_problems">Make New Problems</string>
+    <string name="invalid_input_try_again">Invalid Input! Try Again!</string>
+    <string name="home">Home</string>
+    <string name="problem_number">Problem %d</string>
+    <string name="first">First</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
+    <string name="list">List</string>
 
 </resources>

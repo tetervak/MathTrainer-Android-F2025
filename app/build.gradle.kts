@@ -53,6 +53,9 @@ dependencies {
     implementation(libs.androidx.compose.material3)
 
     implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.compose.material.icons.core)
+    implementation(libs.androidx.compose.material.icons.extended)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
 

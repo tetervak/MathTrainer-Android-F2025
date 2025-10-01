@@ -16,9 +16,64 @@
 package ca.tetervak.mathtrainer.ui
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import ca.tetervak.mathtrainer.ui.details.ProblemDetailsScreen
+import ca.tetervak.mathtrainer.ui.home.HomeScreen
 import ca.tetervak.mathtrainer.ui.list.ProblemListScreen
 
 @Composable
 fun AppRootScreen() {
-    ProblemListScreen()
+
+    var showAboutDialog: Boolean by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    val navController = rememberNavController()
+    NavHost(
+        navController = navController,
+        startDestination = "home"
+    ) {
+        composable(route = "home") {
+            HomeScreen(
+                onFirstClick = { navController.navigate("problem/1") },
+                onListClick = { navController.navigate("list-problems") },
+                onHelpClick = { showAboutDialog = true }
+            )
+        }
+        composable(route = "list-problems") {
+            ProblemListScreen(
+                onProblemClick = { problemId ->
+                    navController.navigate("problem/$problemId")
+                },
+                onHomeClick = { navController.navigate("home") },
+                onHelpClick = { showAboutDialog = true }
+            )
+        }
+        composable(
+            route = "problem/{problemId}",
+            arguments = listOf(navArgument("problemId") { type = NavType.IntType })
+        ) {
+            //Text("Problem ${it.arguments?.getInt("problemId")}")
+            ProblemDetailsScreen(
+                onHelpClick = { showAboutDialog = true },
+                onHomeClick = { navController.navigate("home") },
+                onListClick = { navController.navigate("list-problems") },
+                onProblemNavClick = { problemId ->
+                    navController.navigate("problem/$problemId")
+                }
+            )
+        }
+    }
+
+    if (showAboutDialog) {
+        AboutDialog(onDismissRequest = { showAboutDialog = false })
+    }
 }

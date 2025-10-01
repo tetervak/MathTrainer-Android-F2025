@@ -1,4 +1,4 @@
-package ca.tetervak.mathtrainer.data.local
+package ca.tetervak.mathtrainer.data.database
 
 import android.content.Context
 import androidx.room.Database

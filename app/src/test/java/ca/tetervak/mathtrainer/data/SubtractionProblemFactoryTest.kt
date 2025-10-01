@@ -1,5 +1,7 @@
 package ca.tetervak.mathtrainer.data
 
+import ca.tetervak.mathtrainer.data.factory.ProblemFactory
+import ca.tetervak.mathtrainer.data.factory.SubtractionProblemFactory
 import org.junit.After
 import org.junit.Before
 import org.junit.Test

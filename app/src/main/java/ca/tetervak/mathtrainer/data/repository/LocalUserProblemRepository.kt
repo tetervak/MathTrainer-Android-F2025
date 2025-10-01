@@ -1,6 +1,7 @@
-package ca.tetervak.mathtrainer.data.local
+package ca.tetervak.mathtrainer.data.repository
 
-import ca.tetervak.mathtrainer.data.UserProblemRepository
+import ca.tetervak.mathtrainer.data.database.LocalProblem
+import ca.tetervak.mathtrainer.data.database.LocalProblemDao
 import ca.tetervak.mathtrainer.domain.AdditionProblem
 import ca.tetervak.mathtrainer.domain.DivisionProblem
 import ca.tetervak.mathtrainer.domain.MultiplicationProblem
@@ -11,8 +12,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class LocalUserProblemRepository(val dao: LocalProblemDao): UserProblemRepository {
+class LocalUserProblemRepository @Inject constructor(
+    val dao: LocalProblemDao
+): UserProblemRepository {
 
     override fun getAllUserProblemsFlow(): Flow<List<UserProblem>> =
         dao.getAllLocalProblemsFlow()

@@ -1,4 +1,4 @@
-package ca.tetervak.mathtrainer.data
+package ca.tetervak.mathtrainer.data.factory
 
 import ca.tetervak.mathtrainer.domain.AdditionProblem
 import ca.tetervak.mathtrainer.domain.DivisionProblem
@@ -27,7 +27,7 @@ class AlgebraProblemFactory(
 
 class AdditionProblemFactory (
     private val random: Random = Random.Default
-): ProblemFactory{
+): ProblemFactory {
 
     override fun createRandomProblem(): Problem {
         val larger = getRandomLargerValue()
@@ -50,7 +50,7 @@ class AdditionProblemFactory (
 
 class SubtractionProblemFactory (
     private val random: Random = Random.Default
-): ProblemFactory{
+): ProblemFactory {
 
     override fun createRandomProblem(): Problem {
         val larger = getRandomLargerValue()

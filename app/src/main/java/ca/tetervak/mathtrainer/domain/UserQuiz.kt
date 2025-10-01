@@ -1,7 +1,7 @@
 package ca.tetervak.mathtrainer.domain
 
-import ca.tetervak.mathtrainer.data.AlgebraProblemFactory
-import ca.tetervak.mathtrainer.data.ProblemFactory
+import ca.tetervak.mathtrainer.data.factory.AlgebraProblemFactory
+import ca.tetervak.mathtrainer.data.factory.ProblemFactory
 
 class UserQuiz (
     val numberOfProblems: Int = 5,

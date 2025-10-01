@@ -1,10 +1,6 @@
-package ca.tetervak.mathtrainer.data
+package ca.tetervak.mathtrainer.data.database
 
 import android.content.Context
-import ca.tetervak.mathtrainer.data.local.LocalProblemDao
-import ca.tetervak.mathtrainer.data.local.LocalUserProblemRepository
-import ca.tetervak.mathtrainer.data.local.MathTrainerDatabase
-
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,10 +23,4 @@ object DatabaseModule {
     fun provideLocalProblemDao(
         database: MathTrainerDatabase
     ): LocalProblemDao = database.localProblemDao()
-
-    @Singleton
-    @Provides
-    fun provideUserProblemRepository(
-        localProblemDao: LocalProblemDao
-    ): UserProblemRepository = LocalUserProblemRepository(localProblemDao)
 }
