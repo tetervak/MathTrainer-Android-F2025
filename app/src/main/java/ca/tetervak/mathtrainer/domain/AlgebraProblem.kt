@@ -2,7 +2,7 @@ package ca.tetervak.mathtrainer.domain
 
 import kotlin.math.abs
 
-sealed class AlgebraProblem: Problem {
+sealed class AlgebraProblem : Problem {
 
     protected abstract val answer: Int
 

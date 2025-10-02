@@ -3,7 +3,7 @@ package ca.tetervak.mathtrainer.domain
 import ca.tetervak.mathtrainer.data.factory.AlgebraProblemFactory
 import ca.tetervak.mathtrainer.data.factory.ProblemFactory
 
-class UserQuiz (
+class UserQuiz(
     val numberOfProblems: Int = 5,
     val problemFactory: ProblemFactory = AlgebraProblemFactory()
 ) {
@@ -14,30 +14,30 @@ class UserQuiz (
     }
 
     var userProblem: UserProblem = makeNewQuizProblem()
-    private set
+        private set
 
     var problemNumber: Int = 1
-    private set
+        private set
 
     var quizEnded: Boolean = false
-    private set
+        private set
 
     var score: Int = 0
-    private set
+        private set
 
-    fun submitAnswer(userAnswer: String){
+    fun submitAnswer(userAnswer: String) {
         userProblem = userProblem.copy(userAnswer)
-        if(userProblem.status == UserProblem.Status.RIGHT_ANSWER){
+        if (userProblem.status == UserProblem.Status.RIGHT_ANSWER) {
             nextProblemOrEnd()
             score++
         }
     }
 
-    fun skipProblem(){
+    fun skipProblem() {
         nextProblemOrEnd()
     }
 
-    fun reset(){
+    fun reset() {
         userProblem = makeNewQuizProblem()
         score = 0
         problemNumber = 1

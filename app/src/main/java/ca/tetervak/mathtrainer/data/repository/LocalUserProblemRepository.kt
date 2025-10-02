@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 class LocalUserProblemRepository @Inject constructor(
     val dao: LocalProblemDao
-): UserProblemRepository {
+) : UserProblemRepository {
 
     override fun getAllUserProblemsFlow(): Flow<List<UserProblem>> =
         dao.getAllLocalProblemsFlow()
@@ -32,12 +32,12 @@ class LocalUserProblemRepository @Inject constructor(
     override suspend fun updateUserProblemById(
         id: Int,
         userAnswer: String?
-    ) = withContext(context = Dispatchers.IO){
+    ) = withContext(context = Dispatchers.IO) {
         dao.updateLocalProblemById(id, userAnswer)
     }
 
     override suspend fun resetUserProblemById(id: Int) =
-        withContext(context = Dispatchers.IO){
+        withContext(context = Dispatchers.IO) {
             dao.updateLocalProblemById(
                 id = id,
                 userAnswer = null
@@ -45,40 +45,40 @@ class LocalUserProblemRepository @Inject constructor(
         }
 
     override suspend fun insertUserProblems(list: List<UserProblem>) =
-        withContext(context = Dispatchers.IO){
+        withContext(context = Dispatchers.IO) {
             dao.insertLocalProblems(list = list.map { userProblem -> userProblem.toLocalProblem() })
         }
 
     override suspend fun emptyAndInsertUserProblems(list: List<UserProblem>) =
-        withContext(context = Dispatchers.IO){
+        withContext(context = Dispatchers.IO) {
             dao.emptyAndInsertLocalProblems(
                 list = list.map { userProblem -> userProblem.toLocalProblem() }
             )
         }
 
     override suspend fun getUserProblemCount(): Int =
-        withContext(context = Dispatchers.IO){
+        withContext(context = Dispatchers.IO) {
             dao.getLocalProblemCount()
         }
 
     override suspend fun isEmpty(): Boolean = (getUserProblemCount() == 0)
 }
 
-fun LocalProblem.toUserProblem(): UserProblem  =
-        UserProblem(
-            problem = when(op){
-                '+' -> AdditionProblem(a, b)
-                '-' -> SubtractionProblem(a, b)
-                'x' -> MultiplicationProblem(a, b)
-                '/' -> DivisionProblem(a, b)
-                else -> throw IllegalArgumentException("Invalid operator: $op")
-            },
-            userAnswer = userAnswer,
-            id = id
-        )
+fun LocalProblem.toUserProblem(): UserProblem =
+    UserProblem(
+        problem = when (op) {
+            '+' -> AdditionProblem(a, b)
+            '-' -> SubtractionProblem(a, b)
+            'x' -> MultiplicationProblem(a, b)
+            '/' -> DivisionProblem(a, b)
+            else -> throw IllegalArgumentException("Invalid operator: $op")
+        },
+        userAnswer = userAnswer,
+        id = id
+    )
 
 fun UserProblem.toLocalProblem(): LocalProblem =
-    when(problem){
+    when (problem) {
         is AdditionProblem -> LocalProblem(
             id = this.id,
             a = this.problem.a,
@@ -86,6 +86,7 @@ fun UserProblem.toLocalProblem(): LocalProblem =
             b = this.problem.b,
             userAnswer = this.userAnswer
         )
+
         is SubtractionProblem -> LocalProblem(
             id = this.id,
             a = this.problem.a,
@@ -93,6 +94,7 @@ fun UserProblem.toLocalProblem(): LocalProblem =
             b = this.problem.b,
             userAnswer = this.userAnswer
         )
+
         is MultiplicationProblem -> LocalProblem(
             id = this.id,
             a = this.problem.a,
@@ -100,6 +102,7 @@ fun UserProblem.toLocalProblem(): LocalProblem =
             b = this.problem.b,
             userAnswer = this.userAnswer
         )
+
         is DivisionProblem -> LocalProblem(
             id = this.id,
             a = this.problem.a,
@@ -107,5 +110,6 @@ fun UserProblem.toLocalProblem(): LocalProblem =
             b = this.problem.b,
             userAnswer = this.userAnswer
         )
+
         else -> throw IllegalArgumentException("Invalid problem: $problem")
     }

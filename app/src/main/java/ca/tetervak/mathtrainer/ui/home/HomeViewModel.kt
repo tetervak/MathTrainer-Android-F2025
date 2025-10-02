@@ -12,9 +12,9 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val repository: UserProblemRepository,
     private val newQuizUseCase: NewQuizUseCase
-): ViewModel() {
+) : ViewModel() {
 
-    init{
+    init {
         viewModelScope.launch {
             if (repository.isEmpty()) {
                 repository.insertUserProblems(list = newQuizUseCase(numberOfProblems = 5))
@@ -22,7 +22,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun makeNewProblems(){
+    fun makeNewProblems() {
         viewModelScope.launch {
             repository.emptyAndInsertUserProblems(list = newQuizUseCase(numberOfProblems = 5))
         }

@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase
 @Database(
     entities = [LocalProblem::class], version = 1, exportSchema = false
 )
-abstract class MathTrainerDatabase: RoomDatabase() {
+abstract class MathTrainerDatabase : RoomDatabase() {
 
     abstract fun localProblemDao(): LocalProblemDao
 
@@ -21,7 +21,8 @@ abstract class MathTrainerDatabase: RoomDatabase() {
             return Instance ?: synchronized(this) {
                 Room.databaseBuilder(
                     context,
-                    MathTrainerDatabase::class.java, "math_trainer_database")
+                    MathTrainerDatabase::class.java, "math_trainer_database"
+                )
                     /**
                      * Setting this option in your app's database builder means that Room
                      * permanently deletes all data from the tables in your database when it

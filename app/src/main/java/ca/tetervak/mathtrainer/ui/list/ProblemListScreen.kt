@@ -90,9 +90,9 @@ fun ProblemListScreenBody(
             .nestedScroll(scrollBehavior.nestedScrollConnection)
     ) { innerPadding ->
 
-        Column (
+        Column(
             modifier = Modifier.padding(innerPadding)
-        ){
+        ) {
             LazyColumn(
                 contentPadding = PaddingValues(vertical = 16.dp, horizontal = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -110,16 +110,18 @@ fun ProblemListScreenBody(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
-            ){
+            ) {
                 Score(
                     score = score,
                     numberOfProblems = numberOfProblems,
                     modifier = Modifier.padding(20.dp)
                 )
                 OutlinedButton(
-                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
                     onClick = onHomeClick,
-                ){
+                ) {
                     Icon(
                         imageVector = Icons.Default.Home,
                         contentDescription = stringResource(R.string.home)
@@ -133,7 +135,6 @@ fun ProblemListScreenBody(
         }
     }
 }
-
 
 
 @Composable
@@ -152,7 +153,7 @@ fun ProblemListItem(
                 .padding(16.dp),
             verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.SpaceBetween
-        ){
+        ) {
             Text(
                 text = "${userProblem.id}.",
                 fontSize = 24.sp,
@@ -163,25 +164,28 @@ fun ProblemListItem(
                 text = userProblem.problem.text,
                 fontSize = 24.sp
             )
-            when(userProblem.status){
+            when (userProblem.status) {
                 UserProblem.Status.NOT_ANSWERED -> Text(
                     text = stringResource(R.string.not_answered),
                     fontStyle = FontStyle.Italic,
                     fontSize = 24.sp,
                     color = Color.Blue
                 )
+
                 UserProblem.Status.RIGHT_ANSWER -> Text(
                     text = stringResource(R.string.right_answer),
                     fontStyle = FontStyle.Italic,
                     fontSize = 24.sp,
                     color = Color.Green
                 )
+
                 UserProblem.Status.WRONG_ANSWER -> Text(
                     text = stringResource(R.string.wrong_answer),
                     fontStyle = FontStyle.Italic,
                     fontSize = 24.sp,
                     color = Color.Red
                 )
+
                 UserProblem.Status.INVALID_INPUT -> Text(
                     text = stringResource(R.string.invalid_input),
                     fontStyle = FontStyle.Italic,

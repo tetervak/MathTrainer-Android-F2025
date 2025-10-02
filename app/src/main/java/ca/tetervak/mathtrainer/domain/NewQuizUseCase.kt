@@ -6,7 +6,7 @@ import javax.inject.Inject
 class NewQuizUseCase @Inject constructor(
     private val problemFactory: ProblemFactory
 ) {
-    operator fun invoke(numberOfProblems: Int): List<UserProblem>{
+    operator fun invoke(numberOfProblems: Int): List<UserProblem> {
         return List(size = numberOfProblems) { index ->
             UserProblem(
                 problem = problemFactory.createRandomProblem(),

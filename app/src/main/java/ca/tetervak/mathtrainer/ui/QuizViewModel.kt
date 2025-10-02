@@ -23,7 +23,7 @@ class QuizViewModel : ViewModel() {
     var answerInput by mutableStateOf("")
         private set
 
-    fun updateAnswerInput(input: String){
+    fun updateAnswerInput(input: String) {
         answerInput = input
     }
 
@@ -50,7 +50,7 @@ class QuizViewModel : ViewModel() {
             problemCount = userQuiz.problemNumber,
             problem = userQuiz.userProblem.problem,
             score = userQuiz.score,
-            wrongAnswer = when(userQuiz.userProblem.status){
+            wrongAnswer = when (userQuiz.userProblem.status) {
                 UserProblem.Status.WRONG_ANSWER -> true
                 UserProblem.Status.INVALID_INPUT -> true
                 else -> false

@@ -71,7 +71,7 @@ fun ProblemDetailsScreen(
     onHomeClick: () -> Unit,
     onListClick: () -> Unit,
     onProblemNavClick: (Int) -> Unit,
-){
+) {
 
     val detailsViewModel: ProblemDetailsViewModel = hiltViewModel()
     val detailsUiState: ProblemDetailsUiState by detailsViewModel.uiState.collectAsState()
@@ -181,7 +181,7 @@ fun ProblemDetailsScreenBody(
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.Bottom
-                ){
+                ) {
                     OutlinedButton(
                         onClick = { onProblemNavClick(userProblem.id - 1) },
                         modifier = Modifier.weight(1f),
@@ -227,7 +227,7 @@ fun DetailsBottomBar(
     onHomeClick: () -> Unit,
     onListClick: () -> Unit,
     onFirstClick: () -> Unit
-){
+) {
     NavigationBar(
     ) {
         NavigationBarItem(
@@ -326,19 +326,23 @@ fun ProblemLayout(
                                 color = colorScheme.error
                             )
                         }
+
                         UserProblem.Status.INVALID_INPUT -> {
-                            Text( text = stringResource(R.string.invalid_input_try_again),
+                            Text(
+                                text = stringResource(R.string.invalid_input_try_again),
                                 color = colorScheme.error
                             )
                         }
+
                         UserProblem.Status.NOT_ANSWERED -> {
                             Text(stringResource(R.string.enter_your_answer))
                         }
+
                         else -> {}
                     }
                 },
                 isError = currentProblemStatus == UserProblem.Status.WRONG_ANSWER ||
-                            currentProblemStatus == UserProblem.Status.INVALID_INPUT,
+                        currentProblemStatus == UserProblem.Status.INVALID_INPUT,
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Number,
                     imeAction = ImeAction.Done
@@ -347,25 +351,28 @@ fun ProblemLayout(
                     onDone = { onKeyboardDone() }
                 )
             )
-            when(currentProblemStatus){
+            when (currentProblemStatus) {
                 UserProblem.Status.NOT_ANSWERED -> Text(
                     text = stringResource(R.string.not_answered),
                     fontStyle = FontStyle.Italic,
                     fontSize = 24.sp,
                     color = Color.Blue
                 )
+
                 UserProblem.Status.RIGHT_ANSWER -> Text(
                     text = stringResource(R.string.right_answer),
                     fontStyle = FontStyle.Italic,
                     fontSize = 24.sp,
                     color = Color.Green
                 )
+
                 UserProblem.Status.WRONG_ANSWER -> Text(
                     text = stringResource(R.string.wrong_answer),
                     fontStyle = FontStyle.Italic,
                     fontSize = 24.sp,
                     color = Color.Red
                 )
+
                 UserProblem.Status.INVALID_INPUT -> Text(
                     text = stringResource(R.string.invalid_input),
                     fontStyle = FontStyle.Italic,
@@ -420,7 +427,7 @@ private fun FinalScoreDialog(
 fun GameScreenPreview() {
     MathTrainerTheme {
         ProblemDetailsScreenBody(
-            userProblem = UserProblem(AdditionProblem(1,2), id = 3),
+            userProblem = UserProblem(AdditionProblem(1, 2), id = 3),
             score = 2,
             numberOfProblems = 5,
             userAnswerInput = "",

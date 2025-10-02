@@ -9,7 +9,7 @@ import kotlin.random.Random
 
 class AlgebraProblemFactory(
     private val random: Random = Random.Default
-): ProblemFactory {
+) : ProblemFactory {
 
     private val additionProblemFactory = AdditionProblemFactory(random)
     private val subtractionProblemFactory = SubtractionProblemFactory(random)
@@ -17,7 +17,7 @@ class AlgebraProblemFactory(
     private val divisionProblemFactory = DivisionProblemFactory(random)
 
     override fun createRandomProblem(): Problem =
-        when(random.nextInt(1, 5)){
+        when (random.nextInt(1, 5)) {
             1 -> additionProblemFactory.createRandomProblem()
             2 -> subtractionProblemFactory.createRandomProblem()
             3 -> multiplicationProblemFactory.createRandomProblem()
@@ -25,9 +25,9 @@ class AlgebraProblemFactory(
         }
 }
 
-class AdditionProblemFactory (
+class AdditionProblemFactory(
     private val random: Random = Random.Default
-): ProblemFactory {
+) : ProblemFactory {
 
     override fun createRandomProblem(): Problem {
         val larger = getRandomLargerValue()
@@ -41,16 +41,16 @@ class AdditionProblemFactory (
     private fun getRandomSmallerValue(larger: Int) =
         random.nextInt(SMALLER_VALUE_FROM, larger)
 
-    private companion object{
+    private companion object {
         private const val LARGER_VALUE_UNTIL: Int = 50
         private const val LARGER_VALUE_FROM: Int = 12
         private const val SMALLER_VALUE_FROM: Int = 7
     }
 }
 
-class SubtractionProblemFactory (
+class SubtractionProblemFactory(
     private val random: Random = Random.Default
-): ProblemFactory {
+) : ProblemFactory {
 
     override fun createRandomProblem(): Problem {
         val larger = getRandomLargerValue()
@@ -64,7 +64,7 @@ class SubtractionProblemFactory (
     private fun getRandomSmallerValue(larger: Int) =
         random.nextInt(SMALLER_VALUE_FROM, larger)
 
-    private companion object{
+    private companion object {
         private const val LARGER_VALUE_UNTIL: Int = 50
         private const val LARGER_VALUE_FROM: Int = 12
         private const val SMALLER_VALUE_FROM: Int = 7

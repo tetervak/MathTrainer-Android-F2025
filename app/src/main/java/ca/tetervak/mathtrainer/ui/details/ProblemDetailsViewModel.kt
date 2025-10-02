@@ -23,14 +23,14 @@ import javax.inject.Inject
 class ProblemDetailsViewModel @Inject constructor(
     private val repository: UserProblemRepository,
     savedStateHandle: SavedStateHandle
-): ViewModel() {
+) : ViewModel() {
 
     private val problemId: Int = checkNotNull(savedStateHandle["problemId"])
 
     val uiState: StateFlow<ProblemDetailsUiState> =
         repository.getUserProblemFlowById(problemId).filterNotNull()
             .onEach { userProblem ->
-                if(userProblem.status == UserProblem.Status.RIGHT_ANSWER){
+                if (userProblem.status == UserProblem.Status.RIGHT_ANSWER) {
                     answerInput = checkNotNull(userProblem.userAnswer)
                 }
             }
@@ -39,18 +39,18 @@ class ProblemDetailsViewModel @Inject constructor(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5000),
                 initialValue = ProblemDetailsUiState(
-                    userProblem = UserProblem(problem = AdditionProblem(1,2))
+                    userProblem = UserProblem(problem = AdditionProblem(1, 2))
                 )
             )
 
     var answerInput by mutableStateOf("")
         private set
 
-    fun updateAnswerInput(input: String){
+    fun updateAnswerInput(input: String) {
         answerInput = input
     }
 
-    fun onSubmit(){
+    fun onSubmit() {
         viewModelScope.launch {
             repository.updateUserProblemById(id = problemId, userAnswer = answerInput)
             answerInput = ""
