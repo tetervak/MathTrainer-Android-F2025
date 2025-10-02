@@ -7,37 +7,52 @@ import ca.tetervak.mathtrainer.domain.DivisionProblem
 import ca.tetervak.mathtrainer.domain.MultiplicationProblem
 import ca.tetervak.mathtrainer.domain.SubtractionProblem
 import ca.tetervak.mathtrainer.domain.UserProblem
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class LocalUserProblemRepository @Inject constructor(
-    val dao: LocalProblemDao
+@OptIn(DelicateCoroutinesApi::class)
+class LocalUserProblemRepository(
+    val dao: LocalProblemDao,
+    private val externalScope: CoroutineScope,
+    private val dispatcher: CoroutineDispatcher
 ) : UserProblemRepository {
+
+    @Inject
+    constructor(dao: LocalProblemDao) : this(
+        dao = dao,
+        externalScope = GlobalScope,
+        dispatcher = Dispatchers.IO
+    )
 
     override fun getAllUserProblemsFlow(): Flow<List<UserProblem>> =
         dao.getAllLocalProblemsFlow()
             .map { list -> list.map { localProblem -> localProblem.toUserProblem() } }
-            .flowOn(context = Dispatchers.IO)
+            .flowOn(context = dispatcher)
 
     override fun getUserProblemFlowById(id: Int): Flow<UserProblem?> =
         dao.getLocalProblemFlowById(id)
             .map { localProblem -> localProblem?.toUserProblem() }
-            .flowOn(context = Dispatchers.IO)
+            .flowOn(context = dispatcher)
 
 
     override suspend fun updateUserProblemById(
         id: Int,
         userAnswer: String?
-    ) = withContext(context = Dispatchers.IO) {
+    ) = withContext(context = dispatcher) {
         dao.updateLocalProblemById(id, userAnswer)
     }
 
     override suspend fun resetUserProblemById(id: Int) =
-        withContext(context = Dispatchers.IO) {
+        withContext(context = dispatcher) {
             dao.updateLocalProblemById(
                 id = id,
                 userAnswer = null
@@ -45,16 +60,17 @@ class LocalUserProblemRepository @Inject constructor(
         }
 
     override suspend fun insertUserProblems(list: List<UserProblem>) =
-        withContext(context = Dispatchers.IO) {
+        withContext(context = dispatcher) {
             dao.insertLocalProblems(list = list.map { userProblem -> userProblem.toLocalProblem() })
         }
 
-    override suspend fun emptyAndInsertUserProblems(list: List<UserProblem>) =
-        withContext(context = Dispatchers.IO) {
+    override suspend fun emptyAndInsertUserProblems(list: List<UserProblem>) {
+        externalScope.launch(context = dispatcher) {
             dao.emptyAndInsertLocalProblems(
                 list = list.map { userProblem -> userProblem.toLocalProblem() }
             )
         }
+    }
 
     override suspend fun getUserProblemCount(): Int =
         withContext(context = Dispatchers.IO) {
