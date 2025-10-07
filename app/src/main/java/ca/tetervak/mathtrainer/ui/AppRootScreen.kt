@@ -15,6 +15,7 @@
  */
 package ca.tetervak.mathtrainer.ui
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,12 +26,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import ca.tetervak.mathtrainer.ui.details.ProblemDetailsScreen
+import ca.tetervak.mathtrainer.ui.details.ProblemDetailsScreenPhoneHorizontal
+import ca.tetervak.mathtrainer.ui.details.ProblemDetailsScreenPhoneVertical
 import ca.tetervak.mathtrainer.ui.home.HomeScreen
 import ca.tetervak.mathtrainer.ui.list.ProblemListScreen
 
 @Composable
-fun AppRootScreen() {
+fun AppRootScreen(screenVariant: ScreenVariant) {
 
     var showAboutDialog: Boolean by rememberSaveable {
         mutableStateOf(false)
@@ -62,14 +64,24 @@ fun AppRootScreen() {
             arguments = listOf(navArgument("problemId") { type = NavType.IntType })
         ) {
             //Text("Problem ${it.arguments?.getInt("problemId")}")
-            ProblemDetailsScreen(
-                onHelpClick = { showAboutDialog = true },
-                onHomeClick = { navController.navigate("home") },
-                onListClick = { navController.navigate("list-problems") },
-                onProblemNavClick = { problemId ->
-                    navController.navigate("problem/$problemId")
-                }
-            )
+            when (screenVariant) {
+                ScreenVariant.PHONE_HORIZONTAL -> ProblemDetailsScreenPhoneHorizontal(
+                    onHelpClick = { showAboutDialog = true },
+                    onHomeClick = { navController.navigate("home") },
+                    onListClick = { navController.navigate("list-problems") },
+                    onProblemNavClick = { problemId ->
+                        navController.navigate("problem/$problemId")
+                    }
+                )
+                else -> ProblemDetailsScreenPhoneVertical(
+                    onHelpClick = { showAboutDialog = true },
+                    onHomeClick = { navController.navigate("home") },
+                    onListClick = { navController.navigate("list-problems") },
+                    onProblemNavClick = { problemId ->
+                        navController.navigate("problem/$problemId")
+                    }
+                )
+            }
         }
     }
 

@@ -1,13 +1,17 @@
 package ca.tetervak.mathtrainer.ui.details
 
 import android.app.Activity
+import android.util.Log
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
@@ -32,6 +36,8 @@ import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationRail
+import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -39,6 +45,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -64,9 +71,8 @@ import ca.tetervak.mathtrainer.ui.score.Score
 import ca.tetervak.mathtrainer.ui.score.ScoreViewModel
 import ca.tetervak.mathtrainer.ui.theme.MathTrainerTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProblemDetailsScreen(
+fun ProblemDetailsScreenPhoneVertical(
     onHelpClick: () -> Unit,
     onHomeClick: () -> Unit,
     onListClick: () -> Unit,
@@ -80,7 +86,37 @@ fun ProblemDetailsScreen(
     val scoreViewModel: ScoreViewModel = hiltViewModel()
     val scoreUiState by scoreViewModel.uiState.collectAsState()
 
-    ProblemDetailsScreenBody(
+    ProblemDetailsScreenPhoneVerticalBody(
+        userProblem = userProblem,
+        score = scoreUiState.score,
+        numberOfProblems = scoreUiState.numberOfProblems,
+        userAnswerInput = detailsViewModel.answerInput,
+        onChangeUserAnswerInput = detailsViewModel::updateAnswerInput,
+        onSubmit = detailsViewModel::onSubmit,
+        onHelpClick = onHelpClick,
+        onHomeClick = onHomeClick,
+        onListClick = onListClick,
+        onProblemNavClick = onProblemNavClick
+    )
+
+}
+
+@Composable
+fun ProblemDetailsScreenPhoneHorizontal(
+    onHelpClick: () -> Unit,
+    onHomeClick: () -> Unit,
+    onListClick: () -> Unit,
+    onProblemNavClick: (Int) -> Unit,
+) {
+
+    val detailsViewModel: ProblemDetailsViewModel = hiltViewModel()
+    val detailsUiState: ProblemDetailsUiState by detailsViewModel.uiState.collectAsState()
+    val userProblem = detailsUiState.userProblem
+
+    val scoreViewModel: ScoreViewModel = hiltViewModel()
+    val scoreUiState by scoreViewModel.uiState.collectAsState()
+
+    ProblemDetailsScreenPhoneHorizontalBody(
         userProblem = userProblem,
         score = scoreUiState.score,
         numberOfProblems = scoreUiState.numberOfProblems,
@@ -97,7 +133,7 @@ fun ProblemDetailsScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProblemDetailsScreenBody(
+fun ProblemDetailsScreenPhoneVerticalBody(
     userProblem: UserProblem,
     score: Int,
     numberOfProblems: Int,
@@ -153,74 +189,58 @@ fun ProblemDetailsScreenBody(
                     .wrapContentHeight()
                     .padding(16.dp)
             )
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = onSubmit
-                ) {
-                    Text(
-                        modifier = Modifier.padding(end = 8.dp),
-                        text = stringResource(R.string.submit),
-                        fontSize = 16.sp
-                    )
-                    Icon(
-                        imageVector = Icons.Default.Check,
-                        contentDescription = null
-                    )
-                }
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.Bottom
-                ) {
-                    OutlinedButton(
-                        onClick = { onProblemNavClick(userProblem.id - 1) },
-                        modifier = Modifier.weight(1f),
-                        enabled = userProblem.id > 1
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowLeft,
-                            contentDescription = null
-                        )
-                        Text(
-                            text = stringResource(R.string.previous),
-                            fontSize = 16.sp
-                        )
-                    }
-                    OutlinedButton(
-                        onClick = { onProblemNavClick(userProblem.id + 1) },
-                        modifier = Modifier.weight(1f),
-                        enabled = userProblem.id < numberOfProblems
-                    ) {
-                        Text(
-                            text = stringResource(R.string.next),
-                            fontSize = 16.sp
-                        )
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowRight,
-                            contentDescription = null
-                        )
-                    }
-                }
-
-            }
-            Score(
-                score = score,
+            DetailsButtonsLayout(
+                userProblem=userProblem,
                 numberOfProblems = numberOfProblems,
-                modifier = Modifier.padding(20.dp)
+                score = score,
+                onSubmit = onSubmit,
+                onProblemNavClick = onProblemNavClick
             )
         }
     }
 }
+
+@Composable
+fun DetailsLeftRail(
+    onHomeClick: () -> Unit,
+    onListClick: () -> Unit,
+    onFirstClick: () -> Unit
+) {
+    NavigationRail(
+    ) {
+        NavigationRailItem(
+            selected = false,
+            onClick = onFirstClick,
+            icon = {
+                Icon(
+                    imageVector = Icons.Filled.Start,
+                    contentDescription = stringResource(R.string.first)
+                )
+            }
+        )
+        NavigationRailItem(
+            selected = false,
+            onClick = onListClick,
+            icon = {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.List,
+                    contentDescription = stringResource(R.string.list)
+                )
+            }
+        )
+        NavigationRailItem(
+            selected = false,
+            onClick = onHomeClick,
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.Home,
+                    contentDescription = stringResource(R.string.home)
+                )
+            }
+        )
+    }
+}
+
 
 @Composable
 fun DetailsBottomBar(
@@ -280,9 +300,9 @@ fun ProblemLayout(
         elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
     ) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(8.dp)
         ) {
             Text(
                 modifier = Modifier
@@ -385,11 +405,159 @@ fun ProblemLayout(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ProblemDetailsScreenPhoneHorizontalBody(
+    userProblem: UserProblem,
+    score: Int,
+    numberOfProblems: Int,
+    userAnswerInput: String,
+    onChangeUserAnswerInput: (String) -> Unit,
+    onSubmit: () -> Unit,
+    onHelpClick: () -> Unit,
+    onHomeClick: () -> Unit,
+    onListClick: () -> Unit,
+    onProblemNavClick: (Int) -> Unit
+) {
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    Scaffold(
+        topBar = {
+            QuizTopBar(
+                title = stringResource(R.string.problem_number, userProblem.id),
+                onHelpButtonClick = onHelpClick,
+                scrollBehavior = scrollBehavior
+            )
+        },
+        modifier = Modifier
+            .fillMaxSize()
+            .nestedScroll(scrollBehavior.nestedScrollConnection)
+    ) { innerPadding ->
+        Log.d("DetailsScreen", "ProblemDetailsScreenPhoneHorizontalBody: called")
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                //.verticalScroll(rememberScrollState())
+                //.padding(16.dp)
+                .height(IntrinsicSize.Max),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            DetailsLeftRail(
+                onHomeClick = onHomeClick,
+                onListClick = onListClick,
+                onFirstClick = { onProblemNavClick(1) }
+            )
+            VerticalDivider( thickness = 1.dp, modifier = Modifier.fillMaxHeight())
+            ProblemLayout(
+                onUserAnswerChanged = onChangeUserAnswerInput,
+                problemCount = userProblem.id,
+                numberOfProblems = numberOfProblems,
+                userAnswer = userAnswerInput,
+                onKeyboardDone = onSubmit,
+                currentProblemText = userProblem.problem.text,
+                currentProblemStatus = userProblem.status,
+                modifier = Modifier
+                    .weight(1f)
+                    .wrapContentHeight()
+                    .padding(start = 16.dp)
+            )
+            DetailsButtonsLayout(
+                userProblem=userProblem,
+                numberOfProblems = numberOfProblems,
+                score = score,
+                onSubmit = onSubmit,
+                onProblemNavClick = onProblemNavClick,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 8.dp, end = 16.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun DetailsButtonsLayout(
+    userProblem: UserProblem,
+    numberOfProblems: Int,
+    score: Int,
+    onSubmit: () -> Unit,
+    onProblemNavClick: (Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        Button(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = onSubmit
+        ) {
+            Text(
+                modifier = Modifier.padding(end = 8.dp),
+                text = stringResource(R.string.submit),
+                fontSize = 16.sp
+            )
+            Icon(
+                imageVector = Icons.Default.Check,
+                contentDescription = null
+            )
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.Bottom
+        ) {
+            OutlinedButton(
+                onClick = { onProblemNavClick(userProblem.id - 1) },
+                modifier = Modifier.weight(1f),
+                enabled = userProblem.id > 1
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowLeft,
+                    contentDescription = null
+                )
+                Text(
+                    text = stringResource(R.string.previous),
+                    fontSize = 16.sp
+                )
+            }
+            OutlinedButton(
+                onClick = { onProblemNavClick(userProblem.id + 1) },
+                modifier = Modifier.weight(1f),
+                enabled = userProblem.id < numberOfProblems
+            ) {
+                Text(
+                    text = stringResource(R.string.next),
+                    fontSize = 16.sp
+                )
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowRight,
+                    contentDescription = null
+                )
+            }
+        }
+
+        Score(
+            score = score,
+            numberOfProblems = numberOfProblems,
+            modifier = Modifier.padding(20.dp)
+        )
+
+    }
+}
+
+
 /*
  * Creates and shows an AlertDialog with final score.
  */
 @Composable
-private fun FinalScoreDialog(
+fun FinalScoreDialog(
     score: Int,
     onPlayAgain: () -> Unit,
     modifier: Modifier = Modifier
@@ -424,9 +592,28 @@ private fun FinalScoreDialog(
 
 @Preview(showBackground = true)
 @Composable
-fun GameScreenPreview() {
+fun ProblemDetailsScreenPhoneVerticalBodyPreview() {
     MathTrainerTheme {
-        ProblemDetailsScreenBody(
+        ProblemDetailsScreenPhoneVerticalBody(
+            userProblem = UserProblem(AdditionProblem(1, 2), id = 3),
+            score = 2,
+            numberOfProblems = 5,
+            userAnswerInput = "",
+            onChangeUserAnswerInput = {},
+            onSubmit = {},
+            onHelpClick = {},
+            onHomeClick = {},
+            onListClick = {},
+            onProblemNavClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 850, heightDp = 450)
+@Composable
+fun ProblemDetailsScreenPhoneHorizontalBodyPreview() {
+    MathTrainerTheme {
+        ProblemDetailsScreenPhoneHorizontalBody(
             userProblem = UserProblem(AdditionProblem(1, 2), id = 3),
             score = 2,
             numberOfProblems = 5,
