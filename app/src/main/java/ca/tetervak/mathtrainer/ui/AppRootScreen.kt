@@ -15,7 +15,6 @@
  */
 package ca.tetervak.mathtrainer.ui
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,7 +28,8 @@ import androidx.navigation.navArgument
 import ca.tetervak.mathtrainer.ui.details.ProblemDetailsScreenPhoneHorizontal
 import ca.tetervak.mathtrainer.ui.details.ProblemDetailsScreenPhoneVertical
 import ca.tetervak.mathtrainer.ui.home.HomeScreen
-import ca.tetervak.mathtrainer.ui.list.ProblemListScreen
+import ca.tetervak.mathtrainer.ui.list.ProblemListScreenPhoneHorizontal
+import ca.tetervak.mathtrainer.ui.list.ProblemListScreenPhoneVertical
 
 @Composable
 fun AppRootScreen(screenVariant: ScreenVariant) {
@@ -51,13 +51,23 @@ fun AppRootScreen(screenVariant: ScreenVariant) {
             )
         }
         composable(route = "list-problems") {
-            ProblemListScreen(
-                onProblemClick = { problemId ->
-                    navController.navigate("problem/$problemId")
-                },
-                onHomeClick = { navController.navigate("home") },
-                onHelpClick = { showAboutDialog = true }
-            )
+            when(screenVariant) {
+                ScreenVariant.PHONE_VERTICAL -> ProblemListScreenPhoneVertical(
+                    onProblemClick = { problemId ->
+                        navController.navigate("problem/$problemId")
+                    },
+                    onHomeClick = { navController.navigate("home") },
+                    onHelpClick = { showAboutDialog = true }
+                )
+                else-> ProblemListScreenPhoneHorizontal(
+                    onProblemClick = { problemId ->
+                        navController.navigate("problem/$problemId")
+                    },
+                    onHomeClick = { navController.navigate("home") },
+                    onHelpClick = { showAboutDialog = true }
+                )
+            }
+
         }
         composable(
             route = "problem/{problemId}",

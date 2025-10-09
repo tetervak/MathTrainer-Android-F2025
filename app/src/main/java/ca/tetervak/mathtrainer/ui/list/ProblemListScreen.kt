@@ -8,6 +8,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -42,9 +45,8 @@ import ca.tetervak.mathtrainer.ui.score.Score
 import ca.tetervak.mathtrainer.ui.score.ScoreViewModel
 import ca.tetervak.mathtrainer.ui.theme.MathTrainerTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProblemListScreen(
+fun ProblemListScreenPhoneVertical(
     onProblemClick: (Int) -> Unit,
     onHomeClick: () -> Unit,
     onHelpClick: () -> Unit
@@ -56,7 +58,30 @@ fun ProblemListScreen(
     val scoreViewModel: ScoreViewModel = hiltViewModel()
     val scoreUiState by scoreViewModel.uiState.collectAsState()
 
-    ProblemListScreenBody(
+    ProblemListScreenBodyPhoneVertical(
+        list = list,
+        numberOfProblems = scoreUiState.numberOfProblems,
+        score = scoreUiState.score,
+        onProblemClick = onProblemClick,
+        onHomeClick = onHomeClick,
+        onHelpClick = onHelpClick
+    )
+}
+
+@Composable
+fun ProblemListScreenPhoneHorizontal(
+    onProblemClick: (Int) -> Unit,
+    onHomeClick: () -> Unit,
+    onHelpClick: () -> Unit
+) {
+    val viewModel: ProblemListViewModel = hiltViewModel()
+    val uiState by viewModel.uiState.collectAsState()
+    val list: List<UserProblem> = uiState.problemList
+
+    val scoreViewModel: ScoreViewModel = hiltViewModel()
+    val scoreUiState by scoreViewModel.uiState.collectAsState()
+
+    ProblemListScreenBodyPhoneHorizontal(
         list = list,
         numberOfProblems = scoreUiState.numberOfProblems,
         score = scoreUiState.score,
@@ -68,7 +93,81 @@ fun ProblemListScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProblemListScreenBody(
+fun ProblemListScreenBodyPhoneHorizontal(
+    list: List<UserProblem>,
+    numberOfProblems: Int,
+    score: Int,
+    onProblemClick: (Int) -> Unit,
+    onHomeClick: () -> Unit,
+    onHelpClick: () -> Unit
+) {
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    Scaffold(
+        topBar = {
+            QuizTopBar(
+                title = stringResource(R.string.problem_list),
+                onHelpButtonClick = onHelpClick,
+                scrollBehavior = scrollBehavior
+            )
+        },
+        modifier = Modifier
+            .fillMaxSize()
+            .nestedScroll(scrollBehavior.nestedScrollConnection)
+    ) { innerPadding ->
+
+        Column(
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            LazyVerticalGrid (
+                columns = GridCells.Fixed(count = 2),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                contentPadding = PaddingValues(vertical = 16.dp, horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.weight(1f)
+            ) {
+                items(items = list) { userProblem ->
+                    ProblemListItem(
+                        onClick = { onProblemClick(userProblem.id) },
+                        userProblem = userProblem
+                    )
+                }
+            }
+            HorizontalDivider()
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                OutlinedButton(
+                    modifier = Modifier
+                        //.fillMaxWidth()
+                        .padding(16.dp),
+                    onClick = onHomeClick,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Home,
+                        contentDescription = stringResource(R.string.home)
+                    )
+                    Text(
+                        modifier = Modifier.padding(start = 8.dp),
+                        text = stringResource(R.string.home)
+                    )
+                }
+                Score(
+                    score = score,
+                    numberOfProblems = numberOfProblems,
+                    modifier = Modifier.padding(20.dp)
+                )
+            }
+        }
+    }
+}
+
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ProblemListScreenBodyPhoneVertical(
     list: List<UserProblem>,
     numberOfProblems: Int,
     score: Int,
@@ -111,14 +210,8 @@ fun ProblemListScreenBody(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Score(
-                    score = score,
-                    numberOfProblems = numberOfProblems,
-                    modifier = Modifier.padding(20.dp)
-                )
                 OutlinedButton(
                     modifier = Modifier
-                        .fillMaxWidth()
                         .padding(16.dp),
                     onClick = onHomeClick,
                 ) {
@@ -131,6 +224,11 @@ fun ProblemListScreenBody(
                         text = stringResource(R.string.home)
                     )
                 }
+                Score(
+                    score = score,
+                    numberOfProblems = numberOfProblems,
+                    modifier = Modifier.padding(20.dp)
+                )
             }
         }
     }
@@ -214,7 +312,7 @@ fun ProblemListItemPreview() {
 @Composable
 fun ProblemListScreenBodyPreview() {
     MathTrainerTheme {
-        ProblemListScreenBody(
+        ProblemListScreenBodyPhoneVertical(
             list = List(5) {
                 UserProblem(problem = AdditionProblem(1, 2), id = it + 1)
             },
