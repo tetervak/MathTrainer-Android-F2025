@@ -7,13 +7,17 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -60,6 +64,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -67,6 +72,8 @@ import ca.tetervak.mathtrainer.R
 import ca.tetervak.mathtrainer.domain.AdditionProblem
 import ca.tetervak.mathtrainer.domain.UserProblem
 import ca.tetervak.mathtrainer.ui.QuizTopBar
+import ca.tetervak.mathtrainer.ui.list.ProblemListItem
+import ca.tetervak.mathtrainer.ui.list.ProblemListViewModel
 import ca.tetervak.mathtrainer.ui.score.Score
 import ca.tetervak.mathtrainer.ui.score.ScoreViewModel
 import ca.tetervak.mathtrainer.ui.theme.MathTrainerTheme
@@ -118,6 +125,40 @@ fun ProblemDetailsScreenPhoneHorizontal(
 
     ProblemDetailsScreenPhoneHorizontalBody(
         userProblem = userProblem,
+        score = scoreUiState.score,
+        numberOfProblems = scoreUiState.numberOfProblems,
+        userAnswerInput = detailsViewModel.answerInput,
+        onChangeUserAnswerInput = detailsViewModel::updateAnswerInput,
+        onSubmit = detailsViewModel::onSubmit,
+        onHelpClick = onHelpClick,
+        onHomeClick = onHomeClick,
+        onListClick = onListClick,
+        onProblemNavClick = onProblemNavClick
+    )
+
+}
+
+@Composable
+fun ProblemDetailsScreenTabletHorizontal(
+    onHelpClick: () -> Unit,
+    onHomeClick: () -> Unit,
+    onListClick: () -> Unit,
+    onProblemNavClick: (Int) -> Unit,
+) {
+    val listViewModel: ProblemListViewModel = hiltViewModel()
+    val uiState by listViewModel.uiState.collectAsState()
+    val list: List<UserProblem> = uiState.problemList
+
+    val detailsViewModel: ProblemDetailsViewModel = hiltViewModel()
+    val detailsUiState: ProblemDetailsUiState by detailsViewModel.uiState.collectAsState()
+    val userProblem = detailsUiState.userProblem
+
+    val scoreViewModel: ScoreViewModel = hiltViewModel()
+    val scoreUiState by scoreViewModel.uiState.collectAsState()
+
+    ProblemDetailsScreenTabletHorizontalBody(
+        userProblem = userProblem,
+        problemList = list,
         score = scoreUiState.score,
         numberOfProblems = scoreUiState.numberOfProblems,
         userAnswerInput = detailsViewModel.answerInput,
@@ -419,7 +460,7 @@ fun ProblemDetailsScreenPhoneHorizontalBody(
     onListClick: () -> Unit,
     onProblemNavClick: (Int) -> Unit
 ) {
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     Scaffold(
         topBar = {
             QuizTopBar(
@@ -436,9 +477,11 @@ fun ProblemDetailsScreenPhoneHorizontalBody(
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
-                //.verticalScroll(rememberScrollState())
-                //.padding(16.dp)
+                .padding(
+                    top = innerPadding.calculateTopPadding(),
+                    end = innerPadding.calculateEndPadding(LayoutDirection.Ltr)
+                )
+                .verticalScroll(rememberScrollState())
                 .height(IntrinsicSize.Max),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -551,6 +594,91 @@ fun DetailsButtonsLayout(
 
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ProblemDetailsScreenTabletHorizontalBody(
+    userProblem: UserProblem,
+    problemList: List<UserProblem>,
+    score: Int,
+    numberOfProblems: Int,
+    userAnswerInput: String,
+    onChangeUserAnswerInput: (String) -> Unit,
+    onSubmit: () -> Unit,
+    onHelpClick: () -> Unit,
+    onHomeClick: () -> Unit,
+    onListClick: () -> Unit,
+    onProblemNavClick: (Int) -> Unit
+) {
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    Scaffold(
+        topBar = {
+            QuizTopBar(
+                title = stringResource(R.string.problem_number, userProblem.id),
+                onHelpButtonClick = onHelpClick,
+                scrollBehavior = scrollBehavior
+            )
+        },
+        modifier = Modifier
+            .fillMaxSize()
+            .nestedScroll(scrollBehavior.nestedScrollConnection)
+    ) { innerPadding ->
+        Log.d("DetailsScreen", "ProblemDetailsScreenPhoneHorizontalBody: called")
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
+                //.verticalScroll(rememberScrollState())
+                //.padding(16.dp)
+                //.height(IntrinsicSize.Max),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            DetailsLeftRail(
+                onHomeClick = onHomeClick,
+                onListClick = onListClick,
+                onFirstClick = { onProblemNavClick(1) }
+            )
+            VerticalDivider( thickness = 1.dp, modifier = Modifier.fillMaxHeight())
+            LazyColumn(
+                contentPadding = PaddingValues(vertical = 16.dp, horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.weight(1f)
+            ) {
+                items(items = problemList) { userProblem ->
+                    ProblemListItem(
+                        onClick = { onProblemNavClick(userProblem.id) },
+                        userProblem = userProblem
+                    )
+                }
+            }
+            VerticalDivider( thickness = 1.dp, modifier = Modifier.fillMaxHeight())
+            Column(modifier = Modifier.weight(1f)){
+                ProblemLayout(
+                    onUserAnswerChanged = onChangeUserAnswerInput,
+                    problemCount = userProblem.id,
+                    numberOfProblems = numberOfProblems,
+                    userAnswer = userAnswerInput,
+                    onKeyboardDone = onSubmit,
+                    currentProblemText = userProblem.problem.text,
+                    currentProblemStatus = userProblem.status,
+                    modifier = Modifier
+                        .padding(16.dp)
+                )
+                DetailsButtonsLayout(
+                    userProblem=userProblem,
+                    numberOfProblems = numberOfProblems,
+                    score = score,
+                    onSubmit = onSubmit,
+                    onProblemNavClick = onProblemNavClick,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(16.dp)
+                )
+            }
+        }
+    }
+}
+
 
 
 /*

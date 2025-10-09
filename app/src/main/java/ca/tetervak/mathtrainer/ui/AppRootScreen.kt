@@ -27,6 +27,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import ca.tetervak.mathtrainer.ui.details.ProblemDetailsScreenPhoneHorizontal
 import ca.tetervak.mathtrainer.ui.details.ProblemDetailsScreenPhoneVertical
+import ca.tetervak.mathtrainer.ui.details.ProblemDetailsScreenTabletHorizontal
 import ca.tetervak.mathtrainer.ui.home.HomeScreen
 import ca.tetervak.mathtrainer.ui.list.ProblemListScreenPhoneHorizontal
 import ca.tetervak.mathtrainer.ui.list.ProblemListScreenPhoneVertical
@@ -76,6 +77,14 @@ fun AppRootScreen(screenVariant: ScreenVariant) {
             //Text("Problem ${it.arguments?.getInt("problemId")}")
             when (screenVariant) {
                 ScreenVariant.PHONE_HORIZONTAL -> ProblemDetailsScreenPhoneHorizontal(
+                    onHelpClick = { showAboutDialog = true },
+                    onHomeClick = { navController.navigate("home") },
+                    onListClick = { navController.navigate("list-problems") },
+                    onProblemNavClick = { problemId ->
+                        navController.navigate("problem/$problemId")
+                    }
+                )
+                ScreenVariant.TABLET_HORIZONTAL -> ProblemDetailsScreenTabletHorizontal(
                     onHelpClick = { showAboutDialog = true },
                     onHomeClick = { navController.navigate("home") },
                     onListClick = { navController.navigate("list-problems") },
