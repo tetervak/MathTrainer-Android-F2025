@@ -1,7 +1,7 @@
 package ca.tetervak.mathtrainer.domain
 
 class UserProblem(
-    val problem: Problem,
+    val problem: AlgebraProblem,
     val userAnswer: String? = null,
     val id: Int = 0,
 ) {
@@ -11,9 +11,9 @@ class UserProblem(
 
     val status: Status = if (userAnswer != null) {
         when (problem.checkAnswer(userAnswer = userAnswer)) {
-            Problem.Grade.RIGHT_ANSWER -> Status.RIGHT_ANSWER
-            Problem.Grade.WRONG_ANSWER -> Status.WRONG_ANSWER
-            Problem.Grade.INVALID_INPUT -> Status.INVALID_INPUT
+            AlgebraProblem.Grade.RIGHT_ANSWER -> Status.RIGHT_ANSWER
+            AlgebraProblem.Grade.WRONG_ANSWER -> Status.WRONG_ANSWER
+            AlgebraProblem.Grade.INVALID_INPUT -> Status.INVALID_INPUT
         }
     } else {
         Status.NOT_ANSWERED

@@ -1,6 +1,5 @@
 package ca.tetervak.mathtrainer.data
 
-import ca.tetervak.mathtrainer.data.factory.ProblemFactory
 import ca.tetervak.mathtrainer.data.factory.SubtractionProblemFactory
 import org.junit.After
 import org.junit.Before
@@ -10,7 +9,7 @@ import kotlin.random.Random
 class SubtractionProblemFactoryTest {
 
     private val random: Random = Random(2)
-    private val factory: ProblemFactory = SubtractionProblemFactory(random)
+    private val factory: SubtractionProblemFactory = SubtractionProblemFactory(random)
 
     @Before
     fun setUp() {

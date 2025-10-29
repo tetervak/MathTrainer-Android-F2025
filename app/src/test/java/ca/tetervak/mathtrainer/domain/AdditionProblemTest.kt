@@ -23,27 +23,27 @@ class AdditionProblemTest {
         println("problem.answer = ${problem.answer}")
 
         assertEquals(
-            Problem.Grade.RIGHT_ANSWER,
+            AlgebraProblem.Grade.RIGHT_ANSWER,
             problem.checkAnswer("3"))
 
         assertEquals(
-            Problem.Grade.WRONG_ANSWER,
+            AlgebraProblem.Grade.WRONG_ANSWER,
             problem.checkAnswer("4"))
 
         assertEquals(
-            Problem.Grade.INVALID_INPUT,
+            AlgebraProblem.Grade.INVALID_INPUT,
             problem.checkAnswer("whatever"))
 
         assertEquals(
-            Problem.Grade.RIGHT_ANSWER,
+            AlgebraProblem.Grade.RIGHT_ANSWER,
             problem.checkAnswer("3.0"))
 
         assertEquals(
-            Problem.Grade.WRONG_ANSWER,
+            AlgebraProblem.Grade.WRONG_ANSWER,
             problem.checkAnswer("3.1"))
 
         assertEquals(
-            Problem.Grade.WRONG_ANSWER,
+            AlgebraProblem.Grade.WRONG_ANSWER,
             problem.checkAnswer("2.9"))
     }
 
