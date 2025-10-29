@@ -2,20 +2,25 @@ package ca.tetervak.mathtrainer.domain
 
 import kotlin.math.abs
 
-sealed class AlgebraProblem : Problem {
+sealed class AlgebraProblem {
 
-    protected abstract val answer: Int
+    abstract val text: String
+    abstract val answer: Int
 
-    override fun checkAnswer(userAnswer: String): Problem.Grade =
+    enum class Grade {
+        RIGHT_ANSWER, WRONG_ANSWER, INVALID_INPUT
+    }
+
+    fun checkAnswer(userAnswer: String): Grade =
         try {
             val entered: Double = userAnswer.toDouble()
             if (abs(answer - entered) <= TOLERANCE) {
-                Problem.Grade.RIGHT_ANSWER
+                Grade.RIGHT_ANSWER
             } else {
-                Problem.Grade.WRONG_ANSWER
+                Grade.WRONG_ANSWER
             }
         } catch (_: NumberFormatException) {
-            Problem.Grade.INVALID_INPUT
+            Grade.INVALID_INPUT
         }
 
     companion object {
@@ -24,21 +29,21 @@ sealed class AlgebraProblem : Problem {
 }
 
 data class AdditionProblem(val a: Int, val b: Int) : AlgebraProblem() {
-    public override val answer: Int = a + b
+    override val answer: Int = a + b
     override val text: String = "$a + $b = ?"
 }
 
 data class SubtractionProblem(val a: Int, val b: Int) : AlgebraProblem() {
-    public override val answer: Int = a - b
+    override val answer: Int = a - b
     override val text: String = "$a - $b = ?"
 }
 
 data class MultiplicationProblem(val a: Int, val b: Int) : AlgebraProblem() {
-    public override val answer: Int = a * b
+    override val answer: Int = a * b
     override val text: String = "$a x $b = ?"
 }
 
 data class DivisionProblem(val a: Int, val b: Int) : AlgebraProblem() {
-    public override val answer: Int = a / b
+    override val answer: Int = a / b
     override val text: String = "$a / $b = ?"
 }

@@ -1,22 +1,21 @@
 package ca.tetervak.mathtrainer.data.factory
 
 import ca.tetervak.mathtrainer.domain.AdditionProblem
+import ca.tetervak.mathtrainer.domain.AlgebraProblem
 import ca.tetervak.mathtrainer.domain.DivisionProblem
 import ca.tetervak.mathtrainer.domain.MultiplicationProblem
-import ca.tetervak.mathtrainer.domain.Problem
 import ca.tetervak.mathtrainer.domain.SubtractionProblem
 import kotlin.random.Random
 
 class AlgebraProblemFactory(
     private val random: Random = Random.Default
-) : ProblemFactory {
-
+){
     private val additionProblemFactory = AdditionProblemFactory(random)
     private val subtractionProblemFactory = SubtractionProblemFactory(random)
     private val multiplicationProblemFactory = MultiplicationProblemFactory(random)
     private val divisionProblemFactory = DivisionProblemFactory(random)
 
-    override fun createRandomProblem(): Problem =
+    fun createRandomProblem(): AlgebraProblem =
         when (random.nextInt(1, 5)) {
             1 -> additionProblemFactory.createRandomProblem()
             2 -> subtractionProblemFactory.createRandomProblem()
@@ -27,9 +26,9 @@ class AlgebraProblemFactory(
 
 class AdditionProblemFactory(
     private val random: Random = Random.Default
-) : ProblemFactory {
+) {
 
-    override fun createRandomProblem(): Problem {
+    fun createRandomProblem(): AdditionProblem {
         val larger = getRandomLargerValue()
         val smaller = getRandomSmallerValue(larger)
         return AdditionProblem(a = larger - smaller, b = smaller)
@@ -50,9 +49,9 @@ class AdditionProblemFactory(
 
 class SubtractionProblemFactory(
     private val random: Random = Random.Default
-) : ProblemFactory {
+){
 
-    override fun createRandomProblem(): Problem {
+    fun createRandomProblem(): SubtractionProblem {
         val larger = getRandomLargerValue()
         val smaller = getRandomSmallerValue(larger)
         return SubtractionProblem(a = larger, b = smaller)
@@ -73,9 +72,9 @@ class SubtractionProblemFactory(
 
 class MultiplicationProblemFactory(
     private val random: Random = Random.Default
-) : ProblemFactory {
+){
 
-    override fun createRandomProblem(): Problem {
+    fun createRandomProblem(): MultiplicationProblem {
         val first = getRandomFirstValue()
         val second = getRandomSecondValue()
         return if (random.nextBoolean())
@@ -102,9 +101,9 @@ class MultiplicationProblemFactory(
 
 class DivisionProblemFactory(
     private val random: Random = Random.Default
-) : ProblemFactory {
+){
 
-    override fun createRandomProblem(): Problem {
+    fun createRandomProblem(): DivisionProblem {
         val first = getRandomFirstValue()
         val second = getRandomSecondValue()
         return if (random.nextBoolean())
@@ -128,4 +127,3 @@ class DivisionProblemFactory(
         private const val SECOND_VALUE_UNTIL: Int = 11
     }
 }
-

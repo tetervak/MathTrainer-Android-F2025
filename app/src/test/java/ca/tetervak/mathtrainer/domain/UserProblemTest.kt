@@ -7,7 +7,7 @@ import org.junit.Test
 
 class UserProblemTest {
 
-    val problem: Problem = AdditionProblem(1,2)
+    val problem: AdditionProblem = AdditionProblem(1,2)
     val userProblem: UserProblem = UserProblem(problem)
 
     @Before
@@ -31,29 +31,29 @@ class UserProblemTest {
 
         println("quizProblem.problem = ${userProblem.problem}")
 
-        userProblem.userAnswer = "3"
-        assertEquals("3", userProblem.userAnswer)
-        assertEquals(UserProblem.Status.RIGHT_ANSWER, userProblem.status)
+        val copy1 = userProblem.copy(userAnswer = "3")
+        assertEquals("3", copy1.userAnswer)
+        assertEquals(UserProblem.Status.RIGHT_ANSWER, copy1.status)
 
-        userProblem.userAnswer = "4"
-        assertEquals("4", userProblem.userAnswer)
-        assertEquals(UserProblem.Status.WRONG_ANSWER, userProblem.status)
+        val copy2 = userProblem.copy(userAnswer = "4")
+        assertEquals("4", copy2.userAnswer)
+        assertEquals(UserProblem.Status.WRONG_ANSWER, copy2.status)
 
-        userProblem.userAnswer = "whatever"
-        assertEquals("whatever", userProblem.userAnswer)
-        assertEquals(UserProblem.Status.INVALID_INPUT, userProblem.status)
+        val copy3 = userProblem.copy(userAnswer = "whatever")
+        assertEquals("whatever", copy3.userAnswer)
+        assertEquals(UserProblem.Status.INVALID_INPUT, copy3.status)
 
-        userProblem.userAnswer = "3.0"
-        assertEquals("3.0", userProblem.userAnswer)
-        assertEquals(UserProblem.Status.RIGHT_ANSWER, userProblem.status)
+        val copy4 = userProblem.copy(userAnswer = "3.0")
+        assertEquals("3.0", copy4.userAnswer)
+        assertEquals(UserProblem.Status.RIGHT_ANSWER, copy4.status)
 
-        userProblem.userAnswer = "3.1"
-        assertEquals("3.1", userProblem.userAnswer)
-        assertEquals(UserProblem.Status.WRONG_ANSWER, userProblem.status)
+        val copy5 = userProblem.copy(userAnswer = "3.1")
+        assertEquals("3.1", copy5.userAnswer)
+        assertEquals(UserProblem.Status.WRONG_ANSWER, copy5.status)
 
-        userProblem.userAnswer = "2.9"
-        assertEquals("2.9", userProblem.userAnswer)
-        assertEquals(UserProblem.Status.WRONG_ANSWER, userProblem.status)
+        val copy6 = userProblem.copy(userAnswer = "2.9")
+        assertEquals("2.9", copy6.userAnswer)
+        assertEquals(UserProblem.Status.WRONG_ANSWER, copy6.status)
 
     }
 
@@ -65,17 +65,6 @@ class UserProblemTest {
     @Test
     fun getText() {
         println("quizProblem.text = \"${userProblem.text}\"")
-    }
-
-    @Test
-    fun reset() {
-        userProblem.userAnswer = "3.0"
-        println("quizProblem = $userProblem")
-        userProblem.reset()
-        println("after reset:")
-        println("quizProblem = $userProblem")
-        assertEquals(null, userProblem.userAnswer)
-        assertEquals(UserProblem.Status.NOT_ANSWERED, userProblem.status)
     }
 
     @Test
