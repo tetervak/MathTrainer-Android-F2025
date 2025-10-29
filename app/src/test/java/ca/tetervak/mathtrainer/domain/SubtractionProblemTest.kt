@@ -25,27 +25,27 @@ class SubtractionProblemTest {
         println("problem.answer = ${problem.answer}")
 
         assertEquals(
-            Problem.Grade.RIGHT_ANSWER,
+            AlgebraProblem.Grade.RIGHT_ANSWER,
             problem.checkAnswer("2"))
 
         assertEquals(
-            Problem.Grade.WRONG_ANSWER,
+            AlgebraProblem.Grade.WRONG_ANSWER,
             problem.checkAnswer("4"))
 
         assertEquals(
-            Problem.Grade.INVALID_INPUT,
+            AlgebraProblem.Grade.INVALID_INPUT,
             problem.checkAnswer("whatever"))
 
         assertEquals(
-            Problem.Grade.RIGHT_ANSWER,
+            AlgebraProblem.Grade.RIGHT_ANSWER,
             problem.checkAnswer("2.0"))
 
         assertEquals(
-            Problem.Grade.WRONG_ANSWER,
+            AlgebraProblem.Grade.WRONG_ANSWER,
             problem.checkAnswer("2.1"))
 
         assertEquals(
-            Problem.Grade.WRONG_ANSWER,
+            AlgebraProblem.Grade.WRONG_ANSWER,
             problem.checkAnswer("1.9"))
     }
 

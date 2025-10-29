@@ -10,5 +10,5 @@ import dagger.hilt.components.SingletonComponent
 object FactoryModule {
 
     @Provides
-    fun provideProblemFactory(): ProblemFactory = AlgebraProblemFactory()
+    fun provideProblemFactory(): AlgebraProblemFactory = AlgebraProblemFactory()
 }

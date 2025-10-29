@@ -1,10 +1,10 @@
 package ca.tetervak.mathtrainer.domain
 
-import ca.tetervak.mathtrainer.data.factory.ProblemFactory
+import ca.tetervak.mathtrainer.data.factory.AlgebraProblemFactory
 import javax.inject.Inject
 
 class NewQuizUseCase @Inject constructor(
-    private val problemFactory: ProblemFactory
+    private val problemFactory: AlgebraProblemFactory
 ) {
     operator fun invoke(numberOfProblems: Int): List<UserProblem> {
         return List(size = numberOfProblems) { index ->

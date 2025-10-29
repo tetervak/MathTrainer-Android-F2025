@@ -126,6 +126,4 @@ fun UserProblem.toLocalProblem(): LocalProblem =
             b = this.problem.b,
             userAnswer = this.userAnswer
         )
-
-        else -> throw IllegalArgumentException("Invalid problem: $problem")
     }
