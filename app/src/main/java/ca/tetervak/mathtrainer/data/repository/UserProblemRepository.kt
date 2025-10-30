@@ -1,5 +1,6 @@
 package ca.tetervak.mathtrainer.data.repository
 
+import ca.tetervak.mathtrainer.domain.AlgebraProblem
 import ca.tetervak.mathtrainer.domain.UserProblem
 import kotlinx.coroutines.flow.Flow
 
@@ -16,6 +17,8 @@ interface UserProblemRepository {
     suspend fun insertUserProblems(list: List<UserProblem>)
 
     suspend fun emptyAndInsertUserProblems(list: List<UserProblem>)
+
+    suspend fun emptyAndInsertAlgebraProblems(list: List<AlgebraProblem>)
 
     suspend fun getUserProblemCount(): Int
 

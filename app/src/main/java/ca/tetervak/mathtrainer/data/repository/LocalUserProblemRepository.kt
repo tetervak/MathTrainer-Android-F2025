@@ -3,6 +3,7 @@ package ca.tetervak.mathtrainer.data.repository
 import ca.tetervak.mathtrainer.data.database.LocalProblem
 import ca.tetervak.mathtrainer.data.database.LocalProblemDao
 import ca.tetervak.mathtrainer.domain.AdditionProblem
+import ca.tetervak.mathtrainer.domain.AlgebraProblem
 import ca.tetervak.mathtrainer.domain.DivisionProblem
 import ca.tetervak.mathtrainer.domain.MultiplicationProblem
 import ca.tetervak.mathtrainer.domain.SubtractionProblem
@@ -72,6 +73,16 @@ class LocalUserProblemRepository(
         }
     }
 
+    override suspend fun emptyAndInsertAlgebraProblems(list: List<AlgebraProblem>) {
+        externalScope.launch(context = dispatcher) {
+            dao.emptyAndInsertLocalProblems(
+                list = list.mapIndexed { index, algebraProblem ->
+                    algebraProblem.toLocalProblem(id = index + 1, null)
+                }
+            )
+        }
+    }
+
     override suspend fun getUserProblemCount(): Int =
         withContext(context = Dispatchers.IO) {
             dao.getLocalProblemCount()
@@ -94,36 +105,40 @@ fun LocalProblem.toUserProblem(): UserProblem =
     )
 
 fun UserProblem.toLocalProblem(): LocalProblem =
-    when (problem) {
+    this.problem.toLocalProblem(id = this.id, userAnswer = this.userAnswer)
+
+
+fun AlgebraProblem.toLocalProblem(id: Int, userAnswer: String?): LocalProblem =
+    when (this) {
         is AdditionProblem -> LocalProblem(
-            id = this.id,
-            a = this.problem.a,
+            id = id,
+            a = this.a,
             op = '+',
-            b = this.problem.b,
-            userAnswer = this.userAnswer
+            b = this.b,
+            userAnswer = userAnswer
         )
 
         is SubtractionProblem -> LocalProblem(
-            id = this.id,
-            a = this.problem.a,
+            id = id,
+            a = this.a,
             op = '-',
-            b = this.problem.b,
-            userAnswer = this.userAnswer
+            b = this.b,
+            userAnswer = userAnswer
         )
 
         is MultiplicationProblem -> LocalProblem(
-            id = this.id,
-            a = this.problem.a,
+            id = id,
+            a = this.a,
             op = 'x',
-            b = this.problem.b,
-            userAnswer = this.userAnswer
+            b = this.b,
+            userAnswer = userAnswer
         )
 
         is DivisionProblem -> LocalProblem(
-            id = this.id,
-            a = this.problem.a,
+            id = id,
+            a = this.a,
             op = '/',
-            b = this.problem.b,
-            userAnswer = this.userAnswer
+            b = this.b,
+            userAnswer = userAnswer
         )
     }
