@@ -7,20 +7,20 @@ sealed class AlgebraProblem {
     abstract val text: String
     abstract val answer: Int
 
-    enum class Grade {
-        RIGHT_ANSWER, WRONG_ANSWER, INVALID_INPUT
-    }
-
-    fun checkAnswer(userAnswer: String): Grade =
-        try {
-            val entered: Double = userAnswer.toDouble()
-            if (abs(answer - entered) <= TOLERANCE) {
-                Grade.RIGHT_ANSWER
-            } else {
-                Grade.WRONG_ANSWER
+    fun checkAnswer(userAnswer: String?): UserAnswerStatus =
+        if (userAnswer == null) {
+            UserAnswerStatus.NOT_ANSWERED
+        } else {
+            try {
+                val entered: Double = userAnswer.toDouble()
+                if (abs(answer - entered) <= TOLERANCE) {
+                    UserAnswerStatus.RIGHT_ANSWER
+                } else {
+                    UserAnswerStatus.WRONG_ANSWER
+                }
+            } catch (_: NumberFormatException) {
+                UserAnswerStatus.INVALID_INPUT
             }
-        } catch (_: NumberFormatException) {
-            Grade.INVALID_INPUT
         }
 
     companion object {
