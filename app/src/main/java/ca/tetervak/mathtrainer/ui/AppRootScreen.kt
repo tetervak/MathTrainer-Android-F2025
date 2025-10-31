@@ -26,11 +26,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import ca.tetervak.mathtrainer.ui.details.ProblemDetailsScreenPhoneHorizontal
-import ca.tetervak.mathtrainer.ui.details.ProblemDetailsScreenPhoneVertical
+import ca.tetervak.mathtrainer.ui.details.ProblemDetailsScreen
 import ca.tetervak.mathtrainer.ui.details.ProblemDetailsScreenTabletHorizontal
 import ca.tetervak.mathtrainer.ui.home.HomeScreen
 import ca.tetervak.mathtrainer.ui.list.ProblemListScreenPhoneHorizontal
-import ca.tetervak.mathtrainer.ui.list.ProblemListScreenPhoneVertical
+import ca.tetervak.mathtrainer.ui.list.ProblemListScreen
 
 @Composable
 fun AppRootScreen(screenVariant: ScreenVariant) {
@@ -53,7 +53,7 @@ fun AppRootScreen(screenVariant: ScreenVariant) {
         }
         composable(route = "list-problems") {
             when(screenVariant) {
-                ScreenVariant.PHONE_VERTICAL -> ProblemListScreenPhoneVertical(
+                ScreenVariant.PHONE_VERTICAL -> ProblemListScreen(
                     onProblemClick = { problemId ->
                         navController.navigate("problem/$problemId")
                     },
@@ -92,7 +92,7 @@ fun AppRootScreen(screenVariant: ScreenVariant) {
                         navController.navigate("problem/$problemId")
                     }
                 )
-                else -> ProblemDetailsScreenPhoneVertical(
+                else -> ProblemDetailsScreen(
                     onHelpClick = { showAboutDialog = true },
                     onHomeClick = { navController.navigate("home") },
                     onListClick = { navController.navigate("list-problems") },

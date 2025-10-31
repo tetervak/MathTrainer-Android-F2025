@@ -79,7 +79,7 @@ import ca.tetervak.mathtrainer.ui.score.ScoreViewModel
 import ca.tetervak.mathtrainer.ui.theme.MathTrainerTheme
 
 @Composable
-fun ProblemDetailsScreenPhoneVertical(
+fun ProblemDetailsScreen(
     onHelpClick: () -> Unit,
     onHomeClick: () -> Unit,
     onListClick: () -> Unit,
@@ -93,7 +93,7 @@ fun ProblemDetailsScreenPhoneVertical(
     val scoreViewModel: ScoreViewModel = hiltViewModel()
     val scoreUiState by scoreViewModel.uiState.collectAsState()
 
-    ProblemDetailsScreenPhoneVerticalBody(
+    ProblemDetailsScreenBody(
         userProblem = userProblem,
         score = scoreUiState.score,
         numberOfProblems = scoreUiState.numberOfProblems,
@@ -174,7 +174,7 @@ fun ProblemDetailsScreenTabletHorizontal(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProblemDetailsScreenPhoneVerticalBody(
+fun ProblemDetailsScreenBody(
     userProblem: UserProblem,
     score: Int,
     numberOfProblems: Int,
@@ -720,9 +720,9 @@ fun FinalScoreDialog(
 
 @Preview(showBackground = true)
 @Composable
-fun ProblemDetailsScreenPhoneVerticalBodyPreview() {
+fun ProblemDetailsScreenBodyPreview() {
     MathTrainerTheme {
-        ProblemDetailsScreenPhoneVerticalBody(
+        ProblemDetailsScreenBody(
             userProblem = UserProblem(AdditionProblem(1, 2), id = 3),
             score = 2,
             numberOfProblems = 5,

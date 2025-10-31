@@ -46,7 +46,7 @@ import ca.tetervak.mathtrainer.ui.score.ScoreViewModel
 import ca.tetervak.mathtrainer.ui.theme.MathTrainerTheme
 
 @Composable
-fun ProblemListScreenPhoneVertical(
+fun ProblemListScreen(
     onProblemClick: (Int) -> Unit,
     onHomeClick: () -> Unit,
     onHelpClick: () -> Unit
@@ -58,7 +58,7 @@ fun ProblemListScreenPhoneVertical(
     val scoreViewModel: ScoreViewModel = hiltViewModel()
     val scoreUiState by scoreViewModel.uiState.collectAsState()
 
-    ProblemListScreenBodyPhoneVertical(
+    ProblemListScreenBody(
         list = list,
         numberOfProblems = scoreUiState.numberOfProblems,
         score = scoreUiState.score,
@@ -167,7 +167,7 @@ fun ProblemListScreenBodyPhoneHorizontal(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProblemListScreenBodyPhoneVertical(
+fun ProblemListScreenBody(
     list: List<UserProblem>,
     numberOfProblems: Int,
     score: Int,
@@ -312,7 +312,7 @@ fun ProblemListItemPreview() {
 @Composable
 fun ProblemListScreenBodyPreview() {
     MathTrainerTheme {
-        ProblemListScreenBodyPhoneVertical(
+        ProblemListScreenBody(
             list = List(5) {
                 UserProblem(problem = AdditionProblem(1, 2), id = it + 1)
             },
