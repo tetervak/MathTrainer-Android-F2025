@@ -12,7 +12,7 @@
     <string name="exit">Exit</string>
     <string name="play_again">Play Again</string>
     <string name="about">About</string>
-    <string name="about_game">About Game</string>
+    <string name="about_math_trainer">About Math Trainer</string>
     <string name="programming_example">This is a programming example from an Android application development course.</string>
     <string name="ok">OK</string>
     <string name="wrong_answer_try_again">Wrong Answer! Try Again!</string>
