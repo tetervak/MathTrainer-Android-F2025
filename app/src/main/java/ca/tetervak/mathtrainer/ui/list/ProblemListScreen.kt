@@ -12,7 +12,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Card
@@ -25,6 +27,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -99,6 +102,88 @@ fun ProblemListScreenPhoneHorizontal(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+fun ProblemListScreenBody(
+    list: List<UserProblem>,
+    numberOfProblems: Int,
+    score: Int,
+    selected: Int,
+    onProblemClick: (Int) -> Unit,
+    onHomeClick: () -> Unit,
+    onHelpClick: () -> Unit
+) {
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(key1 = selected) {
+        if(selected > 0) {
+            // list index starts from 0, but id starts from 1
+            listState.scrollToItem(selected - 1)
+        }
+    }
+
+    Scaffold(
+        topBar = {
+            QuizTopBar(
+                title = stringResource(R.string.problem_list),
+                onHelpButtonClick = onHelpClick,
+                scrollBehavior = scrollBehavior
+            )
+        },
+        modifier = Modifier
+            .fillMaxSize()
+            .nestedScroll(scrollBehavior.nestedScrollConnection)
+    ) { innerPadding ->
+
+        Column(
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            LazyColumn(
+                state = listState, // scroll to the selected problem
+                contentPadding = PaddingValues(vertical = 16.dp, horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.weight(1f)
+            ) {
+                items(items = list) { userProblem ->
+                    ProblemListItem(
+                        onClick = { onProblemClick(userProblem.id) },
+                        userProblem = userProblem,
+                        selected = userProblem.id == selected
+                    )
+                }
+            }
+            HorizontalDivider()
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Score(
+                    score = score,
+                    numberOfProblems = numberOfProblems,
+                    modifier = Modifier.padding(20.dp)
+                )
+                OutlinedButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    onClick = onHomeClick,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Home,
+                        contentDescription = stringResource(R.string.home)
+                    )
+                    Text(
+                        modifier = Modifier.padding(start = 8.dp),
+                        text = stringResource(R.string.home)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 fun ProblemListScreenBodyPhoneHorizontal(
     list: List<UserProblem>,
     numberOfProblems: Int,
@@ -109,6 +194,14 @@ fun ProblemListScreenBodyPhoneHorizontal(
     onHelpClick: () -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val gridState = rememberLazyGridState()
+
+    LaunchedEffect(key1 = selected) {
+        if(selected > 0) {
+            gridState.scrollToItem(index = selected - 1)
+        }
+    }
+
     Scaffold(
         topBar = {
             QuizTopBar(
@@ -126,6 +219,7 @@ fun ProblemListScreenBodyPhoneHorizontal(
             modifier = Modifier.padding(innerPadding)
         ) {
             LazyVerticalGrid (
+                state = gridState, // scroll to the selected problem
                 columns = GridCells.Fixed(count = 2),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 contentPadding = PaddingValues(vertical = 16.dp, horizontal = 16.dp),
@@ -149,79 +243,6 @@ fun ProblemListScreenBodyPhoneHorizontal(
                 OutlinedButton(
                     modifier = Modifier
                         //.fillMaxWidth()
-                        .padding(16.dp),
-                    onClick = onHomeClick,
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Home,
-                        contentDescription = stringResource(R.string.home)
-                    )
-                    Text(
-                        modifier = Modifier.padding(start = 8.dp),
-                        text = stringResource(R.string.home)
-                    )
-                }
-                Score(
-                    score = score,
-                    numberOfProblems = numberOfProblems,
-                    modifier = Modifier.padding(20.dp)
-                )
-            }
-        }
-    }
-}
-
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ProblemListScreenBody(
-    list: List<UserProblem>,
-    numberOfProblems: Int,
-    score: Int,
-    onProblemClick: (Int) -> Unit,
-    onHomeClick: () -> Unit,
-    onHelpClick: () -> Unit,
-    selected: Int
-) {
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-    Scaffold(
-        topBar = {
-            QuizTopBar(
-                title = stringResource(R.string.problem_list),
-                onHelpButtonClick = onHelpClick,
-                scrollBehavior = scrollBehavior
-            )
-        },
-        modifier = Modifier
-            .fillMaxSize()
-            .nestedScroll(scrollBehavior.nestedScrollConnection)
-    ) { innerPadding ->
-
-        Column(
-            modifier = Modifier.padding(innerPadding)
-        ) {
-            LazyColumn(
-                contentPadding = PaddingValues(vertical = 16.dp, horizontal = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier.weight(1f)
-            ) {
-                items(items = list) { userProblem ->
-                    ProblemListItem(
-                        onClick = { onProblemClick(userProblem.id) },
-                        userProblem = userProblem,
-                        selected = userProblem.id == selected
-                    )
-                }
-            }
-            HorizontalDivider()
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                OutlinedButton(
-                    modifier = Modifier
                         .padding(16.dp),
                     onClick = onHomeClick,
                 ) {

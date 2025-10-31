@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -51,6 +52,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -247,8 +249,7 @@ fun DetailsLeftRail(
     onListClick: () -> Unit,
     onFirstClick: () -> Unit
 ) {
-    NavigationRail(
-    ) {
+    NavigationRail {
         NavigationRailItem(
             selected = false,
             onClick = onFirstClick,
@@ -289,8 +290,7 @@ fun DetailsBottomBar(
     onListClick: () -> Unit,
     onFirstClick: () -> Unit
 ) {
-    NavigationBar(
-    ) {
+    NavigationBar {
         NavigationBarItem(
             selected = false,
             onClick = onHomeClick,
@@ -611,6 +611,15 @@ fun ProblemDetailsScreenTabletHorizontalBody(
     onProblemNavClick: (Int) -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(key1 = userProblem.id) {
+        if(userProblem.id > 0) {
+            // list index starts from 0, but id starts from 1
+            listState.scrollToItem(userProblem.id - 1)
+        }
+    }
+
     Scaffold(
         topBar = {
             QuizTopBar(
@@ -640,6 +649,7 @@ fun ProblemDetailsScreenTabletHorizontalBody(
             )
             VerticalDivider( thickness = 1.dp, modifier = Modifier.fillMaxHeight())
             LazyColumn(
+                state = listState, // scroll to the current problem
                 contentPadding = PaddingValues(vertical = 16.dp, horizontal = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier.weight(1f)
