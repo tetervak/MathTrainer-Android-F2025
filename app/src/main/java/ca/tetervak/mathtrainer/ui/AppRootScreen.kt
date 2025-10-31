@@ -48,8 +48,17 @@ fun AppRootScreen() {
                 onHelpClick = { showAboutDialog = true }
             )
         }
-        composable(route = "list-problems") {
+        composable(
+            route = "list-problems?selected={selected}",
+            arguments = listOf(navArgument("selected") {
+                type = NavType.IntType
+                defaultValue = 0
+            })
+        ) {
+            backStackEntry ->
+            val selected = backStackEntry.arguments?.getInt("selected") ?: 0
             ProblemListScreen(
+                selected = selected,
                 onProblemClick = { problemId ->
                     navController.navigate("problem/$problemId")
                 },
@@ -61,11 +70,12 @@ fun AppRootScreen() {
             route = "problem/{problemId}",
             arguments = listOf(navArgument("problemId") { type = NavType.IntType })
         ) {
-            //Text("Problem ${it.arguments?.getInt("problemId")}")
+            backStackEntry ->
+            val problemId = backStackEntry.arguments?.getInt("problemId") ?: 0
             ProblemDetailsScreen(
                 onHelpClick = { showAboutDialog = true },
                 onHomeClick = { navController.navigate("home") },
-                onListClick = { navController.navigate("list-problems") },
+                onListClick = { navController.navigate("list-problems?selected=$problemId") },
                 onProblemNavClick = { problemId ->
                     navController.navigate("problem/$problemId")
                 }
