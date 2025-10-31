@@ -7,6 +7,10 @@ import ca.tetervak.mathtrainer.domain.AlgebraProblem
 import ca.tetervak.mathtrainer.domain.DivisionProblem
 import ca.tetervak.mathtrainer.domain.MultiplicationProblem
 import ca.tetervak.mathtrainer.domain.SubtractionProblem
+import ca.tetervak.mathtrainer.domain.AlgebraProblem
+import ca.tetervak.mathtrainer.domain.ScoreData
+import ca.tetervak.mathtrainer.domain.StatusData
+import ca.tetervak.mathtrainer.domain.UserAnswerStatus
 import ca.tetervak.mathtrainer.domain.UserProblem
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -14,10 +18,12 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.Date
 import javax.inject.Inject
 
 @OptIn(DelicateCoroutinesApi::class)
@@ -47,16 +53,34 @@ class LocalUserProblemRepository(
 
     override suspend fun updateUserProblemById(
         id: Int,
-        userAnswer: String?
+        userAnswer: String?,
+        status: UserAnswerStatus
     ) = withContext(context = dispatcher) {
-        dao.updateLocalProblemById(id, userAnswer)
+        dao.updateLocalProblemById(id, userAnswer, status, Date())
     }
+
+    override suspend fun updateUserProblemById(id: Int, userAnswer: String?) =
+        withContext(context = dispatcher) {
+            val localProblem = dao.getLocalProblemById(id)
+            if (localProblem != null) {
+                val userProblem = localProblem.toUserProblem().copy(userAnswer = userAnswer)
+                val updatedProblem = localProblem.copy(
+                    userAnswer = userAnswer,
+                    status = userProblem.status,
+                    date = Date()
+                )
+                dao.updateLocalProblem(localProblem = updatedProblem)
+            }
+        }
+
 
     override suspend fun resetUserProblemById(id: Int) =
         withContext(context = dispatcher) {
             dao.updateLocalProblemById(
                 id = id,
-                userAnswer = null
+                userAnswer = null,
+                status = UserAnswerStatus.NOT_ANSWERED,
+                date = Date()
             )
         }
 
@@ -77,7 +101,11 @@ class LocalUserProblemRepository(
         externalScope.launch(context = dispatcher) {
             dao.emptyAndInsertLocalProblems(
                 list = list.mapIndexed { index, algebraProblem ->
-                    algebraProblem.toLocalProblem(id = index + 1, null)
+                    algebraProblem.toLocalProblem(
+                        id = index + 1,
+                        userAnswer = null,
+                        status = UserAnswerStatus.NOT_ANSWERED
+                    )
                 }
             )
         }
@@ -85,60 +113,42 @@ class LocalUserProblemRepository(
 
     override suspend fun getUserProblemCount(): Int =
         withContext(context = Dispatchers.IO) {
-            dao.getLocalProblemCount()
+            dao.getProblemCount()
         }
 
     override suspend fun isEmpty(): Boolean = (getUserProblemCount() == 0)
+
+
+    override fun getScoreDataFlow(): Flow<ScoreData> {
+        val scoreDataFlow: Flow<ScoreData> = combine(
+            dao.getProblemCountFlow(),
+            dao.getProblemCountByStatusFlow(status = UserAnswerStatus.RIGHT_ANSWER),
+        ) { numberOfProblems, rightAnswers ->
+            ScoreData(
+                numberOfProblems = numberOfProblems,
+                rightAnswers = rightAnswers
+            )
+        }
+        return scoreDataFlow.flowOn(context = dispatcher)
+    }
+
+    override fun getStatusDataFlow(): Flow<StatusData> {
+        val statusDataFlow: Flow<StatusData> = combine(
+            dao.getProblemCountFlow(),
+            dao.getProblemCountByStatusFlow(status = UserAnswerStatus.RIGHT_ANSWER),
+            dao.getProblemCountByStatusFlow(status = UserAnswerStatus.NOT_ANSWERED),
+            dao.getProblemCountByStatusFlow(status = UserAnswerStatus.WRONG_ANSWER)
+        ) { numberOfProblems, rightAnswers, notAnswered, wrongAnswers ->
+            StatusData(
+                numberOfProblems = numberOfProblems,
+                rightAnswers = rightAnswers,
+                notAnswered = notAnswered,
+                wrongAnswers = wrongAnswers
+            )
+
+        }
+        return statusDataFlow.flowOn(context = dispatcher)
+    }
 }
 
-fun LocalProblem.toUserProblem(): UserProblem =
-    UserProblem(
-        problem = when (op) {
-            '+' -> AdditionProblem(a, b)
-            '-' -> SubtractionProblem(a, b)
-            'x' -> MultiplicationProblem(a, b)
-            '/' -> DivisionProblem(a, b)
-            else -> throw IllegalArgumentException("Invalid operator: $op")
-        },
-        userAnswer = userAnswer,
-        id = id
-    )
 
-fun UserProblem.toLocalProblem(): LocalProblem =
-    this.problem.toLocalProblem(id = this.id, userAnswer = this.userAnswer)
-
-
-fun AlgebraProblem.toLocalProblem(id: Int, userAnswer: String?): LocalProblem =
-    when (this) {
-        is AdditionProblem -> LocalProblem(
-            id = id,
-            a = this.a,
-            op = '+',
-            b = this.b,
-            userAnswer = userAnswer
-        )
-
-        is SubtractionProblem -> LocalProblem(
-            id = id,
-            a = this.a,
-            op = '-',
-            b = this.b,
-            userAnswer = userAnswer
-        )
-
-        is MultiplicationProblem -> LocalProblem(
-            id = id,
-            a = this.a,
-            op = 'x',
-            b = this.b,
-            userAnswer = userAnswer
-        )
-
-        is DivisionProblem -> LocalProblem(
-            id = id,
-            a = this.a,
-            op = '/',
-            b = this.b,
-            userAnswer = userAnswer
-        )
-    }

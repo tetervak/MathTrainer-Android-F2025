@@ -11,12 +11,12 @@ import androidx.compose.ui.unit.sp
 import ca.tetervak.mathtrainer.R
 
 @Composable
-fun Score(score: Int, numberOfProblems: Int, modifier: Modifier = Modifier) {
+fun Score(rightAnswers: Int, numberOfProblems: Int, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier
     ) {
         Text(
-            text = stringResource(R.string.score, score, numberOfProblems),
+            text = stringResource(R.string.score, rightAnswers, numberOfProblems),
             fontSize = 20.sp,
             modifier = Modifier.padding(8.dp)
         )

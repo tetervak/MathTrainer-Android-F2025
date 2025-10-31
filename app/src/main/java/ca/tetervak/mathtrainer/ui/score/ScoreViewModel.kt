@@ -3,6 +3,7 @@ package ca.tetervak.mathtrainer.ui.score
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.tetervak.mathtrainer.data.repository.UserProblemRepository
+import ca.tetervak.mathtrainer.domain.ScoreData
 import ca.tetervak.mathtrainer.domain.UserAnswerStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,19 +17,11 @@ class ScoreViewModel @Inject constructor(
     repository: UserProblemRepository
 ) : ViewModel() {
 
-    val uiState: StateFlow<ScoreUiState> = repository.getAllUserProblemsFlow()
-        .map { list ->
-            ScoreUiState(
-                score = list.sumOf { userProblem ->
-                    if (userProblem.status == UserAnswerStatus.RIGHT_ANSWER) 1 else 0
-                },
-                numberOfProblems = list.size
-            )
-        }
+    val uiState: StateFlow<ScoreData> = repository.getScoreDataFlow()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = ScoreUiState(score = 0, numberOfProblems = 0)
+            initialValue = ScoreData(numberOfProblems = 0, rightAnswers = 0)
         )
 
 }

@@ -79,12 +79,12 @@ fun ProblemDetailsScreen(
     val userProblem = detailsUiState.userProblem
 
     val scoreViewModel: ScoreViewModel = hiltViewModel()
-    val scoreUiState by scoreViewModel.uiState.collectAsState()
+    val scoreData by scoreViewModel.uiState.collectAsState()
 
     ProblemDetailsScreenBody(
         userProblem = userProblem,
-        score = scoreUiState.score,
-        numberOfProblems = scoreUiState.numberOfProblems,
+        score = scoreData.rightAnswers,
+        numberOfProblems = scoreData.numberOfProblems,
         userAnswerInput = detailsViewModel.answerInput,
         onChangeUserAnswerInput = detailsViewModel::updateAnswerInput,
         onSubmit = detailsViewModel::onSubmit,
@@ -215,7 +215,7 @@ fun ProblemDetailsScreenBody(
 
             }
             Score(
-                score = score,
+                rightAnswers = score,
                 numberOfProblems = numberOfProblems,
                 modifier = Modifier.padding(20.dp)
             )

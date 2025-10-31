@@ -4,10 +4,12 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 
 @Database(
-    entities = [LocalProblem::class], version = 1, exportSchema = false
+    entities = [LocalProblem::class], version = 5, exportSchema = false
 )
+@TypeConverters(DateConverter::class)
 abstract class MathTrainerDatabase : RoomDatabase() {
 
     abstract fun localProblemDao(): LocalProblemDao
