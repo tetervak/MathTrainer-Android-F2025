@@ -23,27 +23,27 @@ class MultiplicationProblemTest {
         println("problem.answer = ${problem.answer}")
 
         assertEquals(
-            AlgebraProblem.Grade.RIGHT_ANSWER,
+            UserAnswerStatus.RIGHT_ANSWER,
             problem.checkAnswer("6"))
 
         assertEquals(
-            AlgebraProblem.Grade.WRONG_ANSWER,
+            UserAnswerStatus.WRONG_ANSWER,
             problem.checkAnswer("4"))
 
         assertEquals(
-            AlgebraProblem.Grade.INVALID_INPUT,
+            UserAnswerStatus.INVALID_INPUT,
             problem.checkAnswer("whatever"))
 
         assertEquals(
-            AlgebraProblem.Grade.RIGHT_ANSWER,
+            UserAnswerStatus.RIGHT_ANSWER,
             problem.checkAnswer("6.0"))
 
         assertEquals(
-            AlgebraProblem.Grade.WRONG_ANSWER,
+            UserAnswerStatus.WRONG_ANSWER,
             problem.checkAnswer("6.1"))
 
         assertEquals(
-            AlgebraProblem.Grade.WRONG_ANSWER,
+            UserAnswerStatus.WRONG_ANSWER,
             problem.checkAnswer("5.9"))
     }
 
