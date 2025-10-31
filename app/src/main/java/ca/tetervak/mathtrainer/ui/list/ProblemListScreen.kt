@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Card
@@ -22,6 +23,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -82,6 +84,15 @@ fun ProblemListScreenBody(
     onHelpClick: () -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(key1 = selected) {
+        if(selected > 0) {
+            // list index starts from 0, but id starts from 1
+            listState.scrollToItem(selected - 1)
+        }
+    }
+
     Scaffold(
         topBar = {
             QuizTopBar(
@@ -99,6 +110,7 @@ fun ProblemListScreenBody(
             modifier = Modifier.padding(innerPadding)
         ) {
             LazyColumn(
+                state = listState, // scroll to the selected problem
                 contentPadding = PaddingValues(vertical = 16.dp, horizontal = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier.weight(1f)

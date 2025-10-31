@@ -21,7 +21,7 @@ class HomeViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             if (repository.isEmpty()) {
-                repository.insertUserProblems(list = newQuizUseCase(numberOfProblems = 5))
+                repository.insertUserProblems(list = newQuizUseCase(numberOfProblems = 20))
             }
         }
     }
@@ -29,7 +29,7 @@ class HomeViewModel @Inject constructor(
     fun makeNewProblems() {
         viewModelScope.launch {
             val problems: List<AlgebraProblem> =
-                randomQuizRepository.getRandomQuizProblems(numberOfProblems = 10)
+                randomQuizRepository.getRandomQuizProblems(numberOfProblems = 20)
             repository.emptyAndInsertAlgebraProblems(list = problems)
         }
     }
