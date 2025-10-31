@@ -1,5 +1,6 @@
 package ca.tetervak.mathtrainer.ui.list
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,6 +13,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -47,7 +49,8 @@ import ca.tetervak.mathtrainer.ui.theme.MathTrainerTheme
 fun ProblemListScreen(
     onProblemClick: (Int) -> Unit,
     onHomeClick: () -> Unit,
-    onHelpClick: () -> Unit
+    onHelpClick: () -> Unit,
+    selected: Int
 ) {
     val viewModel: ProblemListViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsState()
@@ -60,6 +63,7 @@ fun ProblemListScreen(
         list = list,
         numberOfProblems = scoreUiState.numberOfProblems,
         score = scoreUiState.score,
+        selected = selected,
         onProblemClick = onProblemClick,
         onHomeClick = onHomeClick,
         onHelpClick = onHelpClick
@@ -72,6 +76,7 @@ fun ProblemListScreenBody(
     list: List<UserProblem>,
     numberOfProblems: Int,
     score: Int,
+    selected: Int,
     onProblemClick: (Int) -> Unit,
     onHomeClick: () -> Unit,
     onHelpClick: () -> Unit
@@ -101,7 +106,8 @@ fun ProblemListScreenBody(
                 items(items = list) { userProblem ->
                     ProblemListItem(
                         onClick = { onProblemClick(userProblem.id) },
-                        userProblem = userProblem
+                        userProblem = userProblem,
+                        selected = userProblem.id == selected
                     )
                 }
             }
@@ -141,11 +147,18 @@ fun ProblemListScreenBody(
 fun ProblemListItem(
     userProblem: UserProblem,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    selected: Boolean = false,
 ) {
+
+    val frameColor = if (selected) Color.DarkGray else Color.LightGray
+    val elevation = if (selected) 4.dp else 0.dp
+
     Card(
         onClick = onClick,
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
+        border = BorderStroke(2.dp, frameColor),
+        elevation = CardDefaults.cardElevation(defaultElevation = elevation)
     ) {
         Row(
             modifier = Modifier
@@ -212,6 +225,18 @@ fun ProblemListItemPreview() {
 
 @Preview
 @Composable
+fun ProblemListItemSelectedPreview() {
+    MathTrainerTheme {
+        ProblemListItem(
+            userProblem = UserProblem(problem = AdditionProblem(1, 2), id = 3),
+            onClick = {},
+            selected = true
+        )
+    }
+}
+
+@Preview
+@Composable
 fun ProblemListScreenBodyPreview() {
     MathTrainerTheme {
         ProblemListScreenBody(
@@ -220,6 +245,7 @@ fun ProblemListScreenBodyPreview() {
             },
             numberOfProblems = 5,
             score = 0,
+            selected = 3,
             onProblemClick = {},
             onHomeClick = {},
             onHelpClick = {}
