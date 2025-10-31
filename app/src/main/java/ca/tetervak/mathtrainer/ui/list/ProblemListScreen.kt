@@ -60,12 +60,12 @@ fun ProblemListScreen(
     val list: List<UserProblem> = uiState.problemList
 
     val scoreViewModel: ScoreViewModel = hiltViewModel()
-    val scoreUiState by scoreViewModel.uiState.collectAsState()
+    val scoreData by scoreViewModel.uiState.collectAsState()
 
     ProblemListScreenBody(
         list = list,
-        numberOfProblems = scoreUiState.numberOfProblems,
-        score = scoreUiState.score,
+        numberOfProblems = scoreData.numberOfProblems,
+        score = scoreData.rightAnswers,
         selected = selected,
         onProblemClick = onProblemClick,
         onHomeClick = onHomeClick,
@@ -131,7 +131,7 @@ fun ProblemListScreenBody(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Score(
-                    score = score,
+                    rightAnswers = score,
                     numberOfProblems = numberOfProblems,
                     modifier = Modifier.padding(20.dp)
                 )

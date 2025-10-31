@@ -4,7 +4,10 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
+import ca.tetervak.mathtrainer.domain.UserAnswerStatus
 import kotlinx.coroutines.flow.Flow
+import java.util.Date
 
 @Dao
 interface LocalProblemDao {
@@ -15,8 +18,19 @@ interface LocalProblemDao {
     @Query("SELECT * FROM user_problems WHERE id = :id")
     fun getLocalProblemFlowById(id: Int): Flow<LocalProblem?>
 
-    @Query("UPDATE user_problems SET userAnswer = :userAnswer WHERE id = :id")
-    suspend fun updateLocalProblemById(id: Int, userAnswer: String?)
+    @Query("SELECT * FROM user_problems WHERE id = :id")
+    suspend fun getLocalProblemById(id: Int): LocalProblem?
+
+    @Query("UPDATE user_problems SET user_answer = :userAnswer, status = :status, date = :date WHERE id = :id")
+    suspend fun updateLocalProblemById(
+        id: Int,
+        userAnswer: String?,
+        status: UserAnswerStatus,
+        date: Date
+    )
+
+    @Update
+    suspend fun updateLocalProblem(localProblem: LocalProblem)
 
     @Query("DELETE FROM user_problems")
     suspend fun deleteAllLocalProblems()
@@ -31,6 +45,12 @@ interface LocalProblemDao {
     }
 
     @Query("SELECT COUNT(*) FROM user_problems")
-    suspend fun getLocalProblemCount(): Int
+    suspend fun getProblemCount(): Int
+
+    @Query("SELECT COUNT(*) FROM user_problems")
+    fun getProblemCountFlow(): Flow<Int>
+
+    @Query("SELECT COUNT(*) FROM user_problems WHERE status = :status")
+    fun getProblemCountByStatusFlow(status: UserAnswerStatus): Flow<Int>
 
 }

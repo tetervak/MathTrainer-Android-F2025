@@ -1,5 +1,9 @@
 package ca.tetervak.mathtrainer.data.repository
 
+import ca.tetervak.mathtrainer.domain.AlgebraProblem
+import ca.tetervak.mathtrainer.domain.ScoreData
+import ca.tetervak.mathtrainer.domain.StatusData
+import ca.tetervak.mathtrainer.domain.UserAnswerStatus
 import ca.tetervak.mathtrainer.domain.UserProblem
 import kotlinx.coroutines.flow.Flow
 
@@ -9,6 +13,8 @@ interface UserProblemRepository {
 
     fun getUserProblemFlowById(id: Int): Flow<UserProblem?>
 
+    suspend fun updateUserProblemById(id: Int, userAnswer: String?, status: UserAnswerStatus)
+
     suspend fun updateUserProblemById(id: Int, userAnswer: String?)
 
     suspend fun resetUserProblemById(id: Int)
@@ -17,7 +23,13 @@ interface UserProblemRepository {
 
     suspend fun emptyAndInsertUserProblems(list: List<UserProblem>)
 
+    suspend fun emptyAndInsertAlgebraProblems(list: List<AlgebraProblem>)
+
     suspend fun getUserProblemCount(): Int
 
     suspend fun isEmpty(): Boolean
+
+    fun getScoreDataFlow(): Flow<ScoreData>
+
+    fun getStatusDataFlow(): Flow<StatusData>
 }

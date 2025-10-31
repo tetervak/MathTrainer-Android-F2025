@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import ca.tetervak.mathtrainer.R
+import ca.tetervak.mathtrainer.domain.ScoreData
 import ca.tetervak.mathtrainer.ui.QuizTopBar
 import ca.tetervak.mathtrainer.ui.score.ScoreViewModel
 import ca.tetervak.mathtrainer.ui.score.Score
@@ -43,11 +44,11 @@ fun HomeScreen(
     val homeViewModel: HomeViewModel = hiltViewModel()
 
     val scoreViewModel: ScoreViewModel = hiltViewModel()
-    val scoreUiState by scoreViewModel.uiState.collectAsState()
+    val scoreData: ScoreData by scoreViewModel.uiState.collectAsState()
 
     HomeScreenBody(
-        score = scoreUiState.score,
-        numberOfProblems = scoreUiState.numberOfProblems,
+        score = scoreData.rightAnswers,
+        numberOfProblems = scoreData.numberOfProblems,
         onFirstClick = onFirstClick,
         onListClick = onListClick,
         onMakeNewProblemsClick = {
@@ -137,7 +138,7 @@ private fun HomeScreenBody(
                 )
             }
             Score(
-                score = score,
+                rightAnswers = score,
                 numberOfProblems = numberOfProblems,
                 modifier = Modifier.padding(20.dp)
             )
