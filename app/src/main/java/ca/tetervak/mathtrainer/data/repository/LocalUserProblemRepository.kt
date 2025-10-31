@@ -1,12 +1,6 @@
 package ca.tetervak.mathtrainer.data.repository
 
-import ca.tetervak.mathtrainer.data.database.LocalProblem
 import ca.tetervak.mathtrainer.data.database.LocalProblemDao
-import ca.tetervak.mathtrainer.domain.AdditionProblem
-import ca.tetervak.mathtrainer.domain.AlgebraProblem
-import ca.tetervak.mathtrainer.domain.DivisionProblem
-import ca.tetervak.mathtrainer.domain.MultiplicationProblem
-import ca.tetervak.mathtrainer.domain.SubtractionProblem
 import ca.tetervak.mathtrainer.domain.AlgebraProblem
 import ca.tetervak.mathtrainer.domain.ScoreData
 import ca.tetervak.mathtrainer.domain.StatusData
