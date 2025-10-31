@@ -3,7 +3,7 @@ package ca.tetervak.mathtrainer.ui.score
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.tetervak.mathtrainer.data.repository.UserProblemRepository
-import ca.tetervak.mathtrainer.domain.UserProblem
+import ca.tetervak.mathtrainer.domain.UserAnswerStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -20,7 +20,7 @@ class ScoreViewModel @Inject constructor(
         .map { list ->
             ScoreUiState(
                 score = list.sumOf { userProblem ->
-                    if (userProblem.status == UserProblem.Status.RIGHT_ANSWER) 1 else 0
+                    if (userProblem.status == UserAnswerStatus.RIGHT_ANSWER) 1 else 0
                 },
                 numberOfProblems = list.size
             )

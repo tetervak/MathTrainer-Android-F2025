@@ -58,6 +58,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import ca.tetervak.mathtrainer.R
 import ca.tetervak.mathtrainer.domain.AdditionProblem
+import ca.tetervak.mathtrainer.domain.UserAnswerStatus
 import ca.tetervak.mathtrainer.domain.UserProblem
 import ca.tetervak.mathtrainer.ui.QuizTopBar
 import ca.tetervak.mathtrainer.ui.score.Score
@@ -268,7 +269,7 @@ fun ProblemLayout(
     currentProblemText: String,
     problemCount: Int,
     numberOfProblems: Int,
-    currentProblemStatus: UserProblem.Status,
+    currentProblemStatus: UserAnswerStatus,
     userAnswer: String,
     onUserAnswerChanged: (String) -> Unit,
     onKeyboardDone: () -> Unit,
@@ -320,29 +321,29 @@ fun ProblemLayout(
                 },
                 placeholder = {
                     when (currentProblemStatus) {
-                        UserProblem.Status.WRONG_ANSWER -> {
+                        UserAnswerStatus.WRONG_ANSWER -> {
                             Text(
                                 text = stringResource(R.string.wrong_answer_try_again),
                                 color = colorScheme.error
                             )
                         }
 
-                        UserProblem.Status.INVALID_INPUT -> {
+                        UserAnswerStatus.INVALID_INPUT -> {
                             Text(
                                 text = stringResource(R.string.invalid_input_try_again),
                                 color = colorScheme.error
                             )
                         }
 
-                        UserProblem.Status.NOT_ANSWERED -> {
+                        UserAnswerStatus.NOT_ANSWERED -> {
                             Text(stringResource(R.string.enter_your_answer))
                         }
 
                         else -> {}
                     }
                 },
-                isError = currentProblemStatus == UserProblem.Status.WRONG_ANSWER ||
-                        currentProblemStatus == UserProblem.Status.INVALID_INPUT,
+                isError = currentProblemStatus == UserAnswerStatus.WRONG_ANSWER ||
+                        currentProblemStatus == UserAnswerStatus.INVALID_INPUT,
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Number,
                     imeAction = ImeAction.Done
@@ -352,28 +353,28 @@ fun ProblemLayout(
                 )
             )
             when (currentProblemStatus) {
-                UserProblem.Status.NOT_ANSWERED -> Text(
+                UserAnswerStatus.NOT_ANSWERED -> Text(
                     text = stringResource(R.string.not_answered),
                     fontStyle = FontStyle.Italic,
                     fontSize = 24.sp,
                     color = Color.Blue
                 )
 
-                UserProblem.Status.RIGHT_ANSWER -> Text(
+                UserAnswerStatus.RIGHT_ANSWER -> Text(
                     text = stringResource(R.string.right_answer),
                     fontStyle = FontStyle.Italic,
                     fontSize = 24.sp,
                     color = Color.Green
                 )
 
-                UserProblem.Status.WRONG_ANSWER -> Text(
+                UserAnswerStatus.WRONG_ANSWER -> Text(
                     text = stringResource(R.string.wrong_answer),
                     fontStyle = FontStyle.Italic,
                     fontSize = 24.sp,
                     color = Color.Red
                 )
 
-                UserProblem.Status.INVALID_INPUT -> Text(
+                UserAnswerStatus.INVALID_INPUT -> Text(
                     text = stringResource(R.string.invalid_input),
                     fontStyle = FontStyle.Italic,
                     fontSize = 24.sp,

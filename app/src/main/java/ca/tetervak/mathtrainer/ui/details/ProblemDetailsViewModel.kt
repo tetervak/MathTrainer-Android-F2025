@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.tetervak.mathtrainer.data.repository.UserProblemRepository
 import ca.tetervak.mathtrainer.domain.AdditionProblem
+import ca.tetervak.mathtrainer.domain.UserAnswerStatus
 import ca.tetervak.mathtrainer.domain.UserProblem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -30,7 +31,7 @@ class ProblemDetailsViewModel @Inject constructor(
     val uiState: StateFlow<ProblemDetailsUiState> =
         repository.getUserProblemFlowById(problemId).filterNotNull()
             .onEach { userProblem ->
-                if (userProblem.status == UserProblem.Status.RIGHT_ANSWER) {
+                if (userProblem.status == UserAnswerStatus.RIGHT_ANSWER) {
                     answerInput = checkNotNull(userProblem.userAnswer)
                 }
             }
