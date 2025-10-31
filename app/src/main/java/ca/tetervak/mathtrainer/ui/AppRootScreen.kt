@@ -51,16 +51,26 @@ fun AppRootScreen(screenVariant: ScreenVariant) {
                 onHelpClick = { showAboutDialog = true }
             )
         }
-        composable(route = "list-problems") {
-            when(screenVariant) {
+        composable(
+            route = "list-problems?selected={selected}",
+            arguments = listOf(navArgument("selected") {
+                type = NavType.IntType
+                defaultValue = 0
+            })
+        ) { backStackEntry ->
+            val selected = backStackEntry.arguments?.getInt("selected") ?: 0
+            when (screenVariant) {
                 ScreenVariant.PHONE_VERTICAL -> ProblemListScreen(
+                    selected = selected,
                     onProblemClick = { problemId ->
                         navController.navigate("problem/$problemId")
                     },
                     onHomeClick = { navController.navigate("home") },
                     onHelpClick = { showAboutDialog = true }
                 )
-                else-> ProblemListScreenPhoneHorizontal(
+
+                else -> ProblemListScreenPhoneHorizontal(
+                    selected = selected,
                     onProblemClick = { problemId ->
                         navController.navigate("problem/$problemId")
                     },
@@ -68,18 +78,18 @@ fun AppRootScreen(screenVariant: ScreenVariant) {
                     onHelpClick = { showAboutDialog = true }
                 )
             }
-
         }
         composable(
             route = "problem/{problemId}",
             arguments = listOf(navArgument("problemId") { type = NavType.IntType })
         ) {
-            //Text("Problem ${it.arguments?.getInt("problemId")}")
+            backStackEntry ->
+            val problemId = backStackEntry.arguments?.getInt("problemId") ?: 0
             when (screenVariant) {
                 ScreenVariant.PHONE_HORIZONTAL -> ProblemDetailsScreenPhoneHorizontal(
                     onHelpClick = { showAboutDialog = true },
                     onHomeClick = { navController.navigate("home") },
-                    onListClick = { navController.navigate("list-problems") },
+                    onListClick = { navController.navigate("list-problems?selected=$problemId") },
                     onProblemNavClick = { problemId ->
                         navController.navigate("problem/$problemId")
                     }
@@ -87,7 +97,7 @@ fun AppRootScreen(screenVariant: ScreenVariant) {
                 ScreenVariant.TABLET_HORIZONTAL -> ProblemDetailsScreenTabletHorizontal(
                     onHelpClick = { showAboutDialog = true },
                     onHomeClick = { navController.navigate("home") },
-                    onListClick = { navController.navigate("list-problems") },
+                    onListClick = { navController.navigate("list-problems?selected=$problemId") },
                     onProblemNavClick = { problemId ->
                         navController.navigate("problem/$problemId")
                     }
@@ -95,7 +105,7 @@ fun AppRootScreen(screenVariant: ScreenVariant) {
                 else -> ProblemDetailsScreen(
                     onHelpClick = { showAboutDialog = true },
                     onHomeClick = { navController.navigate("home") },
-                    onListClick = { navController.navigate("list-problems") },
+                    onListClick = { navController.navigate("list-problems?selected=$problemId") },
                     onProblemNavClick = { problemId ->
                         navController.navigate("problem/$problemId")
                     }

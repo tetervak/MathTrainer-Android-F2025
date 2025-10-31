@@ -644,10 +644,11 @@ fun ProblemDetailsScreenTabletHorizontalBody(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier.weight(1f)
             ) {
-                items(items = problemList) { userProblem ->
+                items(items = problemList) { problem ->
                     ProblemListItem(
-                        onClick = { onProblemNavClick(userProblem.id) },
-                        userProblem = userProblem
+                        onClick = { onProblemNavClick(problem.id) },
+                        userProblem = problem,
+                        selected = problem.id == userProblem.id
                     )
                 }
             }
