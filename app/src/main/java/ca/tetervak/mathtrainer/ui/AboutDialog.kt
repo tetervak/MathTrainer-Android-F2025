@@ -12,7 +12,7 @@ import ca.tetervak.mathtrainer.R
 fun AboutDialog(onDismissRequest: () -> Unit) =
     AlertDialog(
         onDismissRequest = onDismissRequest,
-        title = { Text(stringResource(R.string.about_game)) },
+        title = { Text(stringResource(R.string.about_math_trainer)) },
         text = {
             Text(
                 text = stringResource(R.string.programming_example),
