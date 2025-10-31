@@ -17,14 +17,14 @@ class HomeViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             if (repository.isEmpty()) {
-                repository.insertUserProblems(list = newQuizUseCase(numberOfProblems = 5))
+                repository.insertUserProblems(list = newQuizUseCase(numberOfProblems = 20))
             }
         }
     }
 
     fun makeNewProblems() {
         viewModelScope.launch {
-            repository.emptyAndInsertUserProblems(list = newQuizUseCase(numberOfProblems = 5))
+            repository.emptyAndInsertUserProblems(list = newQuizUseCase(numberOfProblems = 20))
         }
     }
 }
