@@ -18,7 +18,7 @@ class AdditionProblemTest {
 
     @Test
     fun checkAnswer() {
-        val problem = AdditionProblem(1,2)
+        val problem = AlgebraProblem(a = 1, b = 2, op = AlgebraOperator.PLUS)
         println("problem = $problem")
         println("problem.answer = ${problem.answer}")
 
@@ -49,7 +49,7 @@ class AdditionProblemTest {
 
     @Test
     fun getAnswer() {
-        val problem = AdditionProblem(1,2)
+        val problem = AlgebraProblem(a = 1, b = 2, op = AlgebraOperator.PLUS)
         println("problem = $problem")
         println("problem.answer=${problem.answer}")
         assertEquals(3, problem.answer)
@@ -57,7 +57,7 @@ class AdditionProblemTest {
 
     @Test
     fun getText() {
-        val problem = AdditionProblem(1,2)
+        val problem = AlgebraProblem(a = 1, b = 2, op = AlgebraOperator.PLUS)
         println("problem = $problem")
         println("problem.text = \"${problem.text}\"")
         assertEquals("1 + 2 = ?", problem.text)
