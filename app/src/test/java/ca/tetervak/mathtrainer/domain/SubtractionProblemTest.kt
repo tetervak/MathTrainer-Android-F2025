@@ -7,7 +7,7 @@ import org.junit.Test
 
 class SubtractionProblemTest {
 
-    var problem = AlgebraProblem(a = 5, b = 3, op = AlgebraOperator.MINUS)
+    var problem = AlgebraProblem(a = 5, b = 3, op = AlgebraOperation.SUBTRACTION)
 
     @Before
     fun setUp() {

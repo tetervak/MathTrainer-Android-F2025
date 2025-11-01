@@ -3,7 +3,7 @@ package ca.tetervak.mathtrainer.data.database
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import ca.tetervak.mathtrainer.domain.AlgebraOperator
+import ca.tetervak.mathtrainer.domain.AlgebraOperation
 import ca.tetervak.mathtrainer.domain.UserAnswerStatus
 import java.util.Date
 
@@ -19,8 +19,8 @@ data class LocalProblem(
     @ColumnInfo(name = "second_number")
     val b: Int,
 
-    @ColumnInfo(name = "operator")
-    val op: AlgebraOperator,
+    @ColumnInfo(name = "operation")
+    val op: AlgebraOperation,
 
     @ColumnInfo(name = "correct_answer")
     val answer: Int,

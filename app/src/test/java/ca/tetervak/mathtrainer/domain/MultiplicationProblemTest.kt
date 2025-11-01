@@ -18,7 +18,7 @@ class MultiplicationProblemTest {
 
     @Test
     fun checkAnswer() {
-        val problem = AlgebraProblem(a = 2, b = 3, op = AlgebraOperator.MULTIPLY)
+        val problem = AlgebraProblem(a = 2, b = 3, op = AlgebraOperation.MULTIPLICATION)
         println("problem = $problem")
         println("problem.answer = ${problem.answer}")
 
@@ -49,7 +49,7 @@ class MultiplicationProblemTest {
 
     @Test
     fun getAnswer() {
-        val problem = AlgebraProblem(a = 2, b = 3, op = AlgebraOperator.MULTIPLY)
+        val problem = AlgebraProblem(a = 2, b = 3, op = AlgebraOperation.MULTIPLICATION)
         println("problem = $problem")
         println("problem.answer=${problem.answer}")
         assertEquals(6, problem.answer)
@@ -57,7 +57,7 @@ class MultiplicationProblemTest {
 
     @Test
     fun getText() {
-        val problem = AlgebraProblem(a = 2, b = 3, op = AlgebraOperator.MULTIPLY)
+        val problem = AlgebraProblem(a = 2, b = 3, op = AlgebraOperation.MULTIPLICATION)
         println("problem = $problem")
         println("problem.text = \"${problem.text}\"")
         assertEquals("2 x 3 = ?", problem.text)
