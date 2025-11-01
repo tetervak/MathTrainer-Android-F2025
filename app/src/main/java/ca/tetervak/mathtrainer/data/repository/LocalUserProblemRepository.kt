@@ -45,29 +45,10 @@ class LocalUserProblemRepository(
             .map { localProblem -> localProblem?.toUserProblem() }
             .flowOn(context = dispatcher)
 
-
-    override suspend fun updateUserProblemById(
-        id: Int,
-        userAnswer: String?,
-        status: UserAnswerStatus
-    ) = withContext(context = dispatcher) {
-        dao.updateLocalProblemById(id, userAnswer, status, Date())
-    }
-
-    override suspend fun updateUserProblemById(id: Int, userAnswer: String?) =
+    override suspend fun updateUserProblem(userProblem: UserProblem) =
         withContext(context = dispatcher) {
-            val localProblem = dao.getLocalProblemById(id)
-            if (localProblem != null) {
-                val userProblem = localProblem.toUserProblem().copy(userAnswer = userAnswer)
-                val updatedProblem = localProblem.copy(
-                    userAnswer = userAnswer,
-                    status = userProblem.status,
-                    date = Date()
-                )
-                dao.updateLocalProblem(localProblem = updatedProblem)
-            }
+            dao.updateLocalProblem(localProblem = userProblem.toLocalProblem())
         }
-
 
     override suspend fun resetUserProblemById(id: Int) =
         withContext(context = dispatcher) {

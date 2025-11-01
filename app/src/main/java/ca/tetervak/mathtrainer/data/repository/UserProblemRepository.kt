@@ -13,9 +13,7 @@ interface UserProblemRepository {
 
     fun getUserProblemFlowById(id: Int): Flow<UserProblem?>
 
-    suspend fun updateUserProblemById(id: Int, userAnswer: String?, status: UserAnswerStatus)
-
-    suspend fun updateUserProblemById(id: Int, userAnswer: String?)
+    suspend fun updateUserProblem(userProblem: UserProblem)
 
     suspend fun resetUserProblemById(id: Int)
 

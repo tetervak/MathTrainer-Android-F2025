@@ -52,8 +52,9 @@ class ProblemDetailsViewModel @Inject constructor(
     }
 
     fun onSubmit() {
+        val userProblem = uiState.value.userProblem.copy(userAnswer = answerInput)
         viewModelScope.launch {
-            repository.updateUserProblemById(id = problemId, userAnswer = answerInput)
+            repository.updateUserProblem(userProblem)
             answerInput = ""
         }
     }
