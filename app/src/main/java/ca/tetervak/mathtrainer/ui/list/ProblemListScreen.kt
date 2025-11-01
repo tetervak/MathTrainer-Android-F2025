@@ -39,7 +39,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import ca.tetervak.mathtrainer.R
-import ca.tetervak.mathtrainer.domain.AdditionProblem
+import ca.tetervak.mathtrainer.domain.AlgebraOperator
+import ca.tetervak.mathtrainer.domain.AlgebraProblem
 import ca.tetervak.mathtrainer.domain.UserAnswerStatus
 import ca.tetervak.mathtrainer.domain.UserProblem
 import ca.tetervak.mathtrainer.ui.QuizTopBar
@@ -230,7 +231,10 @@ fun ProblemListItem(
 fun ProblemListItemPreview() {
     MathTrainerTheme {
         ProblemListItem(
-            userProblem = UserProblem(problem = AdditionProblem(1, 2), id = 3),
+            userProblem = UserProblem(
+                problem = AlgebraProblem(a = 1, b = 2, op = AlgebraOperator.PLUS),
+                id = 3
+            ),
             onClick = {}
         )
     }
@@ -241,7 +245,10 @@ fun ProblemListItemPreview() {
 fun ProblemListItemSelectedPreview() {
     MathTrainerTheme {
         ProblemListItem(
-            userProblem = UserProblem(problem = AdditionProblem(1, 2), id = 3),
+            userProblem = UserProblem(
+                problem = AlgebraProblem(a = 1, b = 2, op = AlgebraOperator.PLUS),
+                id = 3
+            ),
             onClick = {},
             selected = true
         )
@@ -254,7 +261,10 @@ fun ProblemListScreenBodyPreview() {
     MathTrainerTheme {
         ProblemListScreenBody(
             list = List(5) {
-                UserProblem(problem = AdditionProblem(1, 2), id = it + 1)
+                UserProblem(
+                    problem = AlgebraProblem(a = 1, b = 2, op = AlgebraOperator.PLUS),
+                    id = it + 1
+                )
             },
             numberOfProblems = 5,
             score = 0,

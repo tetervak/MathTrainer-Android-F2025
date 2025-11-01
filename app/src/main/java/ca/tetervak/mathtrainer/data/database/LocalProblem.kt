@@ -3,7 +3,7 @@ package ca.tetervak.mathtrainer.data.database
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import ca.tetervak.mathtrainer.data.database.AlgebraOperator
+import ca.tetervak.mathtrainer.domain.AlgebraOperator
 import ca.tetervak.mathtrainer.domain.UserAnswerStatus
 import java.util.Date
 

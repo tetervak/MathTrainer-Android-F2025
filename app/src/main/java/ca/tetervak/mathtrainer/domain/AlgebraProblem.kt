@@ -2,10 +2,13 @@ package ca.tetervak.mathtrainer.domain
 
 import kotlin.math.abs
 
-sealed class AlgebraProblem {
-
-    abstract val text: String
-    abstract val answer: Int
+class AlgebraProblem(
+    val a: Int, // the first number in the problem
+    val b: Int, // the second number in the problem
+    val op: AlgebraOperator // the binary operator between these numbers
+) {
+    val text: String = "$a ${op.symbol} $b = ?"
+    val answer: Int = op.calculate(a, b)
 
     fun checkAnswer(userAnswer: String?): UserAnswerStatus =
         if (userAnswer == null) {
@@ -26,24 +29,4 @@ sealed class AlgebraProblem {
     companion object {
         const val TOLERANCE: Double = 0.000001
     }
-}
-
-data class AdditionProblem(val a: Int, val b: Int) : AlgebraProblem() {
-    override val answer: Int = a + b
-    override val text: String = "$a + $b = ?"
-}
-
-data class SubtractionProblem(val a: Int, val b: Int) : AlgebraProblem() {
-    override val answer: Int = a - b
-    override val text: String = "$a - $b = ?"
-}
-
-data class MultiplicationProblem(val a: Int, val b: Int) : AlgebraProblem() {
-    override val answer: Int = a * b
-    override val text: String = "$a x $b = ?"
-}
-
-data class DivisionProblem(val a: Int, val b: Int) : AlgebraProblem() {
-    override val answer: Int = a / b
-    override val text: String = "$a / $b = ?"
 }
