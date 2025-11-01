@@ -1,6 +1,6 @@
 package ca.tetervak.mathtrainer.data.factory
 
-import ca.tetervak.mathtrainer.domain.AlgebraOperator
+import ca.tetervak.mathtrainer.domain.AlgebraOperation
 import ca.tetervak.mathtrainer.domain.AlgebraProblem
 import kotlin.random.Random
 
@@ -28,7 +28,7 @@ class AdditionProblemFactory(
     fun createRandomProblem(): AlgebraProblem {
         val larger = getRandomLargerValue()
         val smaller = getRandomSmallerValue(larger)
-        return AlgebraProblem(a = larger - smaller, b = smaller, op = AlgebraOperator.PLUS)
+        return AlgebraProblem(a = larger - smaller, b = smaller, op = AlgebraOperation.ADDITION)
     }
 
     private fun getRandomLargerValue() =
@@ -51,7 +51,7 @@ class SubtractionProblemFactory(
     fun createRandomProblem(): AlgebraProblem {
         val larger = getRandomLargerValue()
         val smaller = getRandomSmallerValue(larger)
-        return AlgebraProblem(a = larger, b = smaller, op = AlgebraOperator.MINUS)
+        return AlgebraProblem(a = larger, b = smaller, op = AlgebraOperation.SUBTRACTION)
     }
 
     private fun getRandomLargerValue() =
@@ -75,9 +75,9 @@ class MultiplicationProblemFactory(
         val first = getRandomFirstValue()
         val second = getRandomSecondValue()
         return if (random.nextBoolean())
-            AlgebraProblem(a = first, b = second, op = AlgebraOperator.MULTIPLY)
+            AlgebraProblem(a = first, b = second, op = AlgebraOperation.MULTIPLICATION)
         else
-            AlgebraProblem(a = second, b = first, op = AlgebraOperator.MULTIPLY)
+            AlgebraProblem(a = second, b = first, op = AlgebraOperation.MULTIPLICATION)
     }
 
     private fun getRandomFirstValue() =
@@ -104,9 +104,9 @@ class DivisionProblemFactory(
         val first = getRandomFirstValue()
         val second = getRandomSecondValue()
         return if (random.nextBoolean())
-            AlgebraProblem(a = first * second, b = first, op = AlgebraOperator.DIVIDE)
+            AlgebraProblem(a = first * second, b = first, op = AlgebraOperation.DIVISION)
         else
-            AlgebraProblem(a = first * second, b = second, op = AlgebraOperator.DIVIDE)
+            AlgebraProblem(a = first * second, b = second, op = AlgebraOperation.DIVISION)
     }
 
     private fun getRandomFirstValue() =

@@ -7,7 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.tetervak.mathtrainer.data.repository.UserProblemRepository
-import ca.tetervak.mathtrainer.domain.AlgebraOperator
+import ca.tetervak.mathtrainer.domain.AlgebraOperation
 import ca.tetervak.mathtrainer.domain.AlgebraProblem
 import ca.tetervak.mathtrainer.domain.UserAnswerStatus
 import ca.tetervak.mathtrainer.domain.UserProblem
@@ -42,7 +42,7 @@ class ProblemDetailsViewModel @Inject constructor(
                 started = SharingStarted.WhileSubscribed(5000),
                 initialValue = ProblemDetailsUiState(
                     userProblem = UserProblem(
-                        problem = AlgebraProblem(a = 1, b = 2, op = AlgebraOperator.PLUS)
+                        problem = AlgebraProblem(a = 1, b = 2, op = AlgebraOperation.ADDITION)
                     )
                 )
             )

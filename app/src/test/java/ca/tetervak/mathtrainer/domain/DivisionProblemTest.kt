@@ -18,7 +18,7 @@ class DivisionProblemTest {
 
     @Test
     fun checkAnswer() {
-        val problem = AlgebraProblem(a = 6, b = 3, op = AlgebraOperator.DIVIDE)
+        val problem = AlgebraProblem(a = 6, b = 3, op = AlgebraOperation.DIVISION)
         println("problem = $problem")
         println("problem.answer = ${problem.answer}")
 
@@ -49,7 +49,7 @@ class DivisionProblemTest {
 
     @Test
     fun getAnswer() {
-        val problem = AlgebraProblem(a = 6, b = 3, op = AlgebraOperator.DIVIDE)
+        val problem = AlgebraProblem(a = 6, b = 3, op = AlgebraOperation.DIVISION)
         println("problem = $problem")
         println("problem.answer=${problem.answer}")
         assertEquals(2, problem.answer)
@@ -57,7 +57,7 @@ class DivisionProblemTest {
 
     @Test
     fun getText() {
-        val problem = AlgebraProblem(a = 6, b = 3, op = AlgebraOperator.DIVIDE)
+        val problem = AlgebraProblem(a = 6, b = 3, op = AlgebraOperation.DIVISION)
         println("problem = $problem")
         println("problem.text = \"${problem.text}\"")
         assertEquals("6 / 3 = ?", problem.text)

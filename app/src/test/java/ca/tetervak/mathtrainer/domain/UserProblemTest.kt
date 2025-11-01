@@ -7,7 +7,7 @@ import org.junit.Test
 
 class UserProblemTest {
 
-    val problem: AlgebraProblem = AlgebraProblem( a= 1, b = 2, op = AlgebraOperator.PLUS)
+    val problem: AlgebraProblem = AlgebraProblem( a= 1, b = 2, op = AlgebraOperation.ADDITION)
     val userProblem: UserProblem = UserProblem(problem)
 
     @Before

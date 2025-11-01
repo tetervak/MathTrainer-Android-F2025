@@ -5,7 +5,7 @@ import kotlin.math.abs
 class AlgebraProblem(
     val a: Int, // the first number in the problem
     val b: Int, // the second number in the problem
-    val op: AlgebraOperator // the binary operator between these numbers
+    val op: AlgebraOperation // the binary operator between these numbers
 ) {
     val text: String = "$a ${op.symbol} $b = ?"
     val answer: Int = op.calculate(a, b)
