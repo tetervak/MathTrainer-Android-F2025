@@ -3,11 +3,8 @@ package ca.tetervak.mathtrainer.data.repository
 import ca.tetervak.mathtrainer.data.remote.AlgebraQuiz
 import ca.tetervak.mathtrainer.data.remote.AlgebraQuizProblem
 import ca.tetervak.mathtrainer.data.remote.RandomQuizApi
-import ca.tetervak.mathtrainer.domain.AdditionProblem
+import ca.tetervak.mathtrainer.domain.AlgebraOperation
 import ca.tetervak.mathtrainer.domain.AlgebraProblem
-import ca.tetervak.mathtrainer.domain.DivisionProblem
-import ca.tetervak.mathtrainer.domain.MultiplicationProblem
-import ca.tetervak.mathtrainer.domain.SubtractionProblem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -31,10 +28,10 @@ class RemoteRandomQuizRepository @Inject constructor(
         val a: Int = parts[0].toInt()
         val b: Int = parts[2].toInt()
         return when(op){
-            '+' -> AdditionProblem(a, b)
-            '-' -> SubtractionProblem(a, b)
-            'x' -> MultiplicationProblem(a, b)
-            '/' -> DivisionProblem(a, b)
+            '+' -> AlgebraProblem(a = a, b = b, op = AlgebraOperation.ADDITION)
+            '-' -> AlgebraProblem(a = a, b = b, op = AlgebraOperation.SUBTRACTION)
+            'x' -> AlgebraProblem(a = a, b = b, op = AlgebraOperation.MULTIPLICATION)
+            '/' -> AlgebraProblem(a = a, b = b, op = AlgebraOperation.DIVISION)
             else -> throw IllegalArgumentException("Unknown operator: $op")
         }
     }
