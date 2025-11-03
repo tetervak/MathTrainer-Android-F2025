@@ -18,4 +18,15 @@ enum class AlgebraOperation {
             MULTIPLICATION -> a * b
             DIVISION -> a / b
         }
+
+    companion object {
+        fun fromSymbol(symbol: Char): AlgebraOperation =
+            when(symbol) {
+                '+' -> ADDITION
+                '-' -> SUBTRACTION
+                'x' -> MULTIPLICATION
+                '/' -> DIVISION
+                else -> throw IllegalArgumentException("Invalid operation symbol: $symbol")
+            }
+    }
 }
