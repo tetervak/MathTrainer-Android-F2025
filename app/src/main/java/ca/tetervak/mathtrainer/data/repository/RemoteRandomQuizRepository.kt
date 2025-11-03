@@ -24,15 +24,9 @@ class RemoteRandomQuizRepository @Inject constructor(
 
     private fun AlgebraQuizProblem.toAlgebraProblem(): AlgebraProblem {
         val parts: List<String> = this.text.split(" ", "=", limit = 4)
-        val op: Char = parts[1].first()
         val a: Int = parts[0].toInt()
+        val op: AlgebraOperation = AlgebraOperation.fromSymbol(symbol = parts[1].first())
         val b: Int = parts[2].toInt()
-        return when(op){
-            '+' -> AlgebraProblem(a = a, b = b, op = AlgebraOperation.ADDITION)
-            '-' -> AlgebraProblem(a = a, b = b, op = AlgebraOperation.SUBTRACTION)
-            'x' -> AlgebraProblem(a = a, b = b, op = AlgebraOperation.MULTIPLICATION)
-            '/' -> AlgebraProblem(a = a, b = b, op = AlgebraOperation.DIVISION)
-            else -> throw IllegalArgumentException("Unknown operator: $op")
-        }
+        return AlgebraProblem(a = a, b = b, op = op)
     }
 }
