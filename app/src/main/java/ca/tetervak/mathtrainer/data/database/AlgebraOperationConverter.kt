@@ -7,20 +7,9 @@ class AlgebraOperationConverter {
 
     @TypeConverter
     fun toString(op: AlgebraOperation): String =
-        when (op) {
-            AlgebraOperation.ADDITION -> "+"
-            AlgebraOperation.SUBTRACTION -> "-"
-            AlgebraOperation.MULTIPLICATION -> "x"
-            AlgebraOperation.DIVISION -> "/"
-        }
+        op.symbol.toString()
 
     @TypeConverter
     fun fromString(op: String): AlgebraOperation =
-        when (op){
-            "+" -> AlgebraOperation.ADDITION
-            "-" -> AlgebraOperation.SUBTRACTION
-            "x" -> AlgebraOperation.MULTIPLICATION
-            "/" -> AlgebraOperation.DIVISION
-            else -> throw IllegalArgumentException("Unknown operation: $op")
-        }
+        AlgebraOperation.fromSymbol(symbol = op.first())
 }
