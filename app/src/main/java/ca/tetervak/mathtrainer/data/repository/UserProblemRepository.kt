@@ -2,32 +2,44 @@ package ca.tetervak.mathtrainer.data.repository
 
 import ca.tetervak.mathtrainer.domain.ScoreData
 import ca.tetervak.mathtrainer.domain.StatusData
-import ca.tetervak.mathtrainer.domain.UserAnswerStatus
-import ca.tetervak.mathtrainer.domain.AlgebraProblem
 import ca.tetervak.mathtrainer.domain.UserProblem
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-interface UserProblemRepository {
+class UserProblemRepository @Inject constructor(
+    private val localUserProblemRepository: LocalUserProblemRepository,
+    private val randomQuizRepository: RandomQuizRepository
+) {
 
-    fun getAllUserProblemsFlow(): Flow<List<UserProblem>>
+    fun getAllUserProblemsFlow(): Flow<List<UserProblem>> =
+        localUserProblemRepository.getAllUserProblemsFlow()
 
-    fun getUserProblemFlowById(id: Int): Flow<UserProblem?>
+    fun getUserProblemFlowById(id: Int): Flow<UserProblem?> =
+        localUserProblemRepository.getUserProblemFlowById(id)
 
-    suspend fun updateUserProblem(userProblem: UserProblem)
+    suspend fun updateUserProblem(userProblem: UserProblem) =
+        localUserProblemRepository.updateUserProblem(userProblem)
 
-    suspend fun resetUserProblemById(id: Int)
+    suspend fun isEmpty(): Boolean =
+        localUserProblemRepository.isEmpty()
 
-    suspend fun insertUserProblems(list: List<UserProblem>)
+    fun getScoreDataFlow(): Flow<ScoreData> =
+        localUserProblemRepository.getScoreDataFlow()
 
-    suspend fun emptyAndInsertUserProblems(list: List<UserProblem>)
+    fun getStatusDataFlow(): Flow<StatusData> =
+        localUserProblemRepository.getStatusDataFlow()
 
-    suspend fun emptyAndInsertAlgebraProblems(list: List<AlgebraProblem>)
+    suspend fun insertGeneratedUserProblems(){
+        localUserProblemRepository.insertAlgebraProblems(
+            list = randomQuizRepository.getRandomQuizProblems()
+        )
+    }
 
-    suspend fun getUserProblemCount(): Int
+    suspend fun emptyAndInsertGeneratedUserProblems(){
+        localUserProblemRepository.emptyAndInsertAlgebraProblems(
+            list = randomQuizRepository.getRandomQuizProblems()
+        )
+    }
 
-    suspend fun isEmpty(): Boolean
 
-    fun getScoreDataFlow(): Flow<ScoreData>
-
-    fun getStatusDataFlow(): Flow<StatusData>
 }

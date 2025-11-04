@@ -3,7 +3,6 @@ package ca.tetervak.mathtrainer.ui.list
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.tetervak.mathtrainer.data.repository.UserProblemRepository
-import ca.tetervak.mathtrainer.domain.NewQuizUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -15,7 +14,6 @@ import javax.inject.Inject
 @HiltViewModel
 class ProblemListViewModel @Inject constructor(
     private val repository: UserProblemRepository,
-    private val newQuizUseCase: NewQuizUseCase
 ) : ViewModel() {
 
     val uiState: StateFlow<ProblemListUiState> =
@@ -30,7 +28,7 @@ class ProblemListViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             if (repository.isEmpty()) {
-                repository.insertUserProblems(list = newQuizUseCase(numberOfProblems = 5))
+                repository.insertGeneratedUserProblems()
             }
         }
     }

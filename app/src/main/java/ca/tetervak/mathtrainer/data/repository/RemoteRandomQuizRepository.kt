@@ -13,9 +13,9 @@ import javax.inject.Singleton
 @Singleton
 class RemoteRandomQuizRepository @Inject constructor(
     private val randomQuizApi: RandomQuizApi
-): RandomQuizRepository {
+) {
 
-    override suspend fun getRandomQuizProblems(numberOfProblems: Int): List<AlgebraProblem> =
+    suspend fun getRandomQuizProblems(numberOfProblems: Int): List<AlgebraProblem> =
         withContext(Dispatchers.IO) {
             val quiz: AlgebraQuiz = randomQuizApi.getRandomQuiz(numberOfProblems)
             val problems: List<AlgebraQuizProblem> = quiz.problems

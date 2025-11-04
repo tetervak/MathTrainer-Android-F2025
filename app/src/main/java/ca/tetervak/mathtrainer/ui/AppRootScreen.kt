@@ -28,6 +28,7 @@ import androidx.navigation.navArgument
 import ca.tetervak.mathtrainer.ui.details.ProblemDetailsScreen
 import ca.tetervak.mathtrainer.ui.home.HomeScreen
 import ca.tetervak.mathtrainer.ui.list.ProblemListScreen
+import ca.tetervak.mathtrainer.ui.settings.SettingsScreen
 
 @Composable
 fun AppRootScreen() {
@@ -45,6 +46,7 @@ fun AppRootScreen() {
             HomeScreen(
                 onFirstClick = { navController.navigate("problem/1") },
                 onListClick = { navController.navigate("list-problems") },
+                onSettingsClick = { navController.navigate("settings") },
                 onHelpClick = { showAboutDialog = true }
             )
         }
@@ -79,6 +81,12 @@ fun AppRootScreen() {
                 onProblemNavClick = { problemId ->
                     navController.navigate("problem/$problemId")
                 }
+            )
+        }
+        composable(route = "settings") {
+            SettingsScreen(
+                onHelpClick = { showAboutDialog = true },
+                onHomeClick = { navController.navigate("home") }
             )
         }
     }

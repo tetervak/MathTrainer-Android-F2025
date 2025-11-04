@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Replay
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Start
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -38,6 +39,7 @@ import ca.tetervak.mathtrainer.ui.theme.Purple40
 fun HomeScreen(
     onFirstClick: () -> Unit,
     onListClick: () -> Unit,
+    onSettingsClick: () -> Unit,
     onHelpClick: () -> Unit,
 ) {
 
@@ -55,6 +57,7 @@ fun HomeScreen(
             homeViewModel.makeNewProblems()
             onListClick()
         },
+        onSettingsClick = onSettingsClick,
         onHelpClick = onHelpClick
     )
 }
@@ -67,6 +70,7 @@ private fun HomeScreenBody(
     onFirstClick: () -> Unit,
     onListClick: () -> Unit,
     onMakeNewProblemsClick: () -> Unit,
+    onSettingsClick: () -> Unit,
     onHelpClick: () -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -137,6 +141,21 @@ private fun HomeScreenBody(
                     contentDescription = stringResource(R.string.first)
                 )
             }
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = onSettingsClick
+            ) {
+
+                Text(
+                    modifier = Modifier.padding(end = 8.dp),
+                    text = stringResource(R.string.settings)
+                )
+                Icon(
+                    imageVector = Icons.Filled.Settings,
+                    contentDescription = stringResource(R.string.first)
+                )
+            }
+
             Score(
                 rightAnswers = score,
                 numberOfProblems = numberOfProblems,
@@ -155,6 +174,7 @@ fun HomeScreenPreview() {
         onFirstClick = {},
         onListClick = {},
         onMakeNewProblemsClick = {},
+        onSettingsClick = {},
         onHelpClick = {}
     )
 }
