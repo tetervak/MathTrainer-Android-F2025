@@ -29,6 +29,10 @@ import ca.tetervak.mathtrainer.ui.details.ProblemDetailsScreen
 import ca.tetervak.mathtrainer.ui.home.HomeScreen
 import ca.tetervak.mathtrainer.ui.list.ProblemListScreen
 import ca.tetervak.mathtrainer.ui.settings.SettingsScreen
+import kotlinx.serialization.Serializable
+
+@Serializable
+object HomeDestination
 
 @Composable
 fun AppRootScreen() {
@@ -40,9 +44,9 @@ fun AppRootScreen() {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = "home"
+        startDestination = HomeDestination
     ) {
-        composable(route = "home") {
+        composable<HomeDestination>{
             HomeScreen(
                 onFirstClick = { navController.navigate("problem/1") },
                 onListClick = { navController.navigate("list-problems") },
@@ -64,7 +68,7 @@ fun AppRootScreen() {
                 onProblemClick = { problemId ->
                     navController.navigate("problem/$problemId")
                 },
-                onHomeClick = { navController.navigate("home") },
+                onHomeClick = { navController.navigate(HomeDestination) },
                 onHelpClick = { showAboutDialog = true }
             )
         }
@@ -76,7 +80,7 @@ fun AppRootScreen() {
             val problemId = backStackEntry.arguments?.getInt("problemId") ?: 0
             ProblemDetailsScreen(
                 onHelpClick = { showAboutDialog = true },
-                onHomeClick = { navController.navigate("home") },
+                onHomeClick = { navController.navigate(HomeDestination) },
                 onListClick = { navController.navigate("list-problems?selected=$problemId") },
                 onProblemNavClick = { problemId ->
                     navController.navigate("problem/$problemId")
@@ -86,7 +90,7 @@ fun AppRootScreen() {
         composable(route = "settings") {
             SettingsScreen(
                 onHelpClick = { showAboutDialog = true },
-                onHomeClick = { navController.navigate("home") }
+                onHomeClick = { navController.navigate(HomeDestination) }
             )
         }
     }
