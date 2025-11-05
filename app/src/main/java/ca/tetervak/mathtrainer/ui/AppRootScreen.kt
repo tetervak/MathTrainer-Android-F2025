@@ -20,11 +20,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import androidx.navigation.toRoute
 import ca.tetervak.mathtrainer.ui.details.ProblemDetailsScreen
 import ca.tetervak.mathtrainer.ui.home.HomeScreen
@@ -33,16 +31,16 @@ import ca.tetervak.mathtrainer.ui.settings.SettingsScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
-object HomeDestination
+object Home
 
 @Serializable
-object SettingsDestination
+object Settings
 
 @Serializable
-data class ProblemDetailsDestination(val problemId: Int)
+data class ProblemDetails(val problemId: Int)
 
 @Serializable
-data class ProblemListDestination(val selected: Int? = 0)
+data class ProblemList(val selected: Int? = 0)
 
 
 @Composable
@@ -55,46 +53,46 @@ fun AppRootScreen() {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = HomeDestination
+        startDestination = Home
     ) {
-        composable<HomeDestination>{
+        composable<Home>{
             HomeScreen(
-                onFirstClick = { navController.navigate(ProblemDetailsDestination(problemId = 1)) },
-                onListClick = { navController.navigate(ProblemListDestination()) },
-                onSettingsClick = { navController.navigate(SettingsDestination) },
+                onFirstClick = { navController.navigate(route = ProblemDetails(problemId = 1)) },
+                onListClick = { navController.navigate(route = ProblemList()) },
+                onSettingsClick = { navController.navigate(route = Settings) },
                 onHelpClick = { showAboutDialog = true }
             )
         }
-        composable<ProblemListDestination>{
+        composable<ProblemList>{
             backStackEntry ->
-            val problemListDestination: ProblemListDestination = backStackEntry.toRoute()
-            val selected: Int = problemListDestination.selected ?: 0
+            val problemList: ProblemList = backStackEntry.toRoute()
+            val selected: Int = problemList.selected ?: 0
             ProblemListScreen(
                 selected = selected,
                 onProblemClick = { problemId ->
-                    navController.navigate(ProblemDetailsDestination(problemId = problemId))
+                    navController.navigate(route = ProblemDetails(problemId = problemId))
                 },
-                onHomeClick = { navController.navigate(HomeDestination) },
+                onHomeClick = { navController.navigate(route = Home) },
                 onHelpClick = { showAboutDialog = true }
             )
         }
-        composable<ProblemDetailsDestination>{
+        composable<ProblemDetails>{
             backStackEntry ->
-            val problemDetailsDestination: ProblemDetailsDestination = backStackEntry.toRoute()
-            val problemId: Int = problemDetailsDestination.problemId
+            val problemDetails: ProblemDetails = backStackEntry.toRoute()
+            val problemId: Int = problemDetails.problemId
             ProblemDetailsScreen(
                 onHelpClick = { showAboutDialog = true },
-                onHomeClick = { navController.navigate(HomeDestination) },
-                onListClick = { navController.navigate(ProblemListDestination(selected = problemId)) },
+                onHomeClick = { navController.navigate(route = Home) },
+                onListClick = { navController.navigate(route = ProblemList(selected = problemId)) },
                 onProblemNavClick = { problemId ->
-                    navController.navigate(ProblemDetailsDestination(problemId = problemId))
+                    navController.navigate(route = ProblemDetails(problemId = problemId))
                 }
             )
         }
-        composable<SettingsDestination> {
+        composable<Settings> {
             SettingsScreen(
                 onHelpClick = { showAboutDialog = true },
-                onHomeClick = { navController.navigate(HomeDestination) }
+                onHomeClick = { navController.navigate(route = Home) }
             )
         }
     }
