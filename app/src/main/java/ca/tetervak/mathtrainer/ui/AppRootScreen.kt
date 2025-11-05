@@ -25,6 +25,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.navigation.toRoute
 import ca.tetervak.mathtrainer.ui.details.ProblemDetailsScreen
 import ca.tetervak.mathtrainer.ui.home.HomeScreen
 import ca.tetervak.mathtrainer.ui.list.ProblemListScreen
@@ -33,6 +34,12 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 object HomeDestination
+
+@Serializable
+object SettingsDestination
+
+@Serializable
+data class ProblemDetailsDestination(val problemId: Int)
 
 @Composable
 fun AppRootScreen() {
@@ -48,9 +55,9 @@ fun AppRootScreen() {
     ) {
         composable<HomeDestination>{
             HomeScreen(
-                onFirstClick = { navController.navigate("problem/1") },
+                onFirstClick = { navController.navigate(ProblemDetailsDestination(problemId = 1)) },
                 onListClick = { navController.navigate("list-problems") },
-                onSettingsClick = { navController.navigate("settings") },
+                onSettingsClick = { navController.navigate(SettingsDestination) },
                 onHelpClick = { showAboutDialog = true }
             )
         }
@@ -66,28 +73,26 @@ fun AppRootScreen() {
             ProblemListScreen(
                 selected = selected,
                 onProblemClick = { problemId ->
-                    navController.navigate("problem/$problemId")
+                    navController.navigate(ProblemDetailsDestination(problemId = problemId))
                 },
                 onHomeClick = { navController.navigate(HomeDestination) },
                 onHelpClick = { showAboutDialog = true }
             )
         }
-        composable(
-            route = "problem/{problemId}",
-            arguments = listOf(navArgument("problemId") { type = NavType.IntType })
-        ) {
+        composable<ProblemDetailsDestination>{
             backStackEntry ->
-            val problemId = backStackEntry.arguments?.getInt("problemId") ?: 0
+            val problemDetailsDestination: ProblemDetailsDestination = backStackEntry.toRoute()
+            val problemId = problemDetailsDestination.problemId
             ProblemDetailsScreen(
                 onHelpClick = { showAboutDialog = true },
                 onHomeClick = { navController.navigate(HomeDestination) },
                 onListClick = { navController.navigate("list-problems?selected=$problemId") },
                 onProblemNavClick = { problemId ->
-                    navController.navigate("problem/$problemId")
+                    navController.navigate(ProblemDetailsDestination(problemId = problemId))
                 }
             )
         }
-        composable(route = "settings") {
+        composable<SettingsDestination> {
             SettingsScreen(
                 onHelpClick = { showAboutDialog = true },
                 onHomeClick = { navController.navigate(HomeDestination) }
