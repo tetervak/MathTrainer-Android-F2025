@@ -41,6 +41,10 @@ object SettingsDestination
 @Serializable
 data class ProblemDetailsDestination(val problemId: Int)
 
+@Serializable
+data class ProblemListDestination(val selected: Int? = 0)
+
+
 @Composable
 fun AppRootScreen() {
 
@@ -56,20 +60,15 @@ fun AppRootScreen() {
         composable<HomeDestination>{
             HomeScreen(
                 onFirstClick = { navController.navigate(ProblemDetailsDestination(problemId = 1)) },
-                onListClick = { navController.navigate("list-problems") },
+                onListClick = { navController.navigate(ProblemListDestination()) },
                 onSettingsClick = { navController.navigate(SettingsDestination) },
                 onHelpClick = { showAboutDialog = true }
             )
         }
-        composable(
-            route = "list-problems?selected={selected}",
-            arguments = listOf(navArgument("selected") {
-                type = NavType.IntType
-                defaultValue = 0
-            })
-        ) {
+        composable<ProblemListDestination>{
             backStackEntry ->
-            val selected = backStackEntry.arguments?.getInt("selected") ?: 0
+            val problemListDestination: ProblemListDestination = backStackEntry.toRoute()
+            val selected: Int = problemListDestination.selected ?: 0
             ProblemListScreen(
                 selected = selected,
                 onProblemClick = { problemId ->
@@ -82,11 +81,11 @@ fun AppRootScreen() {
         composable<ProblemDetailsDestination>{
             backStackEntry ->
             val problemDetailsDestination: ProblemDetailsDestination = backStackEntry.toRoute()
-            val problemId = problemDetailsDestination.problemId
+            val problemId: Int = problemDetailsDestination.problemId
             ProblemDetailsScreen(
                 onHelpClick = { showAboutDialog = true },
                 onHomeClick = { navController.navigate(HomeDestination) },
-                onListClick = { navController.navigate("list-problems?selected=$problemId") },
+                onListClick = { navController.navigate(ProblemListDestination(selected = problemId)) },
                 onProblemNavClick = { problemId ->
                     navController.navigate(ProblemDetailsDestination(problemId = problemId))
                 }
