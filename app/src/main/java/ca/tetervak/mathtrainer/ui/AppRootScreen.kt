@@ -76,7 +76,7 @@ fun AppRootScreen() {
                         onProblemClick = { problemId ->
                             backStack.add(ProblemDetails(problemId = problemId))
                         },
-                        onHomeClick = { backStack.add(Home) },
+                        onHomeClick = { backStack.removeIf { it !is Home } },
                         onHelpClick = { showAboutDialog = true }
                     )
                 }
@@ -85,7 +85,7 @@ fun AppRootScreen() {
                     ProblemDetailsScreen(
                         problemId = problemId,
                         onHelpClick = { showAboutDialog = true },
-                        onHomeClick = { backStack.add(Home) },
+                        onHomeClick = { backStack.removeIf { it !is Home } },
                         onListClick = { backStack.add(ProblemList(selected = problemId)) },
                         onProblemNavClick = { problemId ->
                            backStack.add(ProblemDetails(problemId = problemId))
@@ -95,7 +95,7 @@ fun AppRootScreen() {
                 is Settings -> NavEntry(key) {
                     SettingsScreen(
                         onHelpClick = { showAboutDialog = true },
-                        onHomeClick = { backStack.add(Home) }
+                        onHomeClick = { backStack.removeIf { it !is Home } }
                     )
                 }
                 else -> NavEntry(key) { Text("Unknown route") }
