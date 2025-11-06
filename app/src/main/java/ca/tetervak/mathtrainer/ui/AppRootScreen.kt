@@ -18,12 +18,13 @@ package ca.tetervak.mathtrainer.ui
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavEntry
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import ca.tetervak.mathtrainer.ui.details.ProblemDetailsScreen
 import ca.tetervak.mathtrainer.ui.home.HomeScreen
@@ -31,14 +32,17 @@ import ca.tetervak.mathtrainer.ui.list.ProblemListScreen
 import ca.tetervak.mathtrainer.ui.settings.SettingsScreen
 import kotlinx.serialization.Serializable
 
+@Serializable
+object Home: NavKey
 
-object Home
+@Serializable
+object Settings: NavKey
 
-object Settings
+@Serializable
+data class ProblemDetails(val problemId: Int): NavKey
 
-data class ProblemDetails(val problemId: Int)
-
-data class ProblemList(val selected: Int? = 0)
+@Serializable
+data class ProblemList(val selected: Int? = 0): NavKey
 
 
 @Composable
@@ -49,7 +53,8 @@ fun AppRootScreen() {
     }
 
     // Create a back stack, specifying the key the app should start with
-    val backStack = remember { mutableStateListOf<Any>(Home) }
+    val backStack: NavBackStack<NavKey> = rememberNavBackStack(Home)
+
 
     NavDisplay(
         backStack = backStack,
@@ -93,7 +98,7 @@ fun AppRootScreen() {
                         onHomeClick = { backStack.add(Home) }
                     )
                 }
-                else -> NavEntry(Unit) { Text("Unknown route") }
+                else -> NavEntry(key) { Text("Unknown route") }
             }
 
         }
