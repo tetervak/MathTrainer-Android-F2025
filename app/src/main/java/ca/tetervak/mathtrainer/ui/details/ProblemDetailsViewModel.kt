@@ -3,14 +3,10 @@ package ca.tetervak.mathtrainer.ui.details
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.tetervak.mathtrainer.data.repository.UserProblemRepository
-import ca.tetervak.mathtrainer.domain.AlgebraOperation
-import ca.tetervak.mathtrainer.domain.AlgebraProblem
 import ca.tetervak.mathtrainer.domain.UserAnswerStatus
-import ca.tetervak.mathtrainer.domain.UserProblem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
