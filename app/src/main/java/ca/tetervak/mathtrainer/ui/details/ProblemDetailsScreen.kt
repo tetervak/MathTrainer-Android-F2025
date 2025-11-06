@@ -40,6 +40,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -69,6 +71,7 @@ import ca.tetervak.mathtrainer.ui.theme.MathTrainerTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProblemDetailsScreen(
+    problemId: Int,
     onHelpClick: () -> Unit,
     onHomeClick: () -> Unit,
     onListClick: () -> Unit,
@@ -76,24 +79,32 @@ fun ProblemDetailsScreen(
 ) {
 
     val detailsViewModel: ProblemDetailsViewModel = hiltViewModel()
-    val detailsUiState: ProblemDetailsUiState by detailsViewModel.uiState.collectAsState()
-    val userProblem = detailsUiState.userProblem
+    LaunchedEffect(problemId) {
+        detailsViewModel.loadProblem(problemId)
+    }
 
-    val scoreViewModel: ScoreViewModel = hiltViewModel()
-    val scoreData by scoreViewModel.uiState.collectAsState()
+    val detailsUiState: State<ProblemDetailsUiState> = detailsViewModel.uiState.collectAsState()
+    val state = detailsUiState.value
 
-    ProblemDetailsScreenBody(
-        userProblem = userProblem,
-        score = scoreData.rightAnswers,
-        numberOfProblems = scoreData.numberOfProblems,
-        userAnswerInput = detailsViewModel.answerInput,
-        onChangeUserAnswerInput = detailsViewModel::updateAnswerInput,
-        onSubmit = detailsViewModel::onSubmit,
-        onHelpClick = onHelpClick,
-        onHomeClick = onHomeClick,
-        onListClick = onListClick,
-        onProblemNavClick = onProblemNavClick
-    )
+    if (state is ProblemDetailsUiState.Success) {
+        val userProblem: UserProblem = state.userProblem
+
+        val scoreViewModel: ScoreViewModel = hiltViewModel()
+        val scoreData by scoreViewModel.uiState.collectAsState()
+
+        ProblemDetailsScreenBody(
+            userProblem = userProblem,
+            score = scoreData.rightAnswers,
+            numberOfProblems = scoreData.numberOfProblems,
+            userAnswerInput = detailsViewModel.answerInput,
+            onChangeUserAnswerInput = detailsViewModel::updateAnswerInput,
+            onSubmit = detailsViewModel::onSubmit,
+            onHelpClick = onHelpClick,
+            onHomeClick = onHomeClick,
+            onListClick = onListClick,
+            onProblemNavClick = onProblemNavClick
+        )
+    }
 
 }
 

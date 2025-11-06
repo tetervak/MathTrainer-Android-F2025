@@ -15,31 +15,29 @@
  */
 package ca.tetervak.mathtrainer.ui
 
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
+import androidx.navigation3.runtime.NavEntry
+import androidx.navigation3.ui.NavDisplay
 import ca.tetervak.mathtrainer.ui.details.ProblemDetailsScreen
 import ca.tetervak.mathtrainer.ui.home.HomeScreen
 import ca.tetervak.mathtrainer.ui.list.ProblemListScreen
 import ca.tetervak.mathtrainer.ui.settings.SettingsScreen
 import kotlinx.serialization.Serializable
 
-@Serializable
+
 object Home
 
-@Serializable
 object Settings
 
-@Serializable
 data class ProblemDetails(val problemId: Int)
 
-@Serializable
 data class ProblemList(val selected: Int? = 0)
 
 
@@ -50,52 +48,56 @@ fun AppRootScreen() {
         mutableStateOf(false)
     }
 
-    val navController = rememberNavController()
-    NavHost(
-        navController = navController,
-        startDestination = Home
-    ) {
-        composable<Home>{
-            HomeScreen(
-                onFirstClick = { navController.navigate(route = ProblemDetails(problemId = 1)) },
-                onListClick = { navController.navigate(route = ProblemList()) },
-                onSettingsClick = { navController.navigate(route = Settings) },
-                onHelpClick = { showAboutDialog = true }
-            )
-        }
-        composable<ProblemList>{
-            backStackEntry ->
-            val problemList: ProblemList = backStackEntry.toRoute()
-            val selected: Int = problemList.selected ?: 0
-            ProblemListScreen(
-                selected = selected,
-                onProblemClick = { problemId ->
-                    navController.navigate(route = ProblemDetails(problemId = problemId))
-                },
-                onHomeClick = { navController.navigate(route = Home) },
-                onHelpClick = { showAboutDialog = true }
-            )
-        }
-        composable<ProblemDetails>{
-            backStackEntry ->
-            val problemDetails: ProblemDetails = backStackEntry.toRoute()
-            val problemId: Int = problemDetails.problemId
-            ProblemDetailsScreen(
-                onHelpClick = { showAboutDialog = true },
-                onHomeClick = { navController.navigate(route = Home) },
-                onListClick = { navController.navigate(route = ProblemList(selected = problemId)) },
-                onProblemNavClick = { problemId ->
-                    navController.navigate(route = ProblemDetails(problemId = problemId))
+    // Create a back stack, specifying the key the app should start with
+    val backStack = remember { mutableStateListOf<Any>(Home) }
+
+    NavDisplay(
+        backStack = backStack,
+        onBack = { backStack.removeLastOrNull() },
+        entryProvider = { key ->
+            when (key) {
+                is Home -> NavEntry(key){
+                    HomeScreen(
+                        onFirstClick = { backStack.add(ProblemDetails(problemId = 1)) },
+                        onListClick = { backStack.add(ProblemList()) },
+                        onSettingsClick = { backStack.add(Settings) },
+                        onHelpClick = { showAboutDialog = true }
+                    )
                 }
-            )
+                is ProblemList -> NavEntry(key){
+                    val selected: Int = key.selected ?: 0
+                    ProblemListScreen(
+                        selected = selected,
+                        onProblemClick = { problemId ->
+                            backStack.add(ProblemDetails(problemId = problemId))
+                        },
+                        onHomeClick = { backStack.add(Home) },
+                        onHelpClick = { showAboutDialog = true }
+                    )
+                }
+                is ProblemDetails -> NavEntry(key) {
+                    val problemId: Int = key.problemId
+                    ProblemDetailsScreen(
+                        problemId = problemId,
+                        onHelpClick = { showAboutDialog = true },
+                        onHomeClick = { backStack.add(Home) },
+                        onListClick = { backStack.add(ProblemList(selected = problemId)) },
+                        onProblemNavClick = { problemId ->
+                           backStack.add(ProblemDetails(problemId = problemId))
+                        }
+                    )
+                }
+                is Settings -> NavEntry(key) {
+                    SettingsScreen(
+                        onHelpClick = { showAboutDialog = true },
+                        onHomeClick = { backStack.add(Home) }
+                    )
+                }
+                else -> NavEntry(Unit) { Text("Unknown route") }
+            }
+
         }
-        composable<Settings> {
-            SettingsScreen(
-                onHelpClick = { showAboutDialog = true },
-                onHomeClick = { navController.navigate(route = Home) }
-            )
-        }
-    }
+    )
 
     if (showAboutDialog) {
         AboutDialog(onDismissRequest = { showAboutDialog = false })

@@ -12,9 +12,12 @@ import ca.tetervak.mathtrainer.domain.AlgebraProblem
 import ca.tetervak.mathtrainer.domain.UserAnswerStatus
 import ca.tetervak.mathtrainer.domain.UserProblem
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
@@ -24,28 +27,33 @@ import javax.inject.Inject
 @HiltViewModel
 class ProblemDetailsViewModel @Inject constructor(
     private val repository: UserProblemRepository,
-    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val problemId: Int = checkNotNull(savedStateHandle["problemId"])
+    private val problemIdFlow: MutableStateFlow<Int?> = MutableStateFlow(null)
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     val uiState: StateFlow<ProblemDetailsUiState> =
-        repository.getUserProblemFlowById(problemId).filterNotNull()
-            .onEach { userProblem ->
-                if (userProblem.status == UserAnswerStatus.RIGHT_ANSWER) {
-                    answerInput = checkNotNull(userProblem.userAnswer)
-                }
+        problemIdFlow.flatMapLatest { problemId ->
+            if (problemId == null) {
+                MutableStateFlow(ProblemDetailsUiState.Loading)
+            } else {
+                repository.getUserProblemFlowById(problemId).filterNotNull()
+                    .onEach { userProblem ->
+                        if (userProblem.status == UserAnswerStatus.RIGHT_ANSWER) {
+                            answerInput = checkNotNull(userProblem.userAnswer)
+                        }
+                    }
+                    .map { userProblem -> ProblemDetailsUiState.Success(userProblem = userProblem) }
             }
-            .map { userProblem -> ProblemDetailsUiState(userProblem = userProblem) }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5000),
-                initialValue = ProblemDetailsUiState(
-                    userProblem = UserProblem(
-                        problem = AlgebraProblem(a = 1, b = 2, op = AlgebraOperation.ADDITION)
-                    )
-                )
-            )
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = ProblemDetailsUiState.Loading
+        )
+
+    fun loadProblem(problemId: Int) {
+        problemIdFlow.value = problemId
+    }
 
     var answerInput by mutableStateOf("")
         private set
@@ -55,7 +63,10 @@ class ProblemDetailsViewModel @Inject constructor(
     }
 
     fun onSubmit() {
-        val userProblem = uiState.value.userProblem.copy(userAnswer = answerInput)
+        val uiState = uiState.value
+        if (uiState !is ProblemDetailsUiState.Success) return
+
+        val userProblem = uiState.userProblem.copy(userAnswer = answerInput)
         viewModelScope.launch {
             repository.updateUserProblem(userProblem)
             answerInput = ""
