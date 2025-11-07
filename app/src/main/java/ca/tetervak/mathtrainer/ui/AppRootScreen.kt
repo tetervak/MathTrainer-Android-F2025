@@ -72,7 +72,7 @@ fun AppRootScreen() {
                 onProblemClick = { problemId ->
                     navController.navigate(route = ProblemDetails(problemId = problemId))
                 },
-                onHomeClick = { navController.navigate(route = Home) },
+                onHomeClick = { navController.popBackStack(route = Home, inclusive = false) },
                 onHelpClick = { showAboutDialog = true }
             )
         }
@@ -82,7 +82,7 @@ fun AppRootScreen() {
             val problemId: Int = problemDetails.problemId
             ProblemDetailsScreen(
                 onHelpClick = { showAboutDialog = true },
-                onHomeClick = { navController.navigate(route = Home) },
+                onHomeClick = { navController.popBackStack(route = Home, inclusive = false) },
                 onListClick = { navController.navigate(route = ProblemList(selected = problemId)) },
                 onProblemNavClick = { problemId ->
                     navController.navigate(route = ProblemDetails(problemId = problemId))
@@ -92,7 +92,7 @@ fun AppRootScreen() {
         composable<Settings> {
             SettingsScreen(
                 onHelpClick = { showAboutDialog = true },
-                onHomeClick = { navController.navigate(route = Home) }
+                onHomeClick = { navController.popBackStack(route = Home, inclusive = false) }
             )
         }
     }
