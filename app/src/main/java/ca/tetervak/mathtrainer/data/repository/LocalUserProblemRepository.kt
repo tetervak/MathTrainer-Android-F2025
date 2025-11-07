@@ -1,11 +1,11 @@
 package ca.tetervak.mathtrainer.data.repository
 
-import ca.tetervak.mathtrainer.data.database.LocalProblemDao
-import ca.tetervak.mathtrainer.domain.AlgebraProblem
-import ca.tetervak.mathtrainer.domain.ScoreData
-import ca.tetervak.mathtrainer.domain.StatusData
-import ca.tetervak.mathtrainer.domain.UserAnswerStatus
-import ca.tetervak.mathtrainer.domain.UserProblem
+import ca.tetervak.mathtrainer.data.database.dao.ProblemDao
+import ca.tetervak.mathtrainer.domain.model.AlgebraProblem
+import ca.tetervak.mathtrainer.domain.model.ScoreData
+import ca.tetervak.mathtrainer.domain.model.StatusData
+import ca.tetervak.mathtrainer.domain.model.UserAnswerStatus
+import ca.tetervak.mathtrainer.domain.model.UserProblem
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -17,18 +17,17 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.Date
 import javax.inject.Inject
 
 @OptIn(DelicateCoroutinesApi::class)
 class LocalUserProblemRepository(
-    val dao: LocalProblemDao,
+    val dao: ProblemDao,
     private val externalScope: CoroutineScope,
     private val dispatcher: CoroutineDispatcher
 ) {
 
     @Inject
-    constructor(dao: LocalProblemDao) : this(
+    constructor(dao: ProblemDao) : this(
         dao = dao,
         externalScope = GlobalScope,
         dispatcher = Dispatchers.IO
@@ -46,7 +45,7 @@ class LocalUserProblemRepository(
 
     suspend fun updateUserProblem(userProblem: UserProblem) =
         withContext(context = dispatcher) {
-            dao.updateLocalProblem(localProblem = userProblem.toLocalProblem())
+            dao.updateLocalProblem(problemEntity = userProblem.toLocalProblem())
         }
 
     suspend fun insertAlgebraProblems(list: List<AlgebraProblem>) {

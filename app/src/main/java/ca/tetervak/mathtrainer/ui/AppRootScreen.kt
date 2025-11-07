@@ -26,9 +26,9 @@ import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
-import ca.tetervak.mathtrainer.ui.details.ProblemDetailsScreen
+import ca.tetervak.mathtrainer.ui.problemdetails.ProblemDetailsScreen
 import ca.tetervak.mathtrainer.ui.home.HomeScreen
-import ca.tetervak.mathtrainer.ui.list.ProblemListScreen
+import ca.tetervak.mathtrainer.ui.problemlist.ProblemListScreen
 import ca.tetervak.mathtrainer.ui.settings.SettingsScreen
 import kotlinx.serialization.Serializable
 

@@ -1,5 +1,9 @@
 package ca.tetervak.mathtrainer.domain
 
+import ca.tetervak.mathtrainer.domain.model.AlgebraOperation
+import ca.tetervak.mathtrainer.domain.model.AlgebraProblem
+import ca.tetervak.mathtrainer.domain.model.UserAnswerStatus
+import ca.tetervak.mathtrainer.domain.model.UserProblem
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
@@ -7,7 +11,7 @@ import org.junit.Test
 
 class UserProblemTest {
 
-    val problem: AlgebraProblem = AlgebraProblem( a= 1, b = 2, op = AlgebraOperation.ADDITION)
+    val problem: AlgebraProblem = AlgebraProblem(a = 1, b = 2, op = AlgebraOperation.ADDITION)
     val userProblem: UserProblem = UserProblem(problem)
 
     @Before

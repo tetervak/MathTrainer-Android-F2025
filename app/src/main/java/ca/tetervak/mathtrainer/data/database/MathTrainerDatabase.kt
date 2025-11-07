@@ -5,14 +5,18 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import ca.tetervak.mathtrainer.data.database.converter.AlgebraOperationConverter
+import ca.tetervak.mathtrainer.data.database.converter.DateConverter
+import ca.tetervak.mathtrainer.data.database.dao.ProblemDao
+import ca.tetervak.mathtrainer.data.database.entity.ProblemEntity
 
 @Database(
-    entities = [LocalProblem::class], version = 6, exportSchema = false
+    entities = [ProblemEntity::class], version = 6, exportSchema = false
 )
 @TypeConverters(DateConverter::class, AlgebraOperationConverter::class)
 abstract class MathTrainerDatabase : RoomDatabase() {
 
-    abstract fun localProblemDao(): LocalProblemDao
+    abstract fun localProblemDao(): ProblemDao
 
     companion object {
         @Volatile

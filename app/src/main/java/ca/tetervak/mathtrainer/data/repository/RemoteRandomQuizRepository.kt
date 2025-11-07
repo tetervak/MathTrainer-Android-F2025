@@ -3,8 +3,8 @@ package ca.tetervak.mathtrainer.data.repository
 import ca.tetervak.mathtrainer.data.remote.AlgebraQuiz
 import ca.tetervak.mathtrainer.data.remote.AlgebraQuizProblem
 import ca.tetervak.mathtrainer.data.remote.RandomQuizApi
-import ca.tetervak.mathtrainer.domain.AlgebraOperation
-import ca.tetervak.mathtrainer.domain.AlgebraProblem
+import ca.tetervak.mathtrainer.domain.model.AlgebraOperation
+import ca.tetervak.mathtrainer.domain.model.AlgebraProblem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

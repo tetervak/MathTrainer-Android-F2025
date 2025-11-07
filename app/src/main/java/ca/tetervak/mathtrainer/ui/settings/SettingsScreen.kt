@@ -39,8 +39,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import ca.tetervak.mathtrainer.R
-import ca.tetervak.mathtrainer.domain.ProblemGeneration
-import ca.tetervak.mathtrainer.domain.UserPreferences
+import ca.tetervak.mathtrainer.domain.model.ProblemGeneration
+import ca.tetervak.mathtrainer.domain.model.UserPreferences
 import ca.tetervak.mathtrainer.ui.QuizTopBar
 import ca.tetervak.mathtrainer.ui.theme.MathTrainerTheme
 

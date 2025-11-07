@@ -2,9 +2,9 @@ package ca.tetervak.mathtrainer.ui.score
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ca.tetervak.mathtrainer.data.repository.UserProblemRepository
-import ca.tetervak.mathtrainer.domain.ScoreData
-import ca.tetervak.mathtrainer.domain.UserAnswerStatus
+import ca.tetervak.mathtrainer.domain.repository.UserProblemRepository
+import ca.tetervak.mathtrainer.domain.model.ScoreData
+import ca.tetervak.mathtrainer.domain.model.UserAnswerStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

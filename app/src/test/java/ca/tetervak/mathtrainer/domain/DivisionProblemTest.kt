@@ -1,5 +1,8 @@
 package ca.tetervak.mathtrainer.domain
 
+import ca.tetervak.mathtrainer.domain.model.AlgebraOperation
+import ca.tetervak.mathtrainer.domain.model.AlgebraProblem
+import ca.tetervak.mathtrainer.domain.model.UserAnswerStatus
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before

@@ -1,8 +1,9 @@
 package ca.tetervak.mathtrainer.data.repository
 
 import android.util.Log
-import ca.tetervak.mathtrainer.domain.AlgebraProblem
-import ca.tetervak.mathtrainer.domain.ProblemGeneration
+import ca.tetervak.mathtrainer.domain.model.AlgebraProblem
+import ca.tetervak.mathtrainer.domain.model.ProblemGeneration
+import ca.tetervak.mathtrainer.domain.repository.UserPreferencesRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
