@@ -1,4 +1,4 @@
-package ca.tetervak.mathtrainer.ui.score
+package ca.tetervak.mathtrainer.ui
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
@@ -7,17 +7,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import ca.tetervak.mathtrainer.R
 
 @Composable
-fun Score(rightAnswers: Int, numberOfProblems: Int, modifier: Modifier = Modifier) {
+fun ScoreCard(
+    rightAnswers: Int,
+    numberOfProblems: Int,
+    modifier: Modifier = Modifier
+) {
     Card(
         modifier = modifier
     ) {
         Text(
             text = stringResource(R.string.score, rightAnswers, numberOfProblems),
-            fontSize = 20.sp,
             modifier = Modifier.padding(8.dp)
         )
     }

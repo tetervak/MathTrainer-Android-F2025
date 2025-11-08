@@ -21,7 +21,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,54 +39,59 @@ import ca.tetervak.mathtrainer.domain.model.AlgebraProblem
 import ca.tetervak.mathtrainer.domain.model.Problem
 import ca.tetervak.mathtrainer.domain.model.UserAnswerStatus
 import ca.tetervak.mathtrainer.ui.HomeButton
+import ca.tetervak.mathtrainer.ui.QuizButton
 import ca.tetervak.mathtrainer.ui.QuizTopBar
-import ca.tetervak.mathtrainer.ui.score.Score
-import ca.tetervak.mathtrainer.ui.score.ScoreViewModel
+import ca.tetervak.mathtrainer.ui.ScoreCard
 import ca.tetervak.mathtrainer.ui.theme.MathTrainerTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProblemListScreen(
+    quizId: String,
+    selectedId: String?,
     onProblemClick: (String) -> Unit,
+    onQuizClick: (String) -> Unit,
     onHomeClick: () -> Unit,
     onHelpClick: () -> Unit,
-    selectedId: String? = null
+    onBackClick: () -> Unit
 ) {
     val viewModel: ProblemListViewModel = hiltViewModel()
-    val uiState by viewModel.uiState.collectAsState()
-    val list: List<Problem> = uiState.problemList
 
-    val scoreViewModel: ScoreViewModel = hiltViewModel()
-    val scoreData by scoreViewModel.uiState.collectAsState()
+    LaunchedEffect(quizId) {
+        viewModel.loadProblems(quizId)
+    }
+    val uiState = viewModel.uiState.collectAsState()
+    val state: ProblemListUiState = uiState.value
 
-    ProblemListScreenBody(
-        list = list,
-        numberOfProblems = scoreData.numberOfProblems,
-        score = scoreData.rightAnswers,
-        selectedId = selectedId,
-        onProblemClick = onProblemClick,
-        onHomeClick = onHomeClick,
-        onHelpClick = onHelpClick
-    )
+    if (state is ProblemListUiState.Success)
+        ProblemListScreenBody(
+            state = state,
+            selectedId = selectedId,
+            onProblemClick = onProblemClick,
+            onQuizClick = onQuizClick,
+            onHomeClick = onHomeClick,
+            onHelpClick = onHelpClick,
+            onBackClick = onBackClick
+        )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProblemListScreenBody(
-    list: List<Problem>,
-    numberOfProblems: Int,
-    score: Int,
+    state: ProblemListUiState.Success,
+    selectedId: String?,
     onProblemClick: (String) -> Unit,
+    onQuizClick: (String) -> Unit,
     onHomeClick: () -> Unit,
     onHelpClick: () -> Unit,
-    selectedId: String? = null
+    onBackClick: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val listState = rememberLazyListState()
 
     LaunchedEffect(key1 = selectedId) {
         if (selectedId != null) {
-            val index = list.indexOfFirst { it.id == selectedId }
+            val index = state.problemList.indexOfFirst { it.id == selectedId }
             if (index != -1) {
                 listState.scrollToItem(index)
             }
@@ -97,8 +101,9 @@ fun ProblemListScreenBody(
     Scaffold(
         topBar = {
             QuizTopBar(
-                title = stringResource(R.string.problem_list),
+                title = stringResource(R.string.quiz_n_problems, state.quizNumber),
                 onHelpClick = onHelpClick,
+                onBackClick = onBackClick,
                 scrollBehavior = scrollBehavior
             )
         },
@@ -116,11 +121,11 @@ fun ProblemListScreenBody(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier.weight(1f)
             ) {
-                items(items = list) { userProblem ->
+                items(items = state.problemList) { problem ->
                     ProblemListItem(
-                        onClick = { onProblemClick(userProblem.id) },
-                        problem = userProblem,
-                        selected = userProblem.id == selectedId
+                        onClick = { onProblemClick(problem.id) },
+                        problem = problem,
+                        selected = problem.id == selectedId
                     )
                 }
             }
@@ -130,16 +135,19 @@ fun ProblemListScreenBody(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Score(
-                    rightAnswers = score,
-                    numberOfProblems = numberOfProblems,
-                    modifier = Modifier.padding(20.dp)
-                )
                 HomeButton(
                     onClick = onHomeClick,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
+                    modifier = Modifier.padding(8.dp)
+                )
+                QuizButton(
+                    quizNumber = state.quizNumber,
+                    onClick = { onQuizClick(state.problemList.first().quizId) },
+                    modifier = Modifier.padding(8.dp)
+                )
+                ScoreCard(
+                    rightAnswers = state.rightAnswers,
+                    numberOfProblems = state.problemList.size,
+                    modifier = Modifier.padding(8.dp)
                 )
             }
         }
@@ -172,7 +180,7 @@ fun ProblemListItem(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "${problem.id}.",
+                text = "${problem.order}.",
                 fontSize = 24.sp,
                 style = TextStyle(fontWeight = FontWeight.Bold),
                 color = Color.DarkGray
@@ -252,20 +260,24 @@ fun ProblemListItemSelectedPreview() {
 fun ProblemListScreenBodyPreview() {
     MathTrainerTheme {
         ProblemListScreenBody(
-            list = List(5) { index ->
-                Problem(
-                    problem = AlgebraProblem(a = 1, b = 2, op = AlgebraOperation.ADDITION),
-                    order = index + 1,
-                    quizId = "",
-                    id = index.toString()
-                )
-            },
-            numberOfProblems = 5,
-            score = 0,
+            state = ProblemListUiState.Success(
+                problemList = List(5) { index ->
+                    Problem(
+                        problem = AlgebraProblem(a = 1, b = 2, op = AlgebraOperation.ADDITION),
+                        order = index + 1,
+                        quizId = "",
+                        id = index.toString()
+                    )
+                },
+                quizNumber = 2,
+                rightAnswers = 3,
+            ),
             selectedId = 3.toString(),
             onProblemClick = {},
             onHomeClick = {},
-            onHelpClick = {}
+            onHelpClick = {},
+            onQuizClick = {},
+            onBackClick = {}
         )
     }
 }

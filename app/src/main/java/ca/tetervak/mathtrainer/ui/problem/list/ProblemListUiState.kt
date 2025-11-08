@@ -2,6 +2,11 @@ package ca.tetervak.mathtrainer.ui.problem.list
 
 import ca.tetervak.mathtrainer.domain.model.Problem
 
-data class ProblemListUiState(
-    val problemList: List<Problem>
-)
+sealed interface ProblemListUiState{
+    object Loading: ProblemListUiState
+    data class Success(
+        val quizNumber: Int,
+        val problemList: List<Problem>,
+        val rightAnswers: Int
+    ): ProblemListUiState
+}

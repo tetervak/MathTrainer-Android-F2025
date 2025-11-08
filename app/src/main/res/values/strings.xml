@@ -22,6 +22,7 @@
     <string name="right_answer">Right answer</string>
     <string name="invalid_input">Invalid input</string>
     <string name="problem_list">Problem List</string>
+    <string name="quiz_n_problems">Quiz %d: Problems</string>
     <string name="welcome">Welcome to Math Trainer!</string>
     <string name="first_problem">First Problem</string>
     <string name="list_all_problems">List All Problems</string>

@@ -77,8 +77,8 @@ fun AppRootScreen() {
     val onProblemClick: (String) -> Unit = { problemId ->
         backStack.add(ProblemDetails(problemId = problemId))
     }
-    val onListProblemsClick: (String) -> Unit = { quizId ->
-        backStack.add(ProblemList(quizId = quizId))
+    val onListProblemsClick: (String, String?) -> Unit = { quizId, selectedId ->
+        backStack.add(ProblemList(quizId = quizId, selectedId = selectedId))
     }
 
     NavDisplay(
@@ -104,12 +104,16 @@ fun AppRootScreen() {
                 }
 
                 is ProblemList -> NavEntry(key) {
+                    val quizId: String = key.quizId
                     val selectedId: String? = key.selectedId
                     ProblemListScreen(
+                        quizId = quizId,
                         selectedId = selectedId,
                         onProblemClick = onProblemClick,
                         onHomeClick = onHomeClick,
-                        onHelpClick = onHelpClick
+                        onHelpClick = onHelpClick,
+                        onBackClick = onBackClick,
+                        onQuizClick = onQuizClick
                     )
                 }
 

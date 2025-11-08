@@ -61,8 +61,9 @@ import ca.tetervak.mathtrainer.domain.model.AlgebraOperation
 import ca.tetervak.mathtrainer.domain.model.AlgebraProblem
 import ca.tetervak.mathtrainer.domain.model.Problem
 import ca.tetervak.mathtrainer.domain.model.UserAnswerStatus
+import ca.tetervak.mathtrainer.ui.QuizButton
 import ca.tetervak.mathtrainer.ui.QuizTopBar
-import ca.tetervak.mathtrainer.ui.score.Score
+import ca.tetervak.mathtrainer.ui.ScoreCard
 import ca.tetervak.mathtrainer.ui.theme.MathTrainerTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -71,7 +72,7 @@ fun ProblemDetailsScreen(
     problemId: String,
     onHelpClick: () -> Unit,
     onHomeClick: () -> Unit,
-    onListProblemsClick: (String) -> Unit,
+    onListProblemsClick: (String, String?) -> Unit,
     onProblemClick: (String) -> Unit,
     onQuizClick: (String) -> Unit,
     onBackClick: () -> Unit
@@ -109,7 +110,7 @@ fun ProblemDetailsScreenBody(
     onSubmit: () -> Unit,
     onHelpClick: () -> Unit,
     onHomeClick: () -> Unit,
-    onListProblemsClick: (String) -> Unit,
+    onListProblemsClick: (String, String?) -> Unit,
     onProblemClick: (String) -> Unit,
     onQuizClick: (String) -> Unit,
     onBackClick: () -> Unit
@@ -130,7 +131,7 @@ fun ProblemDetailsScreenBody(
         bottomBar = {
             DetailsBottomBar(
                 onHomeClick = onHomeClick,
-                onListClick = { onListProblemsClick(state.problem.quizId) },
+                onListClick = { onListProblemsClick(state.problem.quizId, state.problem.id ) },
                 onFirstClick = { state.firstProblemId?.let{onProblemClick(it)} }
             )
         },
@@ -222,21 +223,17 @@ fun ProblemDetailsScreenBody(
                 }
 
             }
-            Score(
+            ScoreCard(
                 rightAnswers = state.numberOfRightAnswers,
                 numberOfProblems = state.numberOfProblems,
                 modifier = Modifier.padding(20.dp)
             )
             Spacer(modifier = Modifier.weight(1f))
-            OutlinedButton(
+            QuizButton(
+                quizNumber = state.quizNumber,
                 onClick = { onQuizClick(state.problem.quizId) },
                 modifier = Modifier.fillMaxWidth().padding(16.dp)
-            ) {
-                Text(
-                    text = stringResource(R.string.quiz_n, state.quizNumber),
-                    fontSize = 16.sp
-                )
-            }
+            )
         }
     }
 }
@@ -463,7 +460,7 @@ fun GameScreenPreview() {
             onSubmit = {},
             onHelpClick = {},
             onHomeClick = {},
-            onListProblemsClick = {},
+            onListProblemsClick = {_,_ ->},
             onProblemClick = {},
             onQuizClick = {},
             onBackClick = {}
