@@ -81,7 +81,7 @@ fun SettingsScreenBody(
         topBar = {
             QuizTopBar(
                 title = stringResource(R.string.settings),
-                onHelpButtonClick = onHelpClick,
+                onHelpClick = onHelpClick,
                 scrollBehavior = scrollBehavior
             )
         },

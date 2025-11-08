@@ -1,4 +1,4 @@
-package ca.tetervak.mathtrainer.ui.problemdetails
+package ca.tetervak.mathtrainer.ui.problem.details
 
 import android.app.Activity
 import androidx.activity.compose.LocalActivity
@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -27,9 +28,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme.colorScheme
-import androidx.compose.material3.MaterialTheme.shapes
-import androidx.compose.material3.MaterialTheme.typography
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedButton
@@ -43,7 +42,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -61,21 +59,22 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import ca.tetervak.mathtrainer.R
 import ca.tetervak.mathtrainer.domain.model.AlgebraOperation
 import ca.tetervak.mathtrainer.domain.model.AlgebraProblem
+import ca.tetervak.mathtrainer.domain.model.Problem
 import ca.tetervak.mathtrainer.domain.model.UserAnswerStatus
-import ca.tetervak.mathtrainer.domain.model.UserProblem
 import ca.tetervak.mathtrainer.ui.QuizTopBar
 import ca.tetervak.mathtrainer.ui.score.Score
-import ca.tetervak.mathtrainer.ui.score.ScoreViewModel
 import ca.tetervak.mathtrainer.ui.theme.MathTrainerTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProblemDetailsScreen(
-    problemId: Int,
+    problemId: String,
     onHelpClick: () -> Unit,
     onHomeClick: () -> Unit,
-    onListClick: () -> Unit,
-    onProblemNavClick: (Int) -> Unit,
+    onListClick: (String) -> Unit,
+    onProblemNavClick: (String) -> Unit,
+    onQuizClick: (String) -> Unit,
+    onBackClick: () -> Unit
 ) {
 
     val detailsViewModel: ProblemDetailsViewModel = hiltViewModel()
@@ -87,22 +86,18 @@ fun ProblemDetailsScreen(
     val state = detailsUiState.value
 
     if (state is ProblemDetailsUiState.Success) {
-        val userProblem: UserProblem = state.userProblem
-
-        val scoreViewModel: ScoreViewModel = hiltViewModel()
-        val scoreData by scoreViewModel.uiState.collectAsState()
 
         ProblemDetailsScreenBody(
-            userProblem = userProblem,
-            score = scoreData.rightAnswers,
-            numberOfProblems = scoreData.numberOfProblems,
+            state = state,
             userAnswerInput = detailsViewModel.answerInput,
             onChangeUserAnswerInput = detailsViewModel::updateAnswerInput,
             onSubmit = detailsViewModel::onSubmit,
             onHelpClick = onHelpClick,
             onHomeClick = onHomeClick,
             onListClick = onListClick,
-            onProblemNavClick = onProblemNavClick
+            onProblemNavClick = onProblemNavClick,
+            onQuizClick = onQuizClick,
+            onBackClick = onBackClick
         )
     }
 
@@ -111,31 +106,35 @@ fun ProblemDetailsScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProblemDetailsScreenBody(
-    userProblem: UserProblem,
-    score: Int,
-    numberOfProblems: Int,
+    state: ProblemDetailsUiState.Success,
     userAnswerInput: String,
     onChangeUserAnswerInput: (String) -> Unit,
     onSubmit: () -> Unit,
     onHelpClick: () -> Unit,
     onHomeClick: () -> Unit,
-    onListClick: () -> Unit,
-    onProblemNavClick: (Int) -> Unit
+    onListClick: (String) -> Unit,
+    onProblemNavClick: (String) -> Unit,
+    onQuizClick: (String) -> Unit,
+    onBackClick: () -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
         topBar = {
             QuizTopBar(
-                title = stringResource(R.string.problem_number, userProblem.id),
-                onHelpButtonClick = onHelpClick,
-                scrollBehavior = scrollBehavior
+                title = stringResource(
+                    id = R.string.quiz_n_problem_n,
+                    state.quizNumber, state.problem.order
+                ),
+                scrollBehavior = scrollBehavior,
+                onHelpClick = onHelpClick,
+                onBackClick = onBackClick
             )
         },
         bottomBar = {
             DetailsBottomBar(
                 onHomeClick = onHomeClick,
-                onListClick = onListClick,
-                onFirstClick = { onProblemNavClick(1) }
+                onListClick = { onListClick(state.problem.id) },
+                onFirstClick = { state.firstProblemId?.let{onProblemNavClick(it)} }
             )
         },
         modifier = Modifier
@@ -145,7 +144,7 @@ fun ProblemDetailsScreenBody(
 
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
                 .padding(16.dp),
@@ -155,12 +154,12 @@ fun ProblemDetailsScreenBody(
 
             ProblemLayout(
                 onUserAnswerChanged = onChangeUserAnswerInput,
-                problemCount = userProblem.id,
-                numberOfProblems = numberOfProblems,
+                problemNumber = state.problem.order,
+                numberOfProblems = state.numberOfProblems,
                 userAnswer = userAnswerInput,
                 onKeyboardDone = onSubmit,
-                currentProblemText = userProblem.problem.text,
-                currentProblemStatus = userProblem.status,
+                currentProblemText = state.problem.text,
+                currentProblemStatus = state.problem.status,
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
@@ -196,9 +195,9 @@ fun ProblemDetailsScreenBody(
                     verticalAlignment = Alignment.Bottom
                 ) {
                     OutlinedButton(
-                        onClick = { onProblemNavClick(userProblem.id - 1) },
+                        onClick = { state.previousProblemId?.let{ onProblemNavClick(it) } },
                         modifier = Modifier.weight(1f),
-                        enabled = userProblem.id > 1
+                        enabled = state.problem.order > 1
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowLeft,
@@ -210,9 +209,9 @@ fun ProblemDetailsScreenBody(
                         )
                     }
                     OutlinedButton(
-                        onClick = { onProblemNavClick(userProblem.id + 1) },
+                        onClick = { state.nextProblemId?.let{ onProblemNavClick(it) } },
                         modifier = Modifier.weight(1f),
-                        enabled = userProblem.id < numberOfProblems
+                        enabled = state.problem.order < state.numberOfProblems
                     ) {
                         Text(
                             text = stringResource(R.string.next),
@@ -227,10 +226,20 @@ fun ProblemDetailsScreenBody(
 
             }
             Score(
-                rightAnswers = score,
-                numberOfProblems = numberOfProblems,
+                rightAnswers = state.numberOfRightAnswers,
+                numberOfProblems = state.numberOfProblems,
                 modifier = Modifier.padding(20.dp)
             )
+            Spacer(modifier = Modifier.weight(1f))
+            OutlinedButton(
+                onClick = { onQuizClick(state.problem.quizId) },
+                modifier = Modifier.fillMaxWidth().padding(16.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.quiz_n, state.quizNumber),
+                    fontSize = 16.sp
+                )
+            }
         }
     }
 }
@@ -241,8 +250,7 @@ fun DetailsBottomBar(
     onListClick: () -> Unit,
     onFirstClick: () -> Unit
 ) {
-    NavigationBar(
-    ) {
+    NavigationBar {
         NavigationBarItem(
             selected = false,
             onClick = onHomeClick,
@@ -279,7 +287,7 @@ fun DetailsBottomBar(
 @Composable
 fun ProblemLayout(
     currentProblemText: String,
-    problemCount: Int,
+    problemNumber: Int,
     numberOfProblems: Int,
     currentProblemStatus: UserAnswerStatus,
     userAnswer: String,
@@ -299,33 +307,33 @@ fun ProblemLayout(
         ) {
             Text(
                 modifier = Modifier
-                    .clip(shapes.medium)
-                    .background(colorScheme.surfaceTint)
+                    .clip(MaterialTheme.shapes.medium)
+                    .background(MaterialTheme.colorScheme.surfaceTint)
                     .padding(horizontal = 10.dp, vertical = 4.dp)
                     .align(alignment = Alignment.End),
-                text = stringResource(R.string.problem_count, problemCount, numberOfProblems),
-                style = typography.titleMedium,
-                color = colorScheme.onPrimary
+                text = stringResource(R.string.problem_count, problemNumber, numberOfProblems),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onPrimary
             )
             Text(
                 text = currentProblemText,
-                style = typography.displayMedium
+                style = MaterialTheme.typography.displayMedium
             )
             Text(
                 text = stringResource(R.string.instructions),
                 textAlign = TextAlign.Center,
-                style = typography.titleMedium
+                style = MaterialTheme.typography.titleMedium
             )
             OutlinedTextField(
                 value = userAnswer,
                 singleLine = true,
-                shape = shapes.large,
+                shape = MaterialTheme.shapes.large,
                 modifier = Modifier.fillMaxWidth(),
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = colorScheme.surface,
-                    unfocusedContainerColor = colorScheme.surface,
-                    disabledContainerColor = colorScheme.surface,
-                    errorContainerColor = colorScheme.surface,
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                    disabledContainerColor = MaterialTheme.colorScheme.surface,
+                    errorContainerColor = MaterialTheme.colorScheme.surface,
                 ),
                 onValueChange = onUserAnswerChanged,
                 label = {
@@ -336,14 +344,14 @@ fun ProblemLayout(
                         UserAnswerStatus.WRONG_ANSWER -> {
                             Text(
                                 text = stringResource(R.string.wrong_answer_try_again),
-                                color = colorScheme.error
+                                color = MaterialTheme.colorScheme.error
                             )
                         }
 
                         UserAnswerStatus.INVALID_INPUT -> {
                             Text(
                                 text = stringResource(R.string.invalid_input_try_again),
-                                color = colorScheme.error
+                                color = MaterialTheme.colorScheme.error
                             )
                         }
 
@@ -440,19 +448,28 @@ private fun FinalScoreDialog(
 fun GameScreenPreview() {
     MathTrainerTheme {
         ProblemDetailsScreenBody(
-            userProblem = UserProblem(
-                problem = AlgebraProblem(a = 1, b = 2, op = AlgebraOperation.ADDITION),
-                id = 3
+            state = ProblemDetailsUiState.Success(
+                problem = Problem(
+                    problem = AlgebraProblem(a = 1, b = 2, op = AlgebraOperation.ADDITION),
+                    order = 3,
+                    quizId = ""
+                ),
+                quizNumber = 2,
+                numberOfProblems = 5,
+                numberOfRightAnswers = 3,
+                firstProblemId = null,
+                previousProblemId = null,
+                nextProblemId = null
             ),
-            score = 2,
-            numberOfProblems = 5,
             userAnswerInput = "",
             onChangeUserAnswerInput = {},
             onSubmit = {},
             onHelpClick = {},
             onHomeClick = {},
             onListClick = {},
-            onProblemNavClick = {}
+            onProblemNavClick = {},
+            onQuizClick = {},
+            onBackClick = {}
         )
     }
 }

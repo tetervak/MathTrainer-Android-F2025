@@ -1,5 +1,7 @@
 package ca.tetervak.mathtrainer.ui
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -20,7 +22,8 @@ import ca.tetervak.mathtrainer.R
 fun QuizTopBar(
     title: String,
     scrollBehavior: TopAppBarScrollBehavior,
-    onHelpButtonClick: () -> Unit
+    onHelpClick: () -> Unit,
+    onBackClick: (() -> Unit)? = null
 ) = CenterAlignedTopAppBar(
     title = {
         Text(
@@ -28,9 +31,20 @@ fun QuizTopBar(
             fontSize = 24.sp
         )
     },
+    navigationIcon = {
+        if (onBackClick != null) {
+            IconButton(onClick = onBackClick) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
+                    contentDescription = stringResource(id = R.string.navigate_back),
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
+        }
+    },
     actions = {
         IconButton(
-            onClick = onHelpButtonClick,
+            onClick = onHelpClick,
             colors = IconButtonDefaults.iconButtonColors(
                 contentColor = MaterialTheme.colorScheme.primary
             )
@@ -41,9 +55,12 @@ fun QuizTopBar(
             )
         }
     },
-    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+    colors = TopAppBarDefaults.topAppBarColors(
         containerColor = MaterialTheme.colorScheme.primaryContainer,
+        scrolledContainerColor = MaterialTheme.colorScheme.primaryContainer,
+        navigationIconContentColor = MaterialTheme.colorScheme.primary,
         titleContentColor = MaterialTheme.colorScheme.primary,
+        actionIconContentColor = MaterialTheme.colorScheme.primary
     ),
     scrollBehavior = scrollBehavior,
 )

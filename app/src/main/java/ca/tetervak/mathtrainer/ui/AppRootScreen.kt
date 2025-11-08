@@ -26,9 +26,9 @@ import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
-import ca.tetervak.mathtrainer.ui.problemdetails.ProblemDetailsScreen
+import ca.tetervak.mathtrainer.ui.problem.details.ProblemDetailsScreen
 import ca.tetervak.mathtrainer.ui.home.HomeScreen
-import ca.tetervak.mathtrainer.ui.problemlist.ProblemListScreen
+import ca.tetervak.mathtrainer.ui.problem.list.ProblemListScreen
 import ca.tetervak.mathtrainer.ui.settings.SettingsScreen
 import kotlinx.serialization.Serializable
 
@@ -39,11 +39,22 @@ object Home: NavKey
 object Settings: NavKey
 
 @Serializable
-data class ProblemDetails(val problemId: Int): NavKey
+data class ProblemDetails(val problemId: String): NavKey
 
 @Serializable
-data class ProblemList(val selected: Int? = 0): NavKey
+data class ProblemList(
+    val selectedId: String? = null,
+): NavKey
 
+@Serializable
+data class QuizDetails(
+    val quizId: String,
+): NavKey
+
+@Serializable
+data class QuizList(
+    val selectedId: String? = null,
+): NavKey
 
 @Composable
 fun AppRootScreen() {
@@ -63,16 +74,22 @@ fun AppRootScreen() {
             when (key) {
                 is Home -> NavEntry(key){
                     HomeScreen(
-                        onFirstClick = { backStack.add(ProblemDetails(problemId = 1)) },
+                        onFirstClick = { backStack.add(ProblemDetails(problemId = "?")) },
                         onListClick = { backStack.add(ProblemList()) },
                         onSettingsClick = { backStack.add(Settings) },
                         onHelpClick = { showAboutDialog = true }
                     )
                 }
+                is QuizList -> NavEntry(key) {
+
+                }
+                is QuizDetails -> NavEntry(key) {
+
+                }
                 is ProblemList -> NavEntry(key){
-                    val selected: Int = key.selected ?: 0
+                    val selectedId: String? = key.selectedId
                     ProblemListScreen(
-                        selected = selected,
+                        selectedId = selectedId,
                         onProblemClick = { problemId ->
                             backStack.add(ProblemDetails(problemId = problemId))
                         },
@@ -81,15 +98,19 @@ fun AppRootScreen() {
                     )
                 }
                 is ProblemDetails -> NavEntry(key) {
-                    val problemId: Int = key.problemId
+                    val problemId: String = key.problemId
                     ProblemDetailsScreen(
                         problemId = problemId,
                         onHelpClick = { showAboutDialog = true },
                         onHomeClick = { backStack.removeIf { it !is Home } },
-                        onListClick = { backStack.add(ProblemList(selected = problemId)) },
+                        onListClick = { backStack.add(ProblemList(selectedId = problemId)) },
                         onProblemNavClick = { problemId ->
                            backStack.add(ProblemDetails(problemId = problemId))
-                        }
+                        },
+                        onQuizClick = { quizId ->
+                            backStack.add(QuizDetails(quizId = quizId))
+                        },
+                        onBackClick = { backStack.removeLastOrNull() }
                     )
                 }
                 is Settings -> NavEntry(key) {

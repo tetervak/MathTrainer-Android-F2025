@@ -1,7 +1,7 @@
 package ca.tetervak.mathtrainer.data.repository
 
-import ca.tetervak.mathtrainer.data.remote.AlgebraQuiz
-import ca.tetervak.mathtrainer.data.remote.AlgebraQuizProblem
+import ca.tetervak.mathtrainer.data.remote.RemoteQuiz
+import ca.tetervak.mathtrainer.data.remote.RemoteProblem
 import ca.tetervak.mathtrainer.data.remote.RandomQuizApi
 import ca.tetervak.mathtrainer.domain.model.AlgebraOperation
 import ca.tetervak.mathtrainer.domain.model.AlgebraProblem
@@ -17,12 +17,12 @@ class RemoteRandomQuizRepository @Inject constructor(
 
     suspend fun getRandomQuizProblems(numberOfProblems: Int): List<AlgebraProblem> =
         withContext(Dispatchers.IO) {
-            val quiz: AlgebraQuiz = randomQuizApi.getRandomQuiz(numberOfProblems)
-            val problems: List<AlgebraQuizProblem> = quiz.problems
+            val quiz: RemoteQuiz = randomQuizApi.getRandomQuiz(numberOfProblems)
+            val problems: List<RemoteProblem> = quiz.problems
             problems.map { problem -> problem.toAlgebraProblem() }
         }
 
-    private fun AlgebraQuizProblem.toAlgebraProblem(): AlgebraProblem {
+    private fun RemoteProblem.toAlgebraProblem(): AlgebraProblem {
         val parts: List<String> = this.text.split(" ", "=", limit = 4)
         val a: Int = parts[0].toInt()
         val op: AlgebraOperation = AlgebraOperation.fromSymbol(symbol = parts[1].first())

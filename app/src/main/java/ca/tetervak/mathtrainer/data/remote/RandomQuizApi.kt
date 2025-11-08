@@ -8,5 +8,5 @@ interface RandomQuizApi {
     @GET("random-quiz")
     suspend fun getRandomQuiz(
         @Query("number-of-problems") numberOfProblems: Int
-    ): AlgebraQuiz
+    ): RemoteQuiz
 }

@@ -1,8 +1,8 @@
-package ca.tetervak.mathtrainer.ui.problemlist
+package ca.tetervak.mathtrainer.ui.problem.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ca.tetervak.mathtrainer.domain.repository.UserProblemRepository
+import ca.tetervak.mathtrainer.domain.repository.QuizRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -13,23 +13,23 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProblemListViewModel @Inject constructor(
-    private val repository: UserProblemRepository,
+    private val repository: QuizRepository,
 ) : ViewModel() {
 
     val uiState: StateFlow<ProblemListUiState> =
-        repository.getAllUserProblemsFlow()
+        repository.getQuizProblemsFlow("")
             .map { list -> ProblemListUiState(problemList = list) }
             .stateIn(
                 scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5000),
+                started = SharingStarted.Companion.WhileSubscribed(5000),
                 initialValue = ProblemListUiState(problemList = emptyList())
             )
 
     init {
         viewModelScope.launch {
-            if (repository.isEmpty()) {
-                repository.insertGeneratedUserProblems()
-            }
+            //if (repository.isEmpty()) {
+            //    repository.insertGeneratedUserProblems()
+            //}
         }
     }
 

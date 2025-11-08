@@ -1,9 +1,13 @@
 package ca.tetervak.mathtrainer.domain.model
 
-class UserProblem(
+import java.util.UUID
+
+class Problem(
     val problem: AlgebraProblem,
     val userAnswer: String? = null,
-    val id: Int = 0,
+    val id: String = UUID.randomUUID().toString(),
+    val order: Int,
+    val quizId: String
 ) {
 
     val text: String
@@ -12,6 +16,11 @@ class UserProblem(
     val status: UserAnswerStatus = problem.checkAnswer(userAnswer = userAnswer)
 
     fun copy(userAnswer: String? = this.userAnswer) =
-        UserProblem(problem = problem, userAnswer = userAnswer, id = id)
+        Problem(problem = problem,
+            userAnswer = userAnswer,
+            id = id,
+            order = order,
+            quizId = quizId
+        )
 
 }

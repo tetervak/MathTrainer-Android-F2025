@@ -1,4 +1,4 @@
-package ca.tetervak.mathtrainer.ui.problemlist
+package ca.tetervak.mathtrainer.ui.problem.list
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -41,8 +41,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import ca.tetervak.mathtrainer.R
 import ca.tetervak.mathtrainer.domain.model.AlgebraOperation
 import ca.tetervak.mathtrainer.domain.model.AlgebraProblem
+import ca.tetervak.mathtrainer.domain.model.Problem
 import ca.tetervak.mathtrainer.domain.model.UserAnswerStatus
-import ca.tetervak.mathtrainer.domain.model.UserProblem
 import ca.tetervak.mathtrainer.ui.QuizTopBar
 import ca.tetervak.mathtrainer.ui.score.Score
 import ca.tetervak.mathtrainer.ui.score.ScoreViewModel
@@ -51,14 +51,14 @@ import ca.tetervak.mathtrainer.ui.theme.MathTrainerTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProblemListScreen(
-    onProblemClick: (Int) -> Unit,
+    onProblemClick: (String) -> Unit,
     onHomeClick: () -> Unit,
     onHelpClick: () -> Unit,
-    selected: Int
+    selectedId: String? = null
 ) {
     val viewModel: ProblemListViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsState()
-    val list: List<UserProblem> = uiState.problemList
+    val list: List<Problem> = uiState.problemList
 
     val scoreViewModel: ScoreViewModel = hiltViewModel()
     val scoreData by scoreViewModel.uiState.collectAsState()
@@ -67,7 +67,7 @@ fun ProblemListScreen(
         list = list,
         numberOfProblems = scoreData.numberOfProblems,
         score = scoreData.rightAnswers,
-        selected = selected,
+        selectedId = selectedId,
         onProblemClick = onProblemClick,
         onHomeClick = onHomeClick,
         onHelpClick = onHelpClick
@@ -77,21 +77,23 @@ fun ProblemListScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProblemListScreenBody(
-    list: List<UserProblem>,
+    list: List<Problem>,
     numberOfProblems: Int,
     score: Int,
-    selected: Int,
-    onProblemClick: (Int) -> Unit,
+    onProblemClick: (String) -> Unit,
     onHomeClick: () -> Unit,
-    onHelpClick: () -> Unit
+    onHelpClick: () -> Unit,
+    selectedId: String? = null
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val listState = rememberLazyListState()
 
-    LaunchedEffect(key1 = selected) {
-        if(selected > 0) {
-            // list index starts from 0, but id starts from 1
-            listState.scrollToItem(selected - 1)
+    LaunchedEffect(key1 = selectedId) {
+        if (selectedId != null) {
+            val index = list.indexOfFirst { it.id == selectedId }
+            if (index != -1) {
+                listState.scrollToItem(index)
+            }
         }
     }
 
@@ -99,7 +101,7 @@ fun ProblemListScreenBody(
         topBar = {
             QuizTopBar(
                 title = stringResource(R.string.problem_list),
-                onHelpButtonClick = onHelpClick,
+                onHelpClick = onHelpClick,
                 scrollBehavior = scrollBehavior
             )
         },
@@ -120,8 +122,8 @@ fun ProblemListScreenBody(
                 items(items = list) { userProblem ->
                     ProblemListItem(
                         onClick = { onProblemClick(userProblem.id) },
-                        userProblem = userProblem,
-                        selected = userProblem.id == selected
+                        problem = userProblem,
+                        selected = userProblem.id == selectedId
                     )
                 }
             }
@@ -159,7 +161,7 @@ fun ProblemListScreenBody(
 
 @Composable
 fun ProblemListItem(
-    userProblem: UserProblem,
+    problem: Problem,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     selected: Boolean = false,
@@ -182,16 +184,16 @@ fun ProblemListItem(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "${userProblem.id}.",
+                text = "${problem.id}.",
                 fontSize = 24.sp,
                 style = TextStyle(fontWeight = FontWeight.Bold),
                 color = Color.DarkGray
             )
             Text(
-                text = userProblem.problem.text,
+                text = problem.problem.text,
                 fontSize = 24.sp
             )
-            when (userProblem.status) {
+            when (problem.status) {
                 UserAnswerStatus.NOT_ANSWERED -> Text(
                     text = stringResource(R.string.not_answered),
                     fontStyle = FontStyle.Italic,
@@ -231,9 +233,10 @@ fun ProblemListItem(
 fun ProblemListItemPreview() {
     MathTrainerTheme {
         ProblemListItem(
-            userProblem = UserProblem(
+            problem = Problem(
                 problem = AlgebraProblem(a = 1, b = 2, op = AlgebraOperation.ADDITION),
-                id = 3
+                order = 3,
+                quizId = ""
             ),
             onClick = {}
         )
@@ -245,9 +248,10 @@ fun ProblemListItemPreview() {
 fun ProblemListItemSelectedPreview() {
     MathTrainerTheme {
         ProblemListItem(
-            userProblem = UserProblem(
+            problem = Problem(
                 problem = AlgebraProblem(a = 1, b = 2, op = AlgebraOperation.ADDITION),
-                id = 3
+                order = 3,
+                quizId = ""
             ),
             onClick = {},
             selected = true
@@ -260,15 +264,17 @@ fun ProblemListItemSelectedPreview() {
 fun ProblemListScreenBodyPreview() {
     MathTrainerTheme {
         ProblemListScreenBody(
-            list = List(5) {
-                UserProblem(
+            list = List(5) { index ->
+                Problem(
                     problem = AlgebraProblem(a = 1, b = 2, op = AlgebraOperation.ADDITION),
-                    id = it + 1
+                    order = index + 1,
+                    quizId = "",
+                    id = index.toString()
                 )
             },
             numberOfProblems = 5,
             score = 0,
-            selected = 3,
+            selectedId = 3.toString(),
             onProblemClick = {},
             onHomeClick = {},
             onHelpClick = {}

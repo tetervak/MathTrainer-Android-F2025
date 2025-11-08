@@ -4,7 +4,7 @@ import ca.tetervak.mathtrainer.data.factory.AlgebraProblemFactory
 import ca.tetervak.mathtrainer.domain.model.AlgebraProblem
 import javax.inject.Inject
 
-class LocalRandomQuizRepository @Inject constructor(
+class LocalRandomProblemRepository @Inject constructor(
     private val problemFactory: AlgebraProblemFactory
 ) {
 

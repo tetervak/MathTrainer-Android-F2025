@@ -78,7 +78,7 @@ private fun HomeScreenBody(
         topBar = {
             QuizTopBar(
                 title = stringResource(R.string.home),
-                onHelpButtonClick = onHelpClick,
+                onHelpClick = onHelpClick,
                 scrollBehavior = scrollBehavior
             )
         },

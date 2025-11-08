@@ -3,55 +3,59 @@ package ca.tetervak.mathtrainer.data.database.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import androidx.room.Transaction
 import androidx.room.Update
 import ca.tetervak.mathtrainer.data.database.entity.ProblemEntity
 import ca.tetervak.mathtrainer.domain.model.UserAnswerStatus
 import kotlinx.coroutines.flow.Flow
-import java.util.Date
 
 @Dao
 interface ProblemDao {
 
-    @Query("SELECT * FROM user_problems")
-    fun getAllLocalProblemsFlow(): Flow<List<ProblemEntity>>
-
-    @Query("SELECT * FROM user_problems WHERE id = :id")
-    fun getLocalProblemFlowById(id: Int): Flow<ProblemEntity?>
-
-    @Query("SELECT * FROM user_problems WHERE id = :id")
-    suspend fun getLocalProblemById(id: Int): ProblemEntity?
-
-    @Query("UPDATE user_problems SET user_answer = :userAnswer, status = :status, date = :date WHERE id = :id")
-    suspend fun updateLocalProblemById(
-        id: Int,
-        userAnswer: String?,
-        status: UserAnswerStatus,
-        date: Date
-    )
+    @Query("""
+        SELECT * FROM problems 
+        WHERE quiz_id = :quizId 
+        ORDER BY problem_number ASC
+    """)
+    fun getQuizProblemsFlow(quizId: String): Flow<List<ProblemEntity>>
 
     @Update
-    suspend fun updateLocalProblem(problemEntity: ProblemEntity)
+    suspend fun updateProblem(entity: ProblemEntity)
 
-    @Query("DELETE FROM user_problems")
-    suspend fun deleteAllLocalProblems()
+    @Query("""
+        SELECT COUNT(*) FROM problems 
+        WHERE quiz_id = :quizId AND status = :status
+    """)
+    fun getQuizProblemCountByStatusFlow(quizId: String, status: UserAnswerStatus): Flow<Int>
+
+    @Query("""
+        SELECT COUNT(*) FROM problems 
+        WHERE quiz_id = :quizId AND status = :status
+    """)
+    suspend fun getQuizProblemCountByStatus(quizId: String, status: UserAnswerStatus): Int
+
+    @Query("""
+        SELECT * FROM problems 
+        WHERE problem_id = :problemId
+    """)
+    fun getProblemFlowById(problemId: String): Flow<ProblemEntity?>
 
     @Insert
-    suspend fun insertLocalProblems(list: List<ProblemEntity>)
+    suspend fun insertProblems(entities: List<ProblemEntity>)
 
-    @Transaction
-    suspend fun emptyAndInsertLocalProblems(list: List<ProblemEntity>) {
-        deleteAllLocalProblems()
-        insertLocalProblems(list)
-    }
+    @Query("DELETE FROM problems WHERE quiz_id = :quizId")
+    suspend fun deleteAllQuizProblems(quizId: String)
 
-    @Query("SELECT COUNT(*) FROM user_problems")
-    suspend fun getProblemCount(): Int
+    @Query("SELECT COUNT(*) FROM problems WHERE quiz_id = :quizId")
+    fun getQuizProblemCountFlow(quizId: String): Flow<Int>
 
-    @Query("SELECT COUNT(*) FROM user_problems")
-    fun getProblemCountFlow(): Flow<Int>
+    @Query("SELECT COUNT(*) FROM problems WHERE quiz_id = :quizId")
+    fun getQuizProblemCount(quizId: String): Int
 
-    @Query("SELECT COUNT(*) FROM user_problems WHERE status = :status")
-    fun getProblemCountByStatusFlow(status: UserAnswerStatus): Flow<Int>
+    @Query("""
+        SELECT * FROM problems 
+        WHERE quiz_id = :quizId AND problem_number = :order
+        LIMIT 1
+        """)
+    suspend fun getQuizProblemByOrder(quizId: String, order: Int): ProblemEntity?
 
 }
