@@ -46,5 +46,8 @@
     <string name="remote">Remote</string>
     <string name="navigate_back">Navigate Back</string>
     <string name="list_all_quizzes">List All Quizzes</string>
+    <string name="delete_quiz">Delete Quiz</string>
+    <string name="quiz_list">Quiz List</string>
+    <string name="add_new_quiz">Add New Quiz</string>
 
 </resources>

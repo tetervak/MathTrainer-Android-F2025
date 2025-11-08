@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Start
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -146,6 +147,22 @@ fun QuizDetailsScreenBody(
                     .padding(all = 16.dp)
 
             )
+            OutlinedButton(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = { onListProblemsClick(state.quiz.id, state.firstProblemId) }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.DeleteForever,
+                    contentDescription = null,
+                    tint = Color.Red,
+                    modifier = Modifier.padding(end = 8.dp)
+                )
+                Text(
+                    modifier = Modifier.padding(end = 8.dp),
+                    text = stringResource(R.string.delete_quiz),
+                    color = Color.Red
+                )
+            }
             Spacer(Modifier.weight(1f))
             HomeButton(
                 onClick = onHomeClick,

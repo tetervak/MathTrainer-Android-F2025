@@ -12,7 +12,7 @@ interface QuizDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertQuiz(entity: QuizEntity)
 
-    @Query("SELECT * FROM quizzes WHERE user_id = :userId ORDER BY quiz_number DESC")
+    @Query("SELECT * FROM quizzes WHERE user_id = :userId ORDER BY quiz_number ASC")
     fun getUserQuizzesFlow(userId: String): Flow<List<QuizEntity>>
 
     @Query("SELECT COUNT(*) FROM quizzes WHERE user_id = :userId")
