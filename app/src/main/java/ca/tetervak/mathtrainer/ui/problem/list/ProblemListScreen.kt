@@ -11,14 +11,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -43,6 +39,7 @@ import ca.tetervak.mathtrainer.domain.model.AlgebraOperation
 import ca.tetervak.mathtrainer.domain.model.AlgebraProblem
 import ca.tetervak.mathtrainer.domain.model.Problem
 import ca.tetervak.mathtrainer.domain.model.UserAnswerStatus
+import ca.tetervak.mathtrainer.ui.HomeButton
 import ca.tetervak.mathtrainer.ui.QuizTopBar
 import ca.tetervak.mathtrainer.ui.score.Score
 import ca.tetervak.mathtrainer.ui.score.ScoreViewModel
@@ -138,21 +135,12 @@ fun ProblemListScreenBody(
                     numberOfProblems = numberOfProblems,
                     modifier = Modifier.padding(20.dp)
                 )
-                OutlinedButton(
+                HomeButton(
+                    onClick = onHomeClick,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
-                    onClick = onHomeClick,
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Home,
-                        contentDescription = stringResource(R.string.home)
-                    )
-                    Text(
-                        modifier = Modifier.padding(start = 8.dp),
-                        text = stringResource(R.string.home)
-                    )
-                }
+                        .padding(16.dp)
+                )
             }
         }
     }

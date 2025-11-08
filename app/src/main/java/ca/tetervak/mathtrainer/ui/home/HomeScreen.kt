@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import ca.tetervak.mathtrainer.R
-import ca.tetervak.mathtrainer.domain.model.ScoreData
+import ca.tetervak.mathtrainer.domain.model.QuizScore
 import ca.tetervak.mathtrainer.ui.QuizTopBar
 import ca.tetervak.mathtrainer.ui.score.ScoreViewModel
 import ca.tetervak.mathtrainer.ui.score.Score
@@ -37,8 +37,8 @@ import ca.tetervak.mathtrainer.ui.theme.Purple40
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    onFirstClick: () -> Unit,
-    onListClick: () -> Unit,
+    onFirstProblemClick: () -> Unit,
+    onListProblemsClick: () -> Unit,
     onSettingsClick: () -> Unit,
     onHelpClick: () -> Unit,
 ) {
@@ -46,16 +46,16 @@ fun HomeScreen(
     val homeViewModel: HomeViewModel = hiltViewModel()
 
     val scoreViewModel: ScoreViewModel = hiltViewModel()
-    val scoreData: ScoreData by scoreViewModel.uiState.collectAsState()
+    val quizScore: QuizScore by scoreViewModel.uiState.collectAsState()
 
     HomeScreenBody(
-        score = scoreData.rightAnswers,
-        numberOfProblems = scoreData.numberOfProblems,
-        onFirstClick = onFirstClick,
-        onListClick = onListClick,
+        score = quizScore.rightAnswers,
+        numberOfProblems = quizScore.numberOfProblems,
+        onFirstProblemClick = onFirstProblemClick,
+        onListClick = onListProblemsClick,
         onMakeNewProblemsClick = {
             homeViewModel.makeNewProblems()
-            onListClick()
+            onListProblemsClick()
         },
         onSettingsClick = onSettingsClick,
         onHelpClick = onHelpClick
@@ -67,7 +67,7 @@ fun HomeScreen(
 private fun HomeScreenBody(
     score: Int,
     numberOfProblems: Int,
-    onFirstClick: () -> Unit,
+    onFirstProblemClick: () -> Unit,
     onListClick: () -> Unit,
     onMakeNewProblemsClick: () -> Unit,
     onSettingsClick: () -> Unit,
@@ -101,7 +101,7 @@ private fun HomeScreenBody(
             )
             Button(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = onFirstClick
+                onClick = onFirstProblemClick
             ) {
 
                 Text(
@@ -171,7 +171,7 @@ fun HomeScreenPreview() {
     HomeScreenBody(
         score = 3,
         numberOfProblems = 5,
-        onFirstClick = {},
+        onFirstProblemClick = {},
         onListClick = {},
         onMakeNewProblemsClick = {},
         onSettingsClick = {},

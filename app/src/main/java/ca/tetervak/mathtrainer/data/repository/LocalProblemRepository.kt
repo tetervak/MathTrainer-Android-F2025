@@ -2,8 +2,8 @@ package ca.tetervak.mathtrainer.data.repository
 
 import ca.tetervak.mathtrainer.data.database.dao.ProblemDao
 import ca.tetervak.mathtrainer.domain.model.AlgebraProblem
-import ca.tetervak.mathtrainer.domain.model.ScoreData
-import ca.tetervak.mathtrainer.domain.model.StatusData
+import ca.tetervak.mathtrainer.domain.model.QuizScore
+import ca.tetervak.mathtrainer.domain.model.QuizStatus
 import ca.tetervak.mathtrainer.domain.model.UserAnswerStatus
 import ca.tetervak.mathtrainer.domain.model.Problem
 import kotlinx.coroutines.CoroutineDispatcher
@@ -21,46 +21,46 @@ import javax.inject.Inject
 
 @OptIn(DelicateCoroutinesApi::class)
 class LocalProblemRepository(
-    val dao: ProblemDao,
+    val problemDao: ProblemDao,
     private val externalScope: CoroutineScope,
     private val dispatcher: CoroutineDispatcher
 ) {
 
     @Inject
     constructor(dao: ProblemDao) : this(
-        dao = dao,
+        problemDao = dao,
         externalScope = GlobalScope,
         dispatcher = Dispatchers.IO
     )
 
     fun getQuizProblemsFlow(quizId: String): Flow<List<Problem>> =
-        dao.getQuizProblemsFlow(quizId = quizId)
+        problemDao.getQuizProblemsFlow(quizId = quizId)
             .map { list -> list.map { entity -> entity.toDomain() } }
             .flowOn(context = dispatcher)
 
     fun getProblemByIdFlow(problemId: String): Flow<Problem?> =
-        dao.getProblemFlowById(problemId = problemId)
+        problemDao.getProblemFlowById(problemId = problemId)
             .map { localProblem -> localProblem?.toDomain() }
             .flowOn(context = dispatcher)
 
     suspend fun updateProblem(problem: Problem) =
         withContext(context = dispatcher) {
-            dao.updateProblem(entity = problem.toEntity())
+            problemDao.updateProblem(entity = problem.toEntity())
         }
 
     suspend fun getNextProblemId(problem: Problem): String? =
         withContext(context = dispatcher) {
-            dao.getQuizProblemByOrder(problem.quizId, order = problem.order + 1)?.pId
+            problemDao.getQuizProblemByOrder(problem.quizId, order = problem.order + 1)?.pId
         }
 
     suspend fun getPreviousProblemId(problem: Problem): String? =
         withContext(context = dispatcher) {
-            dao.getQuizProblemByOrder(problem.quizId, order = problem.order - 1)?.pId
+            problemDao.getQuizProblemByOrder(problem.quizId, order = problem.order - 1)?.pId
         }
 
     suspend fun getFirstProblemId(quizId: String): String? =
         withContext(context = dispatcher) {
-            dao.getQuizProblemByOrder(quizId, order = 1)?.pId
+            problemDao.getQuizProblemByOrder(quizId, order = 1)?.pId
         }
 
     fun insertAlgebraProblems(
@@ -69,7 +69,7 @@ class LocalProblemRepository(
         firstOrder: Int = 1
     ) {
         externalScope.launch(context = dispatcher) {
-            dao.insertProblems(
+            problemDao.insertProblems(
                 entities = list.mapIndexed { index, algebraProblem ->
                     algebraProblem.toEntity(
                         quizId = quizId,
@@ -82,57 +82,56 @@ class LocalProblemRepository(
         }
     }
 
-    fun getQuizScoreDataFlow(quizId: String): Flow<ScoreData> {
-        val scoreDataFlow: Flow<ScoreData> = combine(
-            dao.getQuizProblemCountFlow(quizId = quizId),
-            dao.getQuizProblemCountByStatusFlow(
+    fun getQuizScoreFlow(quizId: String): Flow<QuizScore> {
+        val quizScoreFlow: Flow<QuizScore> = combine(
+            problemDao.getQuizProblemCountFlow(quizId = quizId),
+            problemDao.getQuizProblemCountByStatusFlow(
                 quizId = quizId,
                 status = UserAnswerStatus.RIGHT_ANSWER
             ),
         ) { numberOfProblems, rightAnswers ->
-            ScoreData(
+            QuizScore(
                 numberOfProblems = numberOfProblems,
                 rightAnswers = rightAnswers
             )
         }
-        return scoreDataFlow.flowOn(context = dispatcher)
+        return quizScoreFlow.flowOn(context = dispatcher)
     }
 
-    fun getQuizStatusDataFlow(quizId: String): Flow<StatusData> {
-        val statusDataFlow: Flow<StatusData> = combine(
-            dao.getQuizProblemCountFlow(quizId = quizId),
-            dao.getQuizProblemCountByStatusFlow(
+    fun getQuizStatusDataFlow(quizId: String): Flow<QuizStatus> {
+        val quizStatusFlow: Flow<QuizStatus> = combine(
+            problemDao.getQuizProblemCountFlow(quizId = quizId),
+            problemDao.getQuizProblemCountByStatusFlow(
                 quizId = quizId,
                 status = UserAnswerStatus.RIGHT_ANSWER
             ),
-            dao.getQuizProblemCountByStatusFlow(
+            problemDao.getQuizProblemCountByStatusFlow(
                 quizId = quizId,
                 status = UserAnswerStatus.NOT_ANSWERED
             ),
-            dao.getQuizProblemCountByStatusFlow(
+            problemDao.getQuizProblemCountByStatusFlow(
                 quizId = quizId,
                 status = UserAnswerStatus.WRONG_ANSWER
             )
         ) { numberOfProblems, rightAnswers, notAnswered, wrongAnswers ->
-            StatusData(
-                numberOfProblems = numberOfProblems,
+            QuizStatus(
+                problemCount = numberOfProblems,
                 rightAnswers = rightAnswers,
                 notAnswered = notAnswered,
                 wrongAnswers = wrongAnswers
             )
-
         }
-        return statusDataFlow.flowOn(context = dispatcher)
+        return quizStatusFlow.flowOn(context = dispatcher)
     }
 
     suspend fun getNumberOfProblems(quizId: String): Int =
         withContext(context = dispatcher) {
-            dao.getQuizProblemCount(quizId = quizId)
+            problemDao.getQuizProblemCount(quizId = quizId)
         }
 
     suspend fun getNumberOfRightAnswers(quizId: String): Int =
         withContext(context = dispatcher) {
-            dao.getQuizProblemCountByStatus(
+            problemDao.getQuizProblemCountByStatus(
                 quizId = quizId,
                 status = UserAnswerStatus.RIGHT_ANSWER
             )

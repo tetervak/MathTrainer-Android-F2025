@@ -74,8 +74,8 @@ fun AppRootScreen() {
             when (key) {
                 is Home -> NavEntry(key){
                     HomeScreen(
-                        onFirstClick = { backStack.add(ProblemDetails(problemId = "?")) },
-                        onListClick = { backStack.add(ProblemList()) },
+                        onFirstProblemClick = { backStack.add(ProblemDetails(problemId = "?")) },
+                        onListProblemsClick = { backStack.add(ProblemList()) },
                         onSettingsClick = { backStack.add(Settings) },
                         onHelpClick = { showAboutDialog = true }
                     )
@@ -103,8 +103,8 @@ fun AppRootScreen() {
                         problemId = problemId,
                         onHelpClick = { showAboutDialog = true },
                         onHomeClick = { backStack.removeIf { it !is Home } },
-                        onListClick = { backStack.add(ProblemList(selectedId = problemId)) },
-                        onProblemNavClick = { problemId ->
+                        onListProblemsClick = { backStack.add(ProblemList(selectedId = problemId)) },
+                        onProblemClick = { problemId ->
                            backStack.add(ProblemDetails(problemId = problemId))
                         },
                         onQuizClick = { quizId ->

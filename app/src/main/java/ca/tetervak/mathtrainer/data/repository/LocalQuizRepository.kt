@@ -22,6 +22,12 @@ class LocalQuizRepository @Inject constructor(
             entities.map { entity -> entity.toDomain() }
         }.flowOn(Dispatchers.IO)
 
+    fun getQuizByIdFlow(quizId: String): Flow<Quiz?> =
+        quizDao.getQuizByIdFlow(quizId).map { entity ->
+            entity?.toDomain()
+        }.flowOn(Dispatchers.IO)
+
+
     suspend fun getQuizMaxOrder(): Int =
         withContext(Dispatchers.IO) {
             quizDao.getQuizMaxOrder(userId) ?: 0

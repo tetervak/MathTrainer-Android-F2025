@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
@@ -32,9 +33,10 @@ class ProblemDetailsViewModel @Inject constructor(
     val uiState: StateFlow<ProblemDetailsUiState> =
         problemIdFlow.flatMapLatest { problemId ->
             if (problemId == null) {
-                MutableStateFlow(ProblemDetailsUiState.Loading)
+                flowOf(ProblemDetailsUiState.Loading)
             } else {
-                repository.getProblemByIdFlow(problemId).filterNotNull()
+                repository.getProblemByIdFlow(problemId)
+                    .filterNotNull()
                     .onEach { problem ->
                         if (problem.status == UserAnswerStatus.RIGHT_ANSWER) {
                             answerInput = checkNotNull(problem.userAnswer)

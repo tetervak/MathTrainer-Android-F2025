@@ -3,8 +3,8 @@ package ca.tetervak.mathtrainer.domain.repository
 import ca.tetervak.mathtrainer.data.repository.LocalProblemRepository
 import ca.tetervak.mathtrainer.data.repository.LocalQuizRepository
 import ca.tetervak.mathtrainer.data.repository.RandomQuizRepository
-import ca.tetervak.mathtrainer.domain.model.ScoreData
-import ca.tetervak.mathtrainer.domain.model.StatusData
+import ca.tetervak.mathtrainer.domain.model.QuizScore
+import ca.tetervak.mathtrainer.domain.model.QuizStatus
 import ca.tetervak.mathtrainer.domain.model.Problem
 import ca.tetervak.mathtrainer.domain.model.Quiz
 import kotlinx.coroutines.flow.Flow
@@ -28,10 +28,10 @@ class QuizRepository @Inject constructor(
     suspend fun updateProblem(problem: Problem) =
         localProblemRepository.updateProblem(problem)
 
-    fun getQuizScoreDataFlow(quizId: String): Flow<ScoreData> =
-        localProblemRepository.getQuizScoreDataFlow(quizId)
+    fun getQuizScoreFlow(quizId: String): Flow<QuizScore> =
+        localProblemRepository.getQuizScoreFlow(quizId)
 
-    fun getQuizStatusDataFlow(quizId: String): Flow<StatusData> =
+    fun getQuizStatusFlow(quizId: String): Flow<QuizStatus> =
         localProblemRepository.getQuizStatusDataFlow(quizId)
 
     suspend fun insertGeneratedUserProblems(quizId: String){
@@ -63,4 +63,9 @@ class QuizRepository @Inject constructor(
 
     suspend fun getQuizOrder(quizId: String): Int =
         localQuizRepository.getQuizOrder(quizId)
+
+    suspend fun getQuizByIdFlow(quizId: String): Flow<Quiz?> =
+        localQuizRepository.getQuizByIdFlow(quizId)
+
+
 }

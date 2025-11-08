@@ -71,8 +71,8 @@ fun ProblemDetailsScreen(
     problemId: String,
     onHelpClick: () -> Unit,
     onHomeClick: () -> Unit,
-    onListClick: (String) -> Unit,
-    onProblemNavClick: (String) -> Unit,
+    onListProblemsClick: (String) -> Unit,
+    onProblemClick: (String) -> Unit,
     onQuizClick: (String) -> Unit,
     onBackClick: () -> Unit
 ) {
@@ -94,8 +94,8 @@ fun ProblemDetailsScreen(
             onSubmit = detailsViewModel::onSubmit,
             onHelpClick = onHelpClick,
             onHomeClick = onHomeClick,
-            onListClick = onListClick,
-            onProblemNavClick = onProblemNavClick,
+            onListProblemsClick = onListProblemsClick,
+            onProblemClick = onProblemClick,
             onQuizClick = onQuizClick,
             onBackClick = onBackClick
         )
@@ -112,8 +112,8 @@ fun ProblemDetailsScreenBody(
     onSubmit: () -> Unit,
     onHelpClick: () -> Unit,
     onHomeClick: () -> Unit,
-    onListClick: (String) -> Unit,
-    onProblemNavClick: (String) -> Unit,
+    onListProblemsClick: (String) -> Unit,
+    onProblemClick: (String) -> Unit,
     onQuizClick: (String) -> Unit,
     onBackClick: () -> Unit
 ) {
@@ -133,8 +133,8 @@ fun ProblemDetailsScreenBody(
         bottomBar = {
             DetailsBottomBar(
                 onHomeClick = onHomeClick,
-                onListClick = { onListClick(state.problem.id) },
-                onFirstClick = { state.firstProblemId?.let{onProblemNavClick(it)} }
+                onListClick = { onListProblemsClick(state.problem.id) },
+                onFirstClick = { state.firstProblemId?.let{onProblemClick(it)} }
             )
         },
         modifier = Modifier
@@ -195,7 +195,7 @@ fun ProblemDetailsScreenBody(
                     verticalAlignment = Alignment.Bottom
                 ) {
                     OutlinedButton(
-                        onClick = { state.previousProblemId?.let{ onProblemNavClick(it) } },
+                        onClick = { state.previousProblemId?.let{ onProblemClick(it) } },
                         modifier = Modifier.weight(1f),
                         enabled = state.problem.order > 1
                     ) {
@@ -209,7 +209,7 @@ fun ProblemDetailsScreenBody(
                         )
                     }
                     OutlinedButton(
-                        onClick = { state.nextProblemId?.let{ onProblemNavClick(it) } },
+                        onClick = { state.nextProblemId?.let{ onProblemClick(it) } },
                         modifier = Modifier.weight(1f),
                         enabled = state.problem.order < state.numberOfProblems
                     ) {
@@ -466,8 +466,8 @@ fun GameScreenPreview() {
             onSubmit = {},
             onHelpClick = {},
             onHomeClick = {},
-            onListClick = {},
-            onProblemNavClick = {},
+            onListProblemsClick = {},
+            onProblemClick = {},
             onQuizClick = {},
             onBackClick = {}
         )
