@@ -27,6 +27,9 @@ class LocalQuizRepository @Inject constructor(
             entity?.toDomain()
         }.flowOn(Dispatchers.IO)
 
+    fun getQuizCountFlow(): Flow<Int> =
+        quizDao.getUserQuizCountFlow(userId)
+            .flowOn(Dispatchers.IO)
 
     suspend fun getQuizMaxOrder(): Int =
         withContext(Dispatchers.IO) {
@@ -45,4 +48,6 @@ class LocalQuizRepository @Inject constructor(
         withContext(Dispatchers.IO) {
             quizDao.getQuizOrder(quizId) ?: 0
         }
+
+
 }

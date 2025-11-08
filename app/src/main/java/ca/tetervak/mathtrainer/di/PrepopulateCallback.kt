@@ -76,7 +76,7 @@ class PrepopulateCallback(
             ),
             ProblemEntity(
                 quizId = quiz.qId,
-                order = 2,
+                order = 3,
                 a = 2,
                 b = 4,
                 op = AlgebraOperation.MULTIPLICATION

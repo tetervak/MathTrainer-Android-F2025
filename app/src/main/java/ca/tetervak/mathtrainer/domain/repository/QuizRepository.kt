@@ -64,8 +64,10 @@ class QuizRepository @Inject constructor(
     suspend fun getQuizOrder(quizId: String): Int =
         localQuizRepository.getQuizOrder(quizId)
 
-    suspend fun getQuizByIdFlow(quizId: String): Flow<Quiz?> =
+    fun getQuizByIdFlow(quizId: String): Flow<Quiz?> =
         localQuizRepository.getQuizByIdFlow(quizId)
 
+    fun getQuizCountFlow(): Flow<Int> =
+        localQuizRepository.getQuizCountFlow()
 
 }

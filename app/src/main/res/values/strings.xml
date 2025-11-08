@@ -38,10 +38,12 @@
 
     <string name="settings">Settings</string>
     <string name="number_of_problems">Number of Problems</string>
+    <string name="number_of_quizzes_n">Number of Quizzes: %d</string>
     <string name="problems">Problems</string>
     <string name="problem_generation">Problem Generation</string>
     <string name="local">Local</string>
     <string name="remote">Remote</string>
     <string name="navigate_back">Navigate Back</string>
+    <string name="list_all_quizzes">List All Quizzes</string>
 
 </resources>

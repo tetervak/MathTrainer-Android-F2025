@@ -77,21 +77,18 @@ fun ProblemDetailsScreen(
     onBackClick: () -> Unit
 ) {
 
-    val detailsViewModel: ProblemDetailsViewModel = hiltViewModel()
+    val viewModel: ProblemDetailsViewModel = hiltViewModel()
     LaunchedEffect(problemId) {
-        detailsViewModel.loadProblem(problemId)
+        viewModel.loadProblem(problemId)
     }
-
-    val detailsUiState: State<ProblemDetailsUiState> = detailsViewModel.uiState.collectAsState()
+    val detailsUiState: State<ProblemDetailsUiState> = viewModel.uiState.collectAsState()
     val state = detailsUiState.value
-
     if (state is ProblemDetailsUiState.Success) {
-
         ProblemDetailsScreenBody(
             state = state,
-            userAnswerInput = detailsViewModel.answerInput,
-            onChangeUserAnswerInput = detailsViewModel::updateAnswerInput,
-            onSubmit = detailsViewModel::onSubmit,
+            userAnswerInput = viewModel.answerInput,
+            onChangeUserAnswerInput = viewModel::updateAnswerInput,
+            onSubmit = viewModel::onSubmit,
             onHelpClick = onHelpClick,
             onHomeClick = onHomeClick,
             onListProblemsClick = onListProblemsClick,
@@ -133,7 +130,7 @@ fun ProblemDetailsScreenBody(
         bottomBar = {
             DetailsBottomBar(
                 onHomeClick = onHomeClick,
-                onListClick = { onListProblemsClick(state.problem.id) },
+                onListClick = { onListProblemsClick(state.problem.quizId) },
                 onFirstClick = { state.firstProblemId?.let{onProblemClick(it)} }
             )
         },

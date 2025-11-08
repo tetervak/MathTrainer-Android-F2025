@@ -33,7 +33,12 @@ class QuizDetailsViewModel @Inject constructor(
                     quizRepository.getQuizStatusFlow(quizId).filterNotNull()
                 )
                 { quiz, quizStatus ->
-                    QuizDetailsUiState.Success(quiz, quizStatus = quizStatus)
+                    val firstProblemId = quizRepository.getFirstProblemId(quizId)
+                    QuizDetailsUiState.Success(
+                        quiz = quiz,
+                        quizStatus = quizStatus,
+                        firstProblemId = firstProblemId
+                    )
                 }
             }
         }.stateIn(

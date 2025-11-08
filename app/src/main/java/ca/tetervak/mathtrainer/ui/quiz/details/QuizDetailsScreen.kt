@@ -18,6 +18,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,21 +40,25 @@ import ca.tetervak.mathtrainer.ui.theme.Purple40
 
 @Composable
 fun QuizDetailsScreen(
+    quizId: String,
     onHomeClick: () -> Unit,
-    onFirstProblemClick: () -> Unit,
+    onProblemClick: (String) -> Unit,
     onListProblemsClick: () -> Unit,
     onBackClick: () -> Unit,
     onHelpClick: () -> Unit,
 ) {
-    val quizDetailsViewModel: QuizDetailsViewModel = hiltViewModel()
-    val uiState = quizDetailsViewModel.uiState.collectAsState()
+    val viewModel: QuizDetailsViewModel = hiltViewModel()
+    LaunchedEffect(quizId) {
+        viewModel.loadQuiz(quizId)
+    }
+    val uiState = viewModel.uiState.collectAsState()
     val state: QuizDetailsUiState = uiState.value
 
-    if( state is QuizDetailsUiState.Success){
+    if(state is QuizDetailsUiState.Success){
         QuizDetailsScreenBody(
             state = state,
             onHomeClick = onHomeClick,
-            onFirstProblemClick = onFirstProblemClick,
+            onProblemClick = onProblemClick,
             onListProblemsClick = onListProblemsClick,
             onBackClick = onBackClick,
             onHelpClick = onHelpClick
@@ -66,7 +71,7 @@ fun QuizDetailsScreen(
 fun QuizDetailsScreenBody(
     state: QuizDetailsUiState.Success,
     onHomeClick: () -> Unit,
-    onFirstProblemClick: () -> Unit,
+    onProblemClick: (String) -> Unit,
     onListProblemsClick: () -> Unit,
     onBackClick: () -> Unit,
     onHelpClick: () -> Unit
@@ -108,7 +113,7 @@ fun QuizDetailsScreenBody(
             )
             OutlinedButton(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = onFirstProblemClick
+                onClick = { state.firstProblemId?.let { onProblemClick(it) }}
             ) {
 
                 Text(
@@ -246,10 +251,11 @@ fun QuizDetailsScreenBodyPreview(){
                     rightAnswers = 8,
                     wrongAnswers = 2,
                     notAnswered = 3,
-                )
+                ),
+                firstProblemId = null
             ),
             onHomeClick = {},
-            onFirstProblemClick = {},
+            onProblemClick = {},
             onListProblemsClick = {},
             onBackClick = {},
             onHelpClick = {}

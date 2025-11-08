@@ -7,6 +7,7 @@ sealed interface QuizDetailsUiState {
     object Loading : QuizDetailsUiState
     data class Success(
         val quiz: Quiz,
-        val quizStatus: QuizStatus
+        val quizStatus: QuizStatus,
+        val firstProblemId: String?
     ) : QuizDetailsUiState
 }
