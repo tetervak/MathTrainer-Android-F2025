@@ -71,7 +71,7 @@ class PrepopulateCallback(
                 quizId = quiz.qId,
                 order = 2,
                 a = 6,
-                b = 3,
+                b = 4,
                 op = AlgebraOperation.SUBTRACTION
             ),
             ProblemEntity(

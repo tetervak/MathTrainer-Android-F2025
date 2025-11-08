@@ -24,10 +24,10 @@ class QuizListViewModel @Inject constructor(
                 started = SharingStarted.WhileSubscribed(5000),
                 initialValue = QuizListUiState(quizList = emptyList()))
 
-    fun addGeneratedQuiz() {
-        viewModelScope.launch {
-            quizRepository.insertGeneratedQuiz()
-        }
-    }
+//    fun addGeneratedQuiz() {
+//        viewModelScope.launch {
+//            quizRepository.insertGeneratedQuiz()
+//        }
+//    }
 
 }

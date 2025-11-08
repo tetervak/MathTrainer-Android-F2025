@@ -43,7 +43,7 @@ fun QuizDetailsScreen(
     quizId: String,
     onHomeClick: () -> Unit,
     onProblemClick: (String) -> Unit,
-    onListProblemsClick: () -> Unit,
+    onListProblemsClick: (String) -> Unit,
     onBackClick: () -> Unit,
     onHelpClick: () -> Unit,
 ) {
@@ -72,7 +72,7 @@ fun QuizDetailsScreenBody(
     state: QuizDetailsUiState.Success,
     onHomeClick: () -> Unit,
     onProblemClick: (String) -> Unit,
-    onListProblemsClick: () -> Unit,
+    onListProblemsClick: (String) -> Unit,
     onBackClick: () -> Unit,
     onHelpClick: () -> Unit
 ) {
@@ -127,7 +127,7 @@ fun QuizDetailsScreenBody(
             }
             OutlinedButton(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = onListProblemsClick
+                onClick = { onListProblemsClick(state.quiz.id) }
             ) {
 
                 Text(

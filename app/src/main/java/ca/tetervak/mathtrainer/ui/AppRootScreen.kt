@@ -30,6 +30,7 @@ import ca.tetervak.mathtrainer.ui.problem.details.ProblemDetailsScreen
 import ca.tetervak.mathtrainer.ui.home.HomeScreen
 import ca.tetervak.mathtrainer.ui.problem.list.ProblemListScreen
 import ca.tetervak.mathtrainer.ui.quiz.details.QuizDetailsScreen
+import ca.tetervak.mathtrainer.ui.quiz.list.QuizListScreen
 import ca.tetervak.mathtrainer.ui.settings.SettingsScreen
 import kotlinx.serialization.Serializable
 
@@ -54,9 +55,7 @@ data class QuizDetails(
 ) : NavKey
 
 @Serializable
-data class QuizList(
-    val selectedId: String? = null,
-) : NavKey
+object QuizList: NavKey
 
 @Composable
 fun AppRootScreen() {
@@ -64,37 +63,53 @@ fun AppRootScreen() {
     var showAboutDialog: Boolean by rememberSaveable {
         mutableStateOf(false)
     }
+    val onHelpClick: () -> Unit = { showAboutDialog = true }
+    val onDismissHelpClick: () -> Unit = { showAboutDialog = false }
 
-    // Create a back stack, specifying the key the app should start with
     val backStack: NavBackStack<NavKey> = rememberNavBackStack(Home)
-
+    val onBackClick: () -> Unit = { backStack.removeLastOrNull() }
+    val onHomeClick: () -> Unit = { backStack.removeIf { it !is Home } }
+    val onListQuizzesClick: () -> Unit = { backStack.add(QuizList) }
+    val onSettingsClick: () -> Unit = { backStack.add(Settings) }
+    val onQuizClick: (String) -> Unit = { quizId ->
+        backStack.add(QuizDetails(quizId = quizId))
+    }
+    val onProblemClick: (String) -> Unit = { problemId ->
+        backStack.add(ProblemDetails(problemId = problemId))
+    }
+    val onListProblemsClick: (String) -> Unit = { quizId ->
+        backStack.add(ProblemList(quizId = quizId))
+    }
 
     NavDisplay(
         backStack = backStack,
-        onBack = { backStack.removeLastOrNull() },
+        onBack = onBackClick,
         entryProvider = { key ->
             when (key) {
                 is Home -> NavEntry(key) {
                     HomeScreen(
-                        onListQuizzesClick = { backStack.add(QuizList()) },
-                        onSettingsClick = { backStack.add(Settings) },
-                        onHelpClick = { showAboutDialog = true }
+                        onListQuizzesClick = onListQuizzesClick,
+                        onSettingsClick = onSettingsClick,
+                        onHelpClick = onHelpClick
                     )
                 }
 
                 is QuizList -> NavEntry(key) {
-
+                    QuizListScreen(
+                        onHomeClick = onHomeClick,
+                        onQuizClick = onQuizClick,
+                        onBackClick = onBackClick,
+                        onHelpClick = onHelpClick,
+                    )
                 }
 
                 is ProblemList -> NavEntry(key) {
                     val selectedId: String? = key.selectedId
                     ProblemListScreen(
                         selectedId = selectedId,
-                        onProblemClick = { problemId ->
-                            backStack.add(ProblemDetails(problemId = problemId))
-                        },
-                        onHomeClick = { backStack.removeIf { it !is Home } },
-                        onHelpClick = { showAboutDialog = true }
+                        onProblemClick = onProblemClick,
+                        onHomeClick = onHomeClick,
+                        onHelpClick = onHelpClick
                     )
                 }
 
@@ -102,23 +117,12 @@ fun AppRootScreen() {
                     val problemId: String = key.problemId
                     ProblemDetailsScreen(
                         problemId = problemId,
-                        onHelpClick = { showAboutDialog = true },
-                        onHomeClick = { backStack.removeIf { it !is Home } },
-                        onListProblemsClick = { quizId ->
-                            backStack.add(
-                                ProblemList(
-                                    quizId = quizId,
-                                    selectedId = problemId
-                                )
-                            )
-                        },
-                        onProblemClick = { problemId ->
-                            backStack.add(ProblemDetails(problemId = problemId))
-                        },
-                        onQuizClick = { quizId ->
-                            backStack.add(QuizDetails(quizId = quizId))
-                        },
-                        onBackClick = { backStack.removeLastOrNull() }
+                        onHelpClick = onHelpClick,
+                        onHomeClick = onHomeClick,
+                        onListProblemsClick = onListProblemsClick,
+                        onProblemClick = onProblemClick,
+                        onQuizClick = onQuizClick,
+                        onBackClick = onBackClick
                     )
                 }
 
@@ -126,20 +130,18 @@ fun AppRootScreen() {
                     val quizId: String = key.quizId
                     QuizDetailsScreen(
                         quizId = quizId,
-                        onHomeClick = { backStack.removeIf { it !is Home } },
-                        onProblemClick = { problemId ->
-                            backStack.add(ProblemDetails(problemId = problemId))
-                        },
-                        onListProblemsClick = { backStack.add(ProblemList(quizId = quizId)) },
-                        onBackClick = { backStack.removeLastOrNull() },
-                        onHelpClick = { showAboutDialog = true }
+                        onHomeClick = onHomeClick,
+                        onProblemClick = onProblemClick,
+                        onListProblemsClick = onListProblemsClick,
+                        onBackClick = onBackClick,
+                        onHelpClick = onHelpClick
                     )
                 }
 
                 is Settings -> NavEntry(key) {
                     SettingsScreen(
-                        onHelpClick = { showAboutDialog = true },
-                        onHomeClick = { backStack.removeIf { it !is Home } }
+                        onHelpClick = onHelpClick,
+                        onHomeClick = onHomeClick,
                     )
                 }
 
@@ -150,6 +152,6 @@ fun AppRootScreen() {
     )
 
     if (showAboutDialog) {
-        AboutDialog(onDismissRequest = { showAboutDialog = false })
+        AboutDialog(onDismissRequest = onDismissHelpClick)
     }
 }

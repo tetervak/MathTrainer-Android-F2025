@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 @Composable
 fun QuizListScreen(
     onHomeClick: () -> Unit,
-    onQuizClick: () -> Unit,
+    onQuizClick: (String) -> Unit,
     onBackClick: () -> Unit,
     onHelpClick: () -> Unit,
 ) {
