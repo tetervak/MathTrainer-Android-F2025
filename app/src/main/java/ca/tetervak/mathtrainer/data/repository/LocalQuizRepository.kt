@@ -45,12 +45,12 @@ class LocalQuizRepository(
             quizDao.getQuizMaxOrder(userId) ?: 0
         }
 
-    suspend fun insertQuiz(): Quiz =
+    suspend fun insertQuiz(): String =
         withContext(context = dispatcher) {
             val order = getQuizMaxOrder() + 1
             val entity = QuizEntity(order = order, userId = userId)
             quizDao.insertQuiz(entity)
-            entity.toDomain()
+            entity.qId
         }
 
     suspend fun deleteQuizById(quizId: String) =

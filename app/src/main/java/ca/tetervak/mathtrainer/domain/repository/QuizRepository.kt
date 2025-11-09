@@ -56,20 +56,20 @@ class QuizRepository(
     fun getQuizStatusFlow(quizId: String): Flow<QuizStatus> =
         localProblemRepository.getQuizStatusDataFlow(quizId)
 
-    suspend fun insertNewGeneratedProblems(quizId: String): Int {
+    suspend fun insertNewGeneratedProblems(quizId: String) {
         val problems: List<AlgebraProblem> = randomQuizRepository.getRandomQuizProblems()
         localProblemRepository.insertAlgebraProblems(
             quizId = quizId,
             list = problems
         )
-        return problems.size
     }
 
     fun addNewGeneratedQuiz(){
         externalScope.launch(context = dispatcher) {
-            val quiz = localQuizRepository.insertQuiz()
-            val count = insertNewGeneratedProblems(quizId = quiz.id)
-            localQuizRepository.updateProblemCount(quizId = quiz.id, problemCount = count)
+            val quizId = localQuizRepository.insertQuiz()
+            insertNewGeneratedProblems(quizId = quizId)
+            val count = localProblemRepository.getNumberOfProblems(quizId = quizId)
+            localQuizRepository.updateProblemCount(quizId = quizId, problemCount = count)
         }
     }
 
