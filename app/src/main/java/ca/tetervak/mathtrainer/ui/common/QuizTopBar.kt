@@ -1,4 +1,4 @@
-package ca.tetervak.mathtrainer.ui
+package ca.tetervak.mathtrainer.ui.common
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack

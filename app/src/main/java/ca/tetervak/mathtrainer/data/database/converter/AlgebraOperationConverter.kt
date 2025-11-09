@@ -11,5 +11,5 @@ class AlgebraOperationConverter {
 
     @TypeConverter
     fun fromString(op: String): AlgebraOperation =
-        AlgebraOperation.Companion.fromSymbol(symbol = op.first())
+        AlgebraOperation.fromSymbol(symbol = op.first())
 }

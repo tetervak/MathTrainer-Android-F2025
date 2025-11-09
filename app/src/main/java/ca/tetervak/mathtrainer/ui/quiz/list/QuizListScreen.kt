@@ -36,8 +36,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import ca.tetervak.mathtrainer.R
 import ca.tetervak.mathtrainer.domain.model.Quiz
 import ca.tetervak.mathtrainer.domain.model.QuizScore
-import ca.tetervak.mathtrainer.ui.HomeButton
-import ca.tetervak.mathtrainer.ui.QuizTopBar
+import ca.tetervak.mathtrainer.ui.common.HomeButton
+import ca.tetervak.mathtrainer.ui.common.QuizTopBar
 import ca.tetervak.mathtrainer.ui.theme.MathTrainerTheme
 
 @Composable

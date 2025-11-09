@@ -7,7 +7,6 @@ import ca.tetervak.mathtrainer.domain.repository.QuizRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
@@ -21,7 +20,7 @@ class QuizListViewModel @Inject constructor(
         quizRepository.getUserQuizzesFlow()
             .map { quizzes ->
                 val stateList = quizzes.map { quiz ->
-                    val score: QuizScore = quizRepository.getQuizScoreFlow(quizId = quiz.id).first()
+                    val score: QuizScore = quizRepository.getQuizScore(quizId = quiz.id)
                     QuizListItemUiState(
                         quiz = quiz,
                         quizScore = score

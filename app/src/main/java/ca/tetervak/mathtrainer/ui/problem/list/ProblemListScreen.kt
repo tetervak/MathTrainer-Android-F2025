@@ -38,10 +38,10 @@ import ca.tetervak.mathtrainer.domain.model.AlgebraOperation
 import ca.tetervak.mathtrainer.domain.model.AlgebraProblem
 import ca.tetervak.mathtrainer.domain.model.Problem
 import ca.tetervak.mathtrainer.domain.model.UserAnswerStatus
-import ca.tetervak.mathtrainer.ui.HomeButton
-import ca.tetervak.mathtrainer.ui.QuizButton
-import ca.tetervak.mathtrainer.ui.QuizTopBar
-import ca.tetervak.mathtrainer.ui.ScoreCard
+import ca.tetervak.mathtrainer.ui.common.HomeButton
+import ca.tetervak.mathtrainer.ui.common.QuizButton
+import ca.tetervak.mathtrainer.ui.common.QuizTopBar
+import ca.tetervak.mathtrainer.ui.common.ScoreCard
 import ca.tetervak.mathtrainer.ui.theme.MathTrainerTheme
 
 @OptIn(ExperimentalMaterial3Api::class)

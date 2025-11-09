@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import ca.tetervak.mathtrainer.R
-import ca.tetervak.mathtrainer.ui.QuizTopBar
+import ca.tetervak.mathtrainer.ui.common.QuizTopBar
 import ca.tetervak.mathtrainer.ui.theme.MathTrainerTheme
 import ca.tetervak.mathtrainer.ui.theme.Purple40
 

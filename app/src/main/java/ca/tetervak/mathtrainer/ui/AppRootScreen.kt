@@ -26,6 +26,7 @@ import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
+import ca.tetervak.mathtrainer.ui.common.AboutDialog
 import ca.tetervak.mathtrainer.ui.problem.details.ProblemDetailsScreen
 import ca.tetervak.mathtrainer.ui.home.HomeScreen
 import ca.tetervak.mathtrainer.ui.problem.list.ProblemListScreen
@@ -63,10 +64,12 @@ fun AppRootScreen() {
     var showAboutDialog: Boolean by rememberSaveable {
         mutableStateOf(false)
     }
+
     val onHelpClick: () -> Unit = { showAboutDialog = true }
     val onDismissHelpClick: () -> Unit = { showAboutDialog = false }
 
     val backStack: NavBackStack<NavKey> = rememberNavBackStack(Home)
+
     val onBackClick: () -> Unit = { backStack.removeLastOrNull() }
     val onHomeClick: () -> Unit = { backStack.removeIf { it !is Home } }
     val onListQuizzesClick: () -> Unit = { backStack.add(QuizList) }

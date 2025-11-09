@@ -49,8 +49,8 @@ class QuizRepository(
     suspend fun updateProblem(problem: Problem) =
         localProblemRepository.updateProblem(problem)
 
-    fun getQuizScoreFlow(quizId: String): Flow<QuizScore> =
-        localProblemRepository.getQuizScoreFlow(quizId)
+    suspend fun getQuizScore(quizId: String): QuizScore =
+        localProblemRepository.getQuizScore(quizId)
 
     fun getQuizStatusFlow(quizId: String): Flow<QuizStatus> =
         localProblemRepository.getQuizStatusDataFlow(quizId)

@@ -75,21 +75,18 @@ class LocalProblemRepository(
         )
     }
 
-    fun getQuizScoreFlow(quizId: String): Flow<QuizScore> {
-        val quizScoreFlow: Flow<QuizScore> = combine(
-            problemDao.getQuizProblemCountFlow(quizId = quizId),
-            problemDao.getQuizProblemCountByStatusFlow(
+    suspend fun getQuizScore(quizId: String): QuizScore =
+        withContext(context = dispatcher) {
+            val numberOfProblems = problemDao.getQuizProblemCount(quizId = quizId)
+            val numberOfRightAnswers = problemDao.getQuizProblemCountByStatus(
                 quizId = quizId,
                 status = UserAnswerStatus.RIGHT_ANSWER
-            ),
-        ) { numberOfProblems, rightAnswers ->
+            )
             QuizScore(
                 numberOfProblems = numberOfProblems,
-                rightAnswers = rightAnswers
+                rightAnswers = numberOfRightAnswers
             )
         }
-        return quizScoreFlow.flowOn(context = dispatcher)
-    }
 
     fun getQuizStatusDataFlow(quizId: String): Flow<QuizStatus> {
         val quizStatusFlow: Flow<QuizStatus> = combine(

@@ -1,4 +1,4 @@
-package ca.tetervak.mathtrainer.ui
+package ca.tetervak.mathtrainer.ui.common
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
