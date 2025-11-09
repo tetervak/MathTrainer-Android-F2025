@@ -55,6 +55,6 @@ interface ProblemDao {
         LIMIT 1
         """
     )
-    suspend fun getQuizProblemByOrder(quizId: String, problemNumber: Int): ProblemEntity?
+    suspend fun getQuizProblemByNumber(quizId: String, problemNumber: Int): ProblemEntity?
 
 }

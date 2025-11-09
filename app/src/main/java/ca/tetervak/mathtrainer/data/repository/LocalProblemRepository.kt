@@ -44,17 +44,17 @@ class LocalProblemRepository(
 
     suspend fun getNextProblemId(problem: Problem): String? =
         withContext(context = dispatcher) {
-            problemDao.getQuizProblemByOrder(problem.quizId, problemNumber = problem.problemNumber + 1)?.id
+            problemDao.getQuizProblemByNumber(problem.quizId, problemNumber = problem.problemNumber + 1)?.id
         }
 
     suspend fun getPreviousProblemId(problem: Problem): String? =
         withContext(context = dispatcher) {
-            problemDao.getQuizProblemByOrder(problem.quizId, problemNumber = problem.problemNumber - 1)?.id
+            problemDao.getQuizProblemByNumber(problem.quizId, problemNumber = problem.problemNumber - 1)?.id
         }
 
     suspend fun getFirstProblemId(quizId: String): String? =
         withContext(context = dispatcher) {
-            problemDao.getQuizProblemByOrder(quizId, problemNumber = 1)?.id
+            problemDao.getQuizProblemByNumber(quizId, problemNumber = 1)?.id
         }
 
     suspend fun getQuizScore(quizId: String): QuizScore =
