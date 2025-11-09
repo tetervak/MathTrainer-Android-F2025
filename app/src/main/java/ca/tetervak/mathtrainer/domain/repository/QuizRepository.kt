@@ -15,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class QuizRepository(
@@ -51,32 +52,26 @@ class QuizRepository(
         localProblemRepository.updateProblem(problem)
 
     suspend fun getQuizScore(quizId: String): QuizScore =
-        localProblemRepository.getQuizScore(quizId)
+        withContext(context = dispatcher) {
+            val problemCount = localQuizRepository.getQuizProblemCount(quizId)!!
+            val rightAnswers = localProblemRepository.getNumberOfRightAnswers(quizId)
+            QuizScore(numberOfProblems = problemCount, rightAnswers)
+        }
+
 
     fun getQuizStatusFlow(quizId: String): Flow<QuizStatus> =
         localProblemRepository.getQuizStatusDataFlow(quizId)
 
-    suspend fun insertNewGeneratedProblems(quizId: String) {
-        val problems: List<AlgebraProblem> = randomQuizRepository.getRandomQuizProblems()
-        localProblemRepository.insertAlgebraProblems(
-            quizId = quizId,
-            list = problems
-        )
-    }
-
     fun addNewGeneratedQuiz(){
         externalScope.launch(context = dispatcher) {
-            val quizId = localQuizRepository.insertQuiz()
-            insertNewGeneratedProblems(quizId = quizId)
-            val count = localProblemRepository.getNumberOfProblems(quizId = quizId)
-            localQuizRepository.updateProblemCount(quizId = quizId, problemCount = count)
+            val problems: List<AlgebraProblem> = randomQuizRepository.getRandomQuizProblems()
+            localQuizRepository.insertQuizWithProblems(problems)
         }
     }
 
     fun deleteQuizWithProblems(quizId: String){
         externalScope.launch(context = dispatcher) {
-            localProblemRepository.deleteProblemsByQuizId(quizId)
-            localQuizRepository.deleteQuizById(quizId)
+            localQuizRepository.deleteQuizWithProblems(quizId)
         }
     }
 

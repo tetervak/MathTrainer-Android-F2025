@@ -1,7 +1,6 @@
 package ca.tetervak.mathtrainer.data.repository
 
 import ca.tetervak.mathtrainer.data.database.dao.ProblemDao
-import ca.tetervak.mathtrainer.domain.model.AlgebraProblem
 import ca.tetervak.mathtrainer.domain.model.QuizScore
 import ca.tetervak.mathtrainer.domain.model.QuizStatus
 import ca.tetervak.mathtrainer.domain.model.UserAnswerStatus
@@ -57,23 +56,6 @@ class LocalProblemRepository(
         withContext(context = dispatcher) {
             problemDao.getQuizProblemByOrder(quizId, order = 1)?.pId
         }
-
-    suspend fun insertAlgebraProblems(
-        quizId: String,
-        list: List<AlgebraProblem>,
-        firstOrder: Int = 1
-    ) = withContext(context = dispatcher) {
-        problemDao.insertProblems(
-            entities = list.mapIndexed { index, algebraProblem ->
-                algebraProblem.toEntity(
-                    quizId = quizId,
-                    order = index + firstOrder,
-                    userAnswer = null,
-                    status = UserAnswerStatus.NOT_ANSWERED
-                )
-            }
-        )
-    }
 
     suspend fun getQuizScore(quizId: String): QuizScore =
         withContext(context = dispatcher) {
@@ -142,11 +124,6 @@ class LocalProblemRepository(
                 quizId = quizId,
                 status = UserAnswerStatus.RIGHT_ANSWER
             )
-        }
-
-    suspend fun deleteProblemsByQuizId(quizId: String) =
-        withContext(context = dispatcher) {
-            problemDao.deleteProblemsByQuizId(quizId = quizId)
         }
 }
 

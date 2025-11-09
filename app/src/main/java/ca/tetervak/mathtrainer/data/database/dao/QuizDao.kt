@@ -4,6 +4,8 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
+import ca.tetervak.mathtrainer.data.database.entity.ProblemEntity
 import ca.tetervak.mathtrainer.data.database.entity.QuizEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -32,4 +34,33 @@ interface QuizDao {
 
     @Query("UPDATE quizzes SET problem_count = :problemCount WHERE quiz_id = :quizId")
     suspend fun updateProblemCount(quizId: String, problemCount: Int)
+
+    @Query("SELECT problem_count FROM quizzes WHERE quiz_id = :quizId")
+    suspend fun getQuizProblemCount(quizId: String): Int?
+
+    @Insert
+    suspend fun insertProblems(entities: List<ProblemEntity>)
+
+    @Transaction
+    suspend fun insertQuizWithProblems(userId: String, problems: List<ProblemEntity>){
+        val order: Int = (getQuizMaxOrder(userId = userId) ?: 0) + 1
+        val quizId = problems.first().quizId
+        val quiz = QuizEntity(
+            qId = quizId,
+            userId = userId,
+            order = order,
+            problemCount = problems.size
+        )
+        insertQuiz(entity = quiz)
+        insertProblems(entities = problems)
+    }
+
+    @Query("DELETE FROM problems WHERE quiz_id = :quizId")
+    suspend fun deleteProblemsByQuizId(quizId: String)
+
+    @Transaction
+    suspend fun deleteQuizWithProblems(quizId: String) {
+        deleteProblemsByQuizId(quizId = quizId)
+        deleteQuizById(quizId = quizId)
+    }
 }

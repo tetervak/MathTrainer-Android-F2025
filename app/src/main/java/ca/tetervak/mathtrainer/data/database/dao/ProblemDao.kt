@@ -1,7 +1,6 @@
 package ca.tetervak.mathtrainer.data.database.dao
 
 import androidx.room.Dao
-import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import ca.tetervak.mathtrainer.data.database.entity.ProblemEntity
@@ -38,12 +37,6 @@ interface ProblemDao {
         WHERE problem_id = :problemId
     """)
     fun getProblemFlowById(problemId: String): Flow<ProblemEntity?>
-
-    @Insert
-    suspend fun insertProblems(entities: List<ProblemEntity>)
-
-    @Query("DELETE FROM problems WHERE quiz_id = :quizId")
-    suspend fun deleteProblemsByQuizId(quizId: String)
 
     @Query("SELECT COUNT(*) FROM problems WHERE quiz_id = :quizId")
     fun getQuizProblemCountFlow(quizId: String): Flow<Int>

@@ -1,9 +1,10 @@
 package ca.tetervak.mathtrainer.data.repository
 
 import ca.tetervak.mathtrainer.data.database.dao.QuizDao
-import ca.tetervak.mathtrainer.data.database.entity.QuizEntity
 import ca.tetervak.mathtrainer.data.database.entity.UserEntity
+import ca.tetervak.mathtrainer.domain.model.AlgebraProblem
 import ca.tetervak.mathtrainer.domain.model.Quiz
+import ca.tetervak.mathtrainer.domain.model.UserAnswerStatus
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import java.util.UUID
 import javax.inject.Inject
 
 class LocalQuizRepository(
@@ -40,32 +42,37 @@ class LocalQuizRepository(
         quizDao.getUserQuizCountFlow(userId)
             .flowOn(context = dispatcher)
 
-    suspend fun getQuizMaxOrder(): Int =
-        withContext(context = dispatcher) {
-            quizDao.getQuizMaxOrder(userId) ?: 0
+    suspend fun insertQuizWithProblems(
+        problems: List<AlgebraProblem>
+    ) = withContext(context = dispatcher) {
+            val quizId = UUID.randomUUID().toString()
+            val problemEntities = problems.mapIndexed { index, problem ->
+                problem.toEntity(
+                    quizId = quizId,
+                    order = index + 1,
+                    userAnswer = null,
+                    status = UserAnswerStatus.NOT_ANSWERED
+                )
+            }
+            quizDao.insertQuizWithProblems(
+                userId = userId,
+                problems = problemEntities
+            )
         }
 
-    suspend fun insertQuiz(): String =
+    suspend fun getQuizProblemCount(quizId: String): Int? =
         withContext(context = dispatcher) {
-            val order = getQuizMaxOrder() + 1
-            val entity = QuizEntity(order = order, userId = userId)
-            quizDao.insertQuiz(entity)
-            entity.qId
+            quizDao.getQuizProblemCount(quizId)
         }
 
-    suspend fun deleteQuizById(quizId: String) =
-        withContext(context = dispatcher) {
-            quizDao.deleteQuizById(quizId)
+    suspend fun deleteQuizWithProblems(quizId: String) =
+        withContext(context = dispatcher){
+            quizDao.deleteQuizWithProblems(quizId)
         }
 
     suspend fun getQuizOrder(quizId: String): Int =
         withContext(context = dispatcher) {
             quizDao.getQuizOrder(quizId) ?: 0
-        }
-
-    suspend fun updateProblemCount(quizId: String, problemCount: Int) =
-        withContext(context = dispatcher){
-            quizDao.updateProblemCount(quizId, problemCount)
         }
 
 }

@@ -7,7 +7,6 @@ import ca.tetervak.mathtrainer.data.database.dao.ProblemDao
 import ca.tetervak.mathtrainer.data.database.dao.QuizDao
 import ca.tetervak.mathtrainer.data.database.dao.UserDao
 import ca.tetervak.mathtrainer.data.database.entity.ProblemEntity
-import ca.tetervak.mathtrainer.data.database.entity.QuizEntity
 import ca.tetervak.mathtrainer.data.database.entity.UserEntity
 import ca.tetervak.mathtrainer.domain.model.AlgebraOperation
 import dagger.hilt.EntryPoint
@@ -17,6 +16,7 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 @InstallIn(SingletonComponent::class)
 @EntryPoint
@@ -47,36 +47,27 @@ class PrepopulateCallback(
     }
 
     private suspend fun prepopulate(userDao: UserDao, quizDao: QuizDao, problemDao: ProblemDao) {
-        // 1. Insert default user
         val demoUser = UserEntity.demoUser
         userDao.insert(demoUser)
 
-        // 2. Insert default quiz
-        val quiz = QuizEntity(
-            userId = demoUser.uId,
-            order = 1,
-            problemCount = 3
-        )
-        quizDao.insertQuiz(quiz)
-
-        // 3. Insert sample problems
+        val quizId = UUID.randomUUID().toString()
         val problems = listOf(
             ProblemEntity(
-                quizId = quiz.qId,
+                quizId = quizId,
                 order = 1,
                 a = 1,
                 b = 2,
                 op = AlgebraOperation.ADDITION
             ),
             ProblemEntity(
-                quizId = quiz.qId,
+                quizId = quizId,
                 order = 2,
                 a = 6,
                 b = 4,
                 op = AlgebraOperation.SUBTRACTION
             ),
             ProblemEntity(
-                quizId = quiz.qId,
+                quizId = quizId,
                 order = 3,
                 a = 2,
                 b = 4,
@@ -84,6 +75,9 @@ class PrepopulateCallback(
             ),
 
         )
-        problemDao.insertProblems(entities = problems)
+        quizDao.insertQuizWithProblems(
+            userId = UserEntity.demoUser.uId,
+            problems = problems
+        )
     }
 }
