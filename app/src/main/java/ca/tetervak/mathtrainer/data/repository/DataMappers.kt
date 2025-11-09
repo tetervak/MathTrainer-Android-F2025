@@ -3,25 +3,25 @@ package ca.tetervak.mathtrainer.data.repository
 import ca.tetervak.mathtrainer.data.database.entity.ProblemEntity
 import ca.tetervak.mathtrainer.data.database.entity.QuizEntity
 import ca.tetervak.mathtrainer.domain.model.AlgebraProblem
-import ca.tetervak.mathtrainer.domain.model.UserAnswerStatus
+import ca.tetervak.mathtrainer.domain.model.AnswerStatus
 import ca.tetervak.mathtrainer.domain.model.Problem
 import ca.tetervak.mathtrainer.domain.model.Quiz
 import java.util.UUID
 
 fun ProblemEntity.toDomain(): Problem =
     Problem(
-        problem = AlgebraProblem(a, b, op),
+        algebraProblem = AlgebraProblem(firstNumber, secondNumber, algebraOperation),
         userAnswer = userAnswer,
-        id = pId,
-        order = order,
+        id = id,
+        problemNumber = problemNumber,
         quizId = quizId
     )
 
 fun Problem.toEntity(): ProblemEntity =
-    this.problem.toEntity(
+    this.algebraProblem.toEntity(
         id = this.id,
         quizId = this.quizId,
-        order = this.order,
+        order = this.problemNumber,
         userAnswer = this.userAnswer,
         status = this.status
     )
@@ -31,27 +31,27 @@ fun AlgebraProblem.toEntity(
     quizId: String,
     order: Int,
     userAnswer: String?,
-    status: UserAnswerStatus
+    status: AnswerStatus
 ): ProblemEntity = ProblemEntity(
-            pId = id,
+            id = id,
             quizId = quizId,
-            order = order,
-            a = this.a,
-            op = this.op,
-            b = this.b,
-            answer = this.answer,
+            problemNumber = order,
+            firstNumber = this.firstNumber,
+            algebraOperation = this.algebraOperation,
+            secondNumber = this.secondNumber,
+            correctAnswer = this.answer,
             userAnswer = userAnswer,
-            status = status
+            answerStatus = status
         )
 
 fun QuizEntity.toDomain(): Quiz = Quiz(
-    id = this.qId,
-    order = this.order,
+    id = this.id,
+    quizNumber = this.quizNumber,
     userId = this.userId
 )
 
 fun Quiz.toEntity(): QuizEntity = QuizEntity(
-    qId = this.id,
-    order = this.order,
+    id = this.id,
+    quizNumber = this.quizNumber,
     userId = this.userId
 )

@@ -6,17 +6,17 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "users")
 data class UserEntity(
-    @PrimaryKey @ColumnInfo(name = "user_id")
-    val uId: String,
+    @PrimaryKey @ColumnInfo(name = "id")
+    val id: String,
     val name: String? = null,
     val email: String? = null,
-){
-    companion object{
+) {
+    companion object {
         val demoUser: UserEntity = UserEntity(
-                uId = "demo_user",
-                name = "Demo User",
-                email = "demo.user@example.com"
-            )
+            id = "demo_user",
+            name = "Demo User",
+            email = "demo.user@example.com"
+        )
     }
 }
 

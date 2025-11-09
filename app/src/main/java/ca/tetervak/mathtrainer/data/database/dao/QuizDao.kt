@@ -20,22 +20,16 @@ interface QuizDao {
     @Query("SELECT COUNT(*) FROM quizzes WHERE user_id = :userId")
     fun getUserQuizCountFlow(userId: String): Flow<Int>
 
-    @Query("SELECT * FROM quizzes WHERE quiz_id = :quizId")
+    @Query("SELECT * FROM quizzes WHERE id = :quizId")
     fun getQuizByIdFlow(quizId: String): Flow<QuizEntity?>
 
     @Query("SELECT MAX(quiz_number) FROM quizzes WHERE user_id = :userId")
-    suspend fun getQuizMaxOrder(userId: String): Int?
+    suspend fun getMaxQuizNumber(userId: String): Int?
 
-    @Query("SELECT quiz_number FROM quizzes WHERE quiz_id = :quizId")
-    suspend fun getQuizOrder(quizId: String): Int?
+    @Query("SELECT quiz_number FROM quizzes WHERE id = :quizId")
+    suspend fun getQuizNumber(quizId: String): Int?
 
-    @Query("DELETE FROM quizzes WHERE quiz_id = :quizId")
-    suspend fun deleteQuizById(quizId: String)
-
-    @Query("UPDATE quizzes SET problem_count = :problemCount WHERE quiz_id = :quizId")
-    suspend fun updateProblemCount(quizId: String, problemCount: Int)
-
-    @Query("SELECT problem_count FROM quizzes WHERE quiz_id = :quizId")
+    @Query("SELECT problem_count FROM quizzes WHERE id = :quizId")
     suspend fun getQuizProblemCount(quizId: String): Int?
 
     @Insert
@@ -43,24 +37,31 @@ interface QuizDao {
 
     @Transaction
     suspend fun insertQuizWithProblems(userId: String, problems: List<ProblemEntity>){
-        val order: Int = (getQuizMaxOrder(userId = userId) ?: 0) + 1
+        val order: Int = (getMaxQuizNumber(userId = userId) ?: 0) + 1
         val quizId = problems.first().quizId
         val quiz = QuizEntity(
-            qId = quizId,
+            id = quizId,
             userId = userId,
-            order = order,
+            quizNumber = order,
             problemCount = problems.size
         )
         insertQuiz(entity = quiz)
         insertProblems(entities = problems)
     }
 
-    @Query("DELETE FROM problems WHERE quiz_id = :quizId")
-    suspend fun deleteProblemsByQuizId(quizId: String)
+    //  The problems are deleted automatically via "onDelete = ForeignKey.CASCADE"
+    @Query("DELETE FROM quizzes WHERE id = :quizId")
+    suspend fun deleteQuizWithProblems(quizId: String)
 
-    @Transaction
-    suspend fun deleteQuizWithProblems(quizId: String) {
-        deleteProblemsByQuizId(quizId = quizId)
-        deleteQuizById(quizId = quizId)
-    }
+//    @Query("DELETE FROM quizzes WHERE id = :quizId")
+//    suspend fun deleteQuizById(quizId: String)
+
+//    @Query("DELETE FROM problems WHERE quiz_id = :quizId")
+//    suspend fun deleteProblemsByQuizId(quizId: String)
+
+//    @Transaction
+//    suspend fun deleteQuizWithProblems(quizId: String) {
+//        deleteProblemsByQuizId(quizId = quizId)
+//        deleteQuizById(quizId = quizId)
+//    }
 }

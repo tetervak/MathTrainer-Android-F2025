@@ -3,7 +3,7 @@ package ca.tetervak.mathtrainer.data.repository
 import ca.tetervak.mathtrainer.data.database.dao.ProblemDao
 import ca.tetervak.mathtrainer.domain.model.QuizScore
 import ca.tetervak.mathtrainer.domain.model.QuizStatus
-import ca.tetervak.mathtrainer.domain.model.UserAnswerStatus
+import ca.tetervak.mathtrainer.domain.model.AnswerStatus
 import ca.tetervak.mathtrainer.domain.model.Problem
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -44,17 +44,17 @@ class LocalProblemRepository(
 
     suspend fun getNextProblemId(problem: Problem): String? =
         withContext(context = dispatcher) {
-            problemDao.getQuizProblemByOrder(problem.quizId, order = problem.order + 1)?.pId
+            problemDao.getQuizProblemByOrder(problem.quizId, problemNumber = problem.problemNumber + 1)?.id
         }
 
     suspend fun getPreviousProblemId(problem: Problem): String? =
         withContext(context = dispatcher) {
-            problemDao.getQuizProblemByOrder(problem.quizId, order = problem.order - 1)?.pId
+            problemDao.getQuizProblemByOrder(problem.quizId, problemNumber = problem.problemNumber - 1)?.id
         }
 
     suspend fun getFirstProblemId(quizId: String): String? =
         withContext(context = dispatcher) {
-            problemDao.getQuizProblemByOrder(quizId, order = 1)?.pId
+            problemDao.getQuizProblemByOrder(quizId, problemNumber = 1)?.id
         }
 
     suspend fun getQuizScore(quizId: String): QuizScore =
@@ -62,10 +62,10 @@ class LocalProblemRepository(
             val numberOfProblems = problemDao.getQuizProblemCount(quizId = quizId)
             val numberOfRightAnswers = problemDao.getQuizProblemCountByStatus(
                 quizId = quizId,
-                status = UserAnswerStatus.RIGHT_ANSWER
+                answerStatus = AnswerStatus.RIGHT_ANSWER
             )
             QuizScore(
-                numberOfProblems = numberOfProblems,
+                problemCount = numberOfProblems,
                 rightAnswers = numberOfRightAnswers
             )
         }
@@ -75,11 +75,11 @@ class LocalProblemRepository(
             problemDao.getQuizProblemCountFlow(quizId = quizId),
             problemDao.getQuizProblemCountByStatusFlow(
                 quizId = quizId,
-                status = UserAnswerStatus.RIGHT_ANSWER
+                answerStatus = AnswerStatus.RIGHT_ANSWER
             ),
         ) { numberOfProblems, rightAnswers ->
             QuizScore(
-                numberOfProblems = numberOfProblems,
+                problemCount = numberOfProblems,
                 rightAnswers = rightAnswers
             )
         }
@@ -92,15 +92,15 @@ class LocalProblemRepository(
             problemDao.getQuizProblemCountFlow(quizId = quizId),
             problemDao.getQuizProblemCountByStatusFlow(
                 quizId = quizId,
-                status = UserAnswerStatus.RIGHT_ANSWER
+                answerStatus = AnswerStatus.RIGHT_ANSWER
             ),
             problemDao.getQuizProblemCountByStatusFlow(
                 quizId = quizId,
-                status = UserAnswerStatus.NOT_ANSWERED
+                answerStatus = AnswerStatus.NOT_ANSWERED
             ),
             problemDao.getQuizProblemCountByStatusFlow(
                 quizId = quizId,
-                status = UserAnswerStatus.WRONG_ANSWER
+                answerStatus = AnswerStatus.WRONG_ANSWER
             )
         ) { numberOfProblems, rightAnswers, notAnswered, wrongAnswers ->
             QuizStatus(
@@ -122,7 +122,7 @@ class LocalProblemRepository(
         withContext(context = dispatcher) {
             problemDao.getQuizProblemCountByStatus(
                 quizId = quizId,
-                status = UserAnswerStatus.RIGHT_ANSWER
+                answerStatus = AnswerStatus.RIGHT_ANSWER
             )
         }
 }

@@ -14,7 +14,7 @@ import ca.tetervak.mathtrainer.data.database.entity.UserEntity
 
 @Database(
     entities = [UserEntity::class, QuizEntity::class, ProblemEntity::class],
-    version = 2,
+    version = 1,
     exportSchema = false
 )
 @TypeConverters(DateConverter::class, AlgebraOperationConverter::class)

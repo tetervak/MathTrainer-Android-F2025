@@ -11,7 +11,11 @@ class SubtractionProblemFactory(
     fun createRandomProblem(): AlgebraProblem {
         val larger = getRandomLargerValue()
         val smaller = getRandomSmallerValue(larger)
-        return AlgebraProblem(a = larger, b = smaller, op = AlgebraOperation.SUBTRACTION)
+        return AlgebraProblem(
+            firstNumber = larger,
+            secondNumber = smaller,
+            algebraOperation = AlgebraOperation.SUBTRACTION
+        )
     }
 
     private fun getRandomLargerValue() =

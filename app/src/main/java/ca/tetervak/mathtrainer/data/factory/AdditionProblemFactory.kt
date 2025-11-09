@@ -11,7 +11,11 @@ class AdditionProblemFactory(
     fun createRandomProblem(): AlgebraProblem {
         val larger = getRandomLargerValue()
         val smaller = getRandomSmallerValue(larger)
-        return AlgebraProblem(a = larger - smaller, b = smaller, op = AlgebraOperation.ADDITION)
+        return AlgebraProblem(
+            firstNumber = larger - smaller,
+            secondNumber = smaller,
+            algebraOperation = AlgebraOperation.ADDITION
+        )
     }
 
     private fun getRandomLargerValue() =

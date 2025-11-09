@@ -37,7 +37,7 @@ import ca.tetervak.mathtrainer.R
 import ca.tetervak.mathtrainer.domain.model.AlgebraOperation
 import ca.tetervak.mathtrainer.domain.model.AlgebraProblem
 import ca.tetervak.mathtrainer.domain.model.Problem
-import ca.tetervak.mathtrainer.domain.model.UserAnswerStatus
+import ca.tetervak.mathtrainer.domain.model.AnswerStatus
 import ca.tetervak.mathtrainer.ui.common.HomeButton
 import ca.tetervak.mathtrainer.ui.common.QuizButton
 import ca.tetervak.mathtrainer.ui.common.QuizTopBar
@@ -180,38 +180,38 @@ fun ProblemListItem(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "${problem.order}.",
+                text = "${problem.problemNumber}.",
                 fontSize = 24.sp,
                 style = TextStyle(fontWeight = FontWeight.Bold),
                 color = Color.DarkGray
             )
             Text(
-                text = problem.problem.text,
+                text = problem.algebraProblem.text,
                 fontSize = 24.sp
             )
             when (problem.status) {
-                UserAnswerStatus.NOT_ANSWERED -> Text(
+                AnswerStatus.NOT_ANSWERED -> Text(
                     text = stringResource(R.string.not_answered),
                     fontStyle = FontStyle.Italic,
                     fontSize = 24.sp,
                     color = Color.Blue
                 )
 
-                UserAnswerStatus.RIGHT_ANSWER -> Text(
+                AnswerStatus.RIGHT_ANSWER -> Text(
                     text = stringResource(R.string.right_answer),
                     fontStyle = FontStyle.Italic,
                     fontSize = 24.sp,
                     color = Color.Green
                 )
 
-                UserAnswerStatus.WRONG_ANSWER -> Text(
+                AnswerStatus.WRONG_ANSWER -> Text(
                     text = stringResource(R.string.wrong_answer),
                     fontStyle = FontStyle.Italic,
                     fontSize = 24.sp,
                     color = Color.Red
                 )
 
-                UserAnswerStatus.INVALID_INPUT -> Text(
+                AnswerStatus.INVALID_INPUT -> Text(
                     text = stringResource(R.string.invalid_input),
                     fontStyle = FontStyle.Italic,
                     fontSize = 24.sp,
@@ -230,8 +230,8 @@ fun ProblemListItemPreview() {
     MathTrainerTheme {
         ProblemListItem(
             problem = Problem(
-                problem = AlgebraProblem(a = 1, b = 2, op = AlgebraOperation.ADDITION),
-                order = 3,
+                algebraProblem = AlgebraProblem(firstNumber = 1, secondNumber = 2, algebraOperation = AlgebraOperation.ADDITION),
+                problemNumber = 3,
                 quizId = ""
             ),
             onClick = {}
@@ -245,8 +245,8 @@ fun ProblemListItemSelectedPreview() {
     MathTrainerTheme {
         ProblemListItem(
             problem = Problem(
-                problem = AlgebraProblem(a = 1, b = 2, op = AlgebraOperation.ADDITION),
-                order = 3,
+                algebraProblem = AlgebraProblem(firstNumber = 1, secondNumber = 2, algebraOperation = AlgebraOperation.ADDITION),
+                problemNumber = 3,
                 quizId = ""
             ),
             onClick = {},
@@ -263,8 +263,8 @@ fun ProblemListScreenBodyPreview() {
             state = ProblemListUiState.Success(
                 problemList = List(5) { index ->
                     Problem(
-                        problem = AlgebraProblem(a = 1, b = 2, op = AlgebraOperation.ADDITION),
-                        order = index + 1,
+                        algebraProblem = AlgebraProblem(firstNumber = 1, secondNumber = 2, algebraOperation = AlgebraOperation.ADDITION),
+                        problemNumber = index + 1,
                         quizId = "",
                         id = index.toString()
                     )

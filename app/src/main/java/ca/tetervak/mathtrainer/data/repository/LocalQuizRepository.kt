@@ -4,7 +4,7 @@ import ca.tetervak.mathtrainer.data.database.dao.QuizDao
 import ca.tetervak.mathtrainer.data.database.entity.UserEntity
 import ca.tetervak.mathtrainer.domain.model.AlgebraProblem
 import ca.tetervak.mathtrainer.domain.model.Quiz
-import ca.tetervak.mathtrainer.domain.model.UserAnswerStatus
+import ca.tetervak.mathtrainer.domain.model.AnswerStatus
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
@@ -26,7 +26,7 @@ class LocalQuizRepository(
         dispatcher = Dispatchers.IO
     )
 
-    private val userId: String = UserEntity.demoUser.uId
+    private val userId: String = UserEntity.demoUser.id
 
     fun getUserQuizzesFlow(): Flow<List<Quiz>> =
         quizDao.getUserQuizzesFlow(userId).map { entities ->
@@ -51,7 +51,7 @@ class LocalQuizRepository(
                     quizId = quizId,
                     order = index + 1,
                     userAnswer = null,
-                    status = UserAnswerStatus.NOT_ANSWERED
+                    status = AnswerStatus.NOT_ANSWERED
                 )
             }
             quizDao.insertQuizWithProblems(
@@ -72,7 +72,7 @@ class LocalQuizRepository(
 
     suspend fun getQuizOrder(quizId: String): Int =
         withContext(context = dispatcher) {
-            quizDao.getQuizOrder(quizId) ?: 0
+            quizDao.getQuizNumber(quizId) ?: 0
         }
 
 }

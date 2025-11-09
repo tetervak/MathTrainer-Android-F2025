@@ -1,29 +1,28 @@
 package ca.tetervak.mathtrainer.domain.model
 
-import ca.tetervak.mathtrainer.domain.model.UserAnswerStatus
 import kotlin.math.abs
 
 class AlgebraProblem(
-    val a: Int, // the first number in the problem
-    val b: Int, // the second number in the problem
-    val op: AlgebraOperation // the binary operator between these numbers
+    val firstNumber: Int, // the first number in the problem
+    val secondNumber: Int, // the second number in the problem
+    val algebraOperation: AlgebraOperation // the binary operator between these numbers
 ) {
-    val text: String = "$a ${op.symbol} $b = ?"
-    val answer: Int = op.calculate(a, b)
+    val text: String = "$firstNumber ${algebraOperation.symbol} $secondNumber = ?"
+    val answer: Int = algebraOperation.calculate(firstNumber, secondNumber)
 
-    fun checkAnswer(userAnswer: String?): UserAnswerStatus =
+    fun checkAnswer(userAnswer: String?): AnswerStatus =
         if (userAnswer == null) {
-            UserAnswerStatus.NOT_ANSWERED
+            AnswerStatus.NOT_ANSWERED
         } else {
             try {
                 val entered: Double = userAnswer.toDouble()
                 if (abs(answer - entered) <= TOLERANCE) {
-                    UserAnswerStatus.RIGHT_ANSWER
+                    AnswerStatus.RIGHT_ANSWER
                 } else {
-                    UserAnswerStatus.WRONG_ANSWER
+                    AnswerStatus.WRONG_ANSWER
                 }
             } catch (_: NumberFormatException) {
-                UserAnswerStatus.INVALID_INPUT
+                AnswerStatus.INVALID_INPUT
             }
         }
 

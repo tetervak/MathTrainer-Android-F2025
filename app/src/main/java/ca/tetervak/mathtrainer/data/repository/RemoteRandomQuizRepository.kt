@@ -27,6 +27,6 @@ class RemoteRandomQuizRepository @Inject constructor(
         val a: Int = parts[0].toInt()
         val op: AlgebraOperation = AlgebraOperation.fromSymbol(symbol = parts[1].first())
         val b: Int = parts[2].toInt()
-        return AlgebraProblem(a = a, b = b, op = op)
+        return AlgebraProblem(firstNumber = a, secondNumber = b, algebraOperation = op)
     }
 }

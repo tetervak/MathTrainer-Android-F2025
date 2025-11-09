@@ -2,7 +2,7 @@ package ca.tetervak.mathtrainer.domain
 
 import ca.tetervak.mathtrainer.domain.model.AlgebraOperation
 import ca.tetervak.mathtrainer.domain.model.AlgebraProblem
-import ca.tetervak.mathtrainer.domain.model.UserAnswerStatus
+import ca.tetervak.mathtrainer.domain.model.AnswerStatus
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
@@ -10,7 +10,7 @@ import org.junit.Test
 
 class SubtractionProblemTest {
 
-    var problem = AlgebraProblem(a = 5, b = 3, op = AlgebraOperation.SUBTRACTION)
+    var problem = AlgebraProblem(firstNumber = 5, secondNumber = 3, algebraOperation = AlgebraOperation.SUBTRACTION)
 
     @Before
     fun setUp() {
@@ -28,27 +28,27 @@ class SubtractionProblemTest {
         println("problem.answer = ${problem.answer}")
 
         assertEquals(
-            UserAnswerStatus.RIGHT_ANSWER,
+            AnswerStatus.RIGHT_ANSWER,
             problem.checkAnswer("2"))
 
         assertEquals(
-            UserAnswerStatus.WRONG_ANSWER,
+            AnswerStatus.WRONG_ANSWER,
             problem.checkAnswer("4"))
 
         assertEquals(
-            UserAnswerStatus.INVALID_INPUT,
+            AnswerStatus.INVALID_INPUT,
             problem.checkAnswer("whatever"))
 
         assertEquals(
-            UserAnswerStatus.RIGHT_ANSWER,
+            AnswerStatus.RIGHT_ANSWER,
             problem.checkAnswer("2.0"))
 
         assertEquals(
-            UserAnswerStatus.WRONG_ANSWER,
+            AnswerStatus.WRONG_ANSWER,
             problem.checkAnswer("2.1"))
 
         assertEquals(
-            UserAnswerStatus.WRONG_ANSWER,
+            AnswerStatus.WRONG_ANSWER,
             problem.checkAnswer("1.9"))
     }
 

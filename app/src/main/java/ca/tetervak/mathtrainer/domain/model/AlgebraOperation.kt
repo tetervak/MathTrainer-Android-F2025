@@ -11,12 +11,12 @@ enum class AlgebraOperation {
             DIVISION -> '/'
         }
 
-    fun calculate(a: Int, b: Int): Int =
+    fun calculate(firstNumber: Int, secondNumber: Int): Int =
         when(this){
-            ADDITION -> a + b
-            SUBTRACTION -> a - b
-            MULTIPLICATION -> a * b
-            DIVISION -> a / b
+            ADDITION -> firstNumber + secondNumber
+            SUBTRACTION -> firstNumber - secondNumber
+            MULTIPLICATION -> firstNumber * secondNumber
+            DIVISION -> firstNumber / secondNumber
         }
 
     companion object {

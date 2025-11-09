@@ -54,29 +54,29 @@ class PrepopulateCallback(
         val problems = listOf(
             ProblemEntity(
                 quizId = quizId,
-                order = 1,
-                a = 1,
-                b = 2,
-                op = AlgebraOperation.ADDITION
+                problemNumber = 1,
+                firstNumber = 1,
+                secondNumber = 2,
+                algebraOperation = AlgebraOperation.ADDITION
             ),
             ProblemEntity(
                 quizId = quizId,
-                order = 2,
-                a = 6,
-                b = 4,
-                op = AlgebraOperation.SUBTRACTION
+                problemNumber = 2,
+                firstNumber = 6,
+                secondNumber = 4,
+                algebraOperation = AlgebraOperation.SUBTRACTION
             ),
             ProblemEntity(
                 quizId = quizId,
-                order = 3,
-                a = 2,
-                b = 4,
-                op = AlgebraOperation.MULTIPLICATION
+                problemNumber = 3,
+                firstNumber = 2,
+                secondNumber = 4,
+                algebraOperation = AlgebraOperation.MULTIPLICATION
             ),
 
         )
         quizDao.insertQuizWithProblems(
-            userId = UserEntity.demoUser.uId,
+            userId = UserEntity.demoUser.id,
             problems = problems
         )
     }

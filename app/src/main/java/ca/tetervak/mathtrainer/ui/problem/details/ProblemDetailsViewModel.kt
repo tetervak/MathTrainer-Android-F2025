@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.tetervak.mathtrainer.domain.model.Problem
-import ca.tetervak.mathtrainer.domain.model.UserAnswerStatus
+import ca.tetervak.mathtrainer.domain.model.AnswerStatus
 import ca.tetervak.mathtrainer.domain.repository.QuizRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -38,7 +38,7 @@ class ProblemDetailsViewModel @Inject constructor(
                 repository.getProblemByIdFlow(problemId)
                     .filterNotNull()
                     .onEach { problem ->
-                        answerInput = if (problem.status == UserAnswerStatus.RIGHT_ANSWER) {
+                        answerInput = if (problem.status == AnswerStatus.RIGHT_ANSWER) {
                             checkNotNull(problem.userAnswer)
                         } else { "" }
                     }
@@ -77,17 +77,17 @@ class ProblemDetailsViewModel @Inject constructor(
         val quizNumber = repository.getQuizOrder(problem.quizId)
         val numberOfRightAnswers =
             repository.getNumberOfRightAnswers(problem.quizId)
-        val firstProblemId = if (problem.order > 1) {
+        val firstProblemId = if (problem.problemNumber > 1) {
             repository.getFirstProblemId(problem.quizId)
         } else {
             null
         }
-        val nextProblemId = if (problem.order < numberOfProblems) {
+        val nextProblemId = if (problem.problemNumber < numberOfProblems) {
             repository.getNextProblemId(problem)
         } else {
             null
         }
-        val previousProblemId = if (problem.order > 1) {
+        val previousProblemId = if (problem.problemNumber > 1) {
             repository.getPreviousProblemId(problem)
         } else {
             null

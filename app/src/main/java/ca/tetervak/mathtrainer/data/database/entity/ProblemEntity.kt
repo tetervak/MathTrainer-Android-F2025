@@ -6,30 +6,40 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import ca.tetervak.mathtrainer.domain.model.AlgebraOperation
-import ca.tetervak.mathtrainer.domain.model.UserAnswerStatus
+import ca.tetervak.mathtrainer.domain.model.AnswerStatus
 import java.util.Date
 import java.util.UUID
 
-@Entity(tableName = "problems")
+@Entity(
+    tableName = "problems",
+    foreignKeys = [ForeignKey(
+        entity = QuizEntity::class,
+        parentColumns = ["id"],
+        childColumns = ["quiz_id"],
+        onDelete = ForeignKey.CASCADE
+    )],
+    indices = [Index("quiz_id")]
+)
 data class ProblemEntity(
 
-    @PrimaryKey @ColumnInfo(name = "problem_id")
-    val pId: String = UUID.randomUUID().toString(),
+    @PrimaryKey @ColumnInfo(name = "id")
+    val id: String = UUID.randomUUID().toString(),
     @ColumnInfo(name = "quiz_id")
     val quizId: String,
     @ColumnInfo(name = "problem_number")
-    val order: Int, // problem number in the quiz
+    val problemNumber: Int, // problem number in the quiz
     @ColumnInfo(name = "first_number")
-    val a: Int,
+    val firstNumber: Int,
     @ColumnInfo(name = "second_number")
-    val b: Int,
-    @ColumnInfo(name = "operation")
-    val op: AlgebraOperation,
+    val secondNumber: Int,
+    @ColumnInfo(name = "algebra_operation")
+    val algebraOperation: AlgebraOperation,
     @ColumnInfo(name = "correct_answer")
-    val answer: Int = op.calculate(a, b),
+    val correctAnswer: Int = algebraOperation.calculate(firstNumber, secondNumber),
     @ColumnInfo(name = "user_answer")
     val userAnswer: String? = null,
-    val status: UserAnswerStatus = UserAnswerStatus.NOT_ANSWERED,
+    @ColumnInfo(name = "answer_status")
+    val answerStatus: AnswerStatus = AnswerStatus.NOT_ANSWERED,
     @ColumnInfo(name = "updated_at")
     val updatedAt: Date = Date()
 )

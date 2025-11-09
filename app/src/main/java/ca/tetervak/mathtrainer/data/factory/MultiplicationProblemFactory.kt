@@ -6,15 +6,25 @@ import kotlin.random.Random
 
 class MultiplicationProblemFactory(
     private val random: Random = Random.Default
-){
+) {
 
     fun createRandomProblem(): AlgebraProblem {
         val first = getRandomFirstValue()
         val second = getRandomSecondValue()
-        return if (random.nextBoolean())
-            AlgebraProblem(a = first, b = second, op = AlgebraOperation.MULTIPLICATION)
-        else
-            AlgebraProblem(a = second, b = first, op = AlgebraOperation.MULTIPLICATION)
+        return if (random.nextBoolean()) {
+            AlgebraProblem(
+                firstNumber = first,
+                secondNumber = second,
+                algebraOperation = AlgebraOperation.MULTIPLICATION
+            )
+        } else {
+            AlgebraProblem(
+                firstNumber = second,
+                secondNumber = first,
+                algebraOperation = AlgebraOperation.MULTIPLICATION
+            )
+        }
+
     }
 
     private fun getRandomFirstValue() =

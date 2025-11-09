@@ -89,7 +89,7 @@ fun QuizDetailsScreenBody(
             QuizTopBar(
                 title = stringResource(
                     id = R.string.quiz_n,
-                    state.quiz.order
+                    state.quiz.quizNumber
                 ),
                 scrollBehavior = scrollBehavior,
                 onHelpClick = onHelpClick,
@@ -112,7 +112,7 @@ fun QuizDetailsScreenBody(
             Text(
                 text = stringResource(
                     id = R.string.quiz_n,
-                    state.quiz.order
+                    state.quiz.quizNumber
                 ),
                 fontSize = 32.sp,
                 color = Purple40
@@ -265,7 +265,7 @@ fun QuizDetailsScreenBodyPreview(){
             state = QuizDetailsUiState.Success(
                 quiz = Quiz(
                     id = "",
-                    order = 2,
+                    quizNumber = 2,
                     userId = ""
                 ),
                 quizStatus = QuizStatus(

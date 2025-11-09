@@ -151,12 +151,12 @@ fun QuizListItem(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = stringResource(R.string.quiz_n, quiz.order),
+                text = stringResource(R.string.quiz_n, quiz.quizNumber),
                 fontSize = 24.sp,
                 style = TextStyle(fontWeight = FontWeight.Bold),
             )
             Text(
-                text = stringResource(R.string.score, quizScore.rightAnswers, quizScore.numberOfProblems),
+                text = stringResource(R.string.score, quizScore.rightAnswers, quizScore.problemCount),
                 fontSize = 18.sp,
 
             )
@@ -172,11 +172,11 @@ fun QuizListItemPreview() {
             onClick = {},
             quiz = Quiz(
                 id = "",
-                order = 1,
+                quizNumber = 1,
                 userId = ""
             ),
             quizScore = QuizScore(
-                numberOfProblems = 5,
+                problemCount = 5,
                 rightAnswers = 4
             ),
         )
@@ -191,12 +191,12 @@ fun QuizListScreenBodyPreview() {
             stateList = List( size = 5){ index ->
                 QuizListItemUiState(
                     quiz = Quiz(
-                        order = index + 1,
+                        quizNumber = index + 1,
                         userId = "",
                         id = ""
                     ),
                     quizScore = QuizScore(
-                        numberOfProblems = index + 5,
+                        problemCount = index + 5,
                         rightAnswers = index + 4
                     ),
                 )

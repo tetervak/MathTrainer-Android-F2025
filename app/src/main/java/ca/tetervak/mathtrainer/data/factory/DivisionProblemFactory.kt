@@ -6,15 +6,24 @@ import kotlin.random.Random
 
 class DivisionProblemFactory(
     private val random: Random = Random.Default
-){
+) {
 
     fun createRandomProblem(): AlgebraProblem {
         val first = getRandomFirstValue()
         val second = getRandomSecondValue()
-        return if (random.nextBoolean())
-            AlgebraProblem(a = first * second, b = first, op = AlgebraOperation.DIVISION)
-        else
-            AlgebraProblem(a = first * second, b = second, op = AlgebraOperation.DIVISION)
+        return if (random.nextBoolean()) {
+            AlgebraProblem(
+                firstNumber = first * second,
+                secondNumber = first,
+                algebraOperation = AlgebraOperation.DIVISION
+            )
+        } else {
+            AlgebraProblem(
+                firstNumber = first * second,
+                secondNumber = second,
+                algebraOperation = AlgebraOperation.DIVISION
+            )
+        }
     }
 
     private fun getRandomFirstValue() =

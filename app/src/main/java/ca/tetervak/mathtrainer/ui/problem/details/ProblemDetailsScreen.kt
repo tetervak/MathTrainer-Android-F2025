@@ -60,7 +60,7 @@ import ca.tetervak.mathtrainer.R
 import ca.tetervak.mathtrainer.domain.model.AlgebraOperation
 import ca.tetervak.mathtrainer.domain.model.AlgebraProblem
 import ca.tetervak.mathtrainer.domain.model.Problem
-import ca.tetervak.mathtrainer.domain.model.UserAnswerStatus
+import ca.tetervak.mathtrainer.domain.model.AnswerStatus
 import ca.tetervak.mathtrainer.ui.common.QuizButton
 import ca.tetervak.mathtrainer.ui.common.QuizTopBar
 import ca.tetervak.mathtrainer.ui.common.ScoreCard
@@ -121,7 +121,7 @@ fun ProblemDetailsScreenBody(
             QuizTopBar(
                 title = stringResource(
                     id = R.string.quiz_n_problem_n,
-                    state.quizNumber, state.problem.order
+                    state.quizNumber, state.problem.problemNumber
                 ),
                 scrollBehavior = scrollBehavior,
                 onHelpClick = onHelpClick,
@@ -152,7 +152,7 @@ fun ProblemDetailsScreenBody(
 
             ProblemLayout(
                 onUserAnswerChanged = onChangeUserAnswerInput,
-                problemNumber = state.problem.order,
+                problemNumber = state.problem.problemNumber,
                 numberOfProblems = state.numberOfProblems,
                 userAnswer = userAnswerInput,
                 onKeyboardDone = onSubmit,
@@ -195,7 +195,7 @@ fun ProblemDetailsScreenBody(
                     OutlinedButton(
                         onClick = { state.previousProblemId?.let{ onProblemClick(it) } },
                         modifier = Modifier.weight(1f),
-                        enabled = state.problem.order > 1
+                        enabled = state.problem.problemNumber > 1
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowLeft,
@@ -209,7 +209,7 @@ fun ProblemDetailsScreenBody(
                     OutlinedButton(
                         onClick = { state.nextProblemId?.let{ onProblemClick(it) } },
                         modifier = Modifier.weight(1f),
-                        enabled = state.problem.order < state.numberOfProblems
+                        enabled = state.problem.problemNumber < state.numberOfProblems
                     ) {
                         Text(
                             text = stringResource(R.string.next),
@@ -283,7 +283,7 @@ fun ProblemLayout(
     currentProblemText: String,
     problemNumber: Int,
     numberOfProblems: Int,
-    currentProblemStatus: UserAnswerStatus,
+    currentProblemStatus: AnswerStatus,
     userAnswer: String,
     onUserAnswerChanged: (String) -> Unit,
     onKeyboardDone: () -> Unit,
@@ -335,29 +335,29 @@ fun ProblemLayout(
                 },
                 placeholder = {
                     when (currentProblemStatus) {
-                        UserAnswerStatus.WRONG_ANSWER -> {
+                        AnswerStatus.WRONG_ANSWER -> {
                             Text(
                                 text = stringResource(R.string.wrong_answer_try_again),
                                 color = MaterialTheme.colorScheme.error
                             )
                         }
 
-                        UserAnswerStatus.INVALID_INPUT -> {
+                        AnswerStatus.INVALID_INPUT -> {
                             Text(
                                 text = stringResource(R.string.invalid_input_try_again),
                                 color = MaterialTheme.colorScheme.error
                             )
                         }
 
-                        UserAnswerStatus.NOT_ANSWERED -> {
+                        AnswerStatus.NOT_ANSWERED -> {
                             Text(stringResource(R.string.enter_your_answer))
                         }
 
                         else -> {}
                     }
                 },
-                isError = currentProblemStatus == UserAnswerStatus.WRONG_ANSWER ||
-                        currentProblemStatus == UserAnswerStatus.INVALID_INPUT,
+                isError = currentProblemStatus == AnswerStatus.WRONG_ANSWER ||
+                        currentProblemStatus == AnswerStatus.INVALID_INPUT,
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Number,
                     imeAction = ImeAction.Done
@@ -367,28 +367,28 @@ fun ProblemLayout(
                 )
             )
             when (currentProblemStatus) {
-                UserAnswerStatus.NOT_ANSWERED -> Text(
+                AnswerStatus.NOT_ANSWERED -> Text(
                     text = stringResource(R.string.not_answered),
                     fontStyle = FontStyle.Italic,
                     fontSize = 24.sp,
                     color = Color.Blue
                 )
 
-                UserAnswerStatus.RIGHT_ANSWER -> Text(
+                AnswerStatus.RIGHT_ANSWER -> Text(
                     text = stringResource(R.string.right_answer),
                     fontStyle = FontStyle.Italic,
                     fontSize = 24.sp,
                     color = Color.Green
                 )
 
-                UserAnswerStatus.WRONG_ANSWER -> Text(
+                AnswerStatus.WRONG_ANSWER -> Text(
                     text = stringResource(R.string.wrong_answer),
                     fontStyle = FontStyle.Italic,
                     fontSize = 24.sp,
                     color = Color.Red
                 )
 
-                UserAnswerStatus.INVALID_INPUT -> Text(
+                AnswerStatus.INVALID_INPUT -> Text(
                     text = stringResource(R.string.invalid_input),
                     fontStyle = FontStyle.Italic,
                     fontSize = 24.sp,
@@ -444,8 +444,8 @@ fun GameScreenPreview() {
         ProblemDetailsScreenBody(
             state = ProblemDetailsUiState.Success(
                 problem = Problem(
-                    problem = AlgebraProblem(a = 1, b = 2, op = AlgebraOperation.ADDITION),
-                    order = 3,
+                    algebraProblem = AlgebraProblem(firstNumber = 1, secondNumber = 2, algebraOperation = AlgebraOperation.ADDITION),
+                    problemNumber = 3,
                     quizId = ""
                 ),
                 quizNumber = 2,

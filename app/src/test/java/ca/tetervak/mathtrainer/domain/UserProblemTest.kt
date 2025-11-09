@@ -2,7 +2,7 @@ package ca.tetervak.mathtrainer.domain
 
 import ca.tetervak.mathtrainer.domain.model.AlgebraOperation
 import ca.tetervak.mathtrainer.domain.model.AlgebraProblem
-import ca.tetervak.mathtrainer.domain.model.UserAnswerStatus
+import ca.tetervak.mathtrainer.domain.model.AnswerStatus
 import ca.tetervak.mathtrainer.domain.model.Problem
 import org.junit.After
 import org.junit.Assert.*
@@ -11,10 +11,10 @@ import org.junit.Test
 
 class UserProblemTest {
 
-    val algebraProblem: AlgebraProblem = AlgebraProblem(a = 1, b = 2, op = AlgebraOperation.ADDITION)
+    val algebraProblem: AlgebraProblem = AlgebraProblem(firstNumber = 1, secondNumber = 2, algebraOperation = AlgebraOperation.ADDITION)
     val problem: Problem = Problem(
-        problem = algebraProblem,
-        order = 3,
+        algebraProblem = algebraProblem,
+        problemNumber = 3,
         userAnswer = null,
         quizId = ""
     )
@@ -38,31 +38,31 @@ class UserProblemTest {
     @Test
     fun setUserAnswer() {
 
-        println("quizProblem.problem = ${problem.problem}")
+        println("quizProblem.problem = ${problem.algebraProblem}")
 
         val copy1 = problem.copy(userAnswer = "3")
         assertEquals("3", copy1.userAnswer)
-        assertEquals(UserAnswerStatus.RIGHT_ANSWER, copy1.status)
+        assertEquals(AnswerStatus.RIGHT_ANSWER, copy1.status)
 
         val copy2 = problem.copy(userAnswer = "4")
         assertEquals("4", copy2.userAnswer)
-        assertEquals(UserAnswerStatus.WRONG_ANSWER, copy2.status)
+        assertEquals(AnswerStatus.WRONG_ANSWER, copy2.status)
 
         val copy3 = problem.copy(userAnswer = "whatever")
         assertEquals("whatever", copy3.userAnswer)
-        assertEquals(UserAnswerStatus.INVALID_INPUT, copy3.status)
+        assertEquals(AnswerStatus.INVALID_INPUT, copy3.status)
 
         val copy4 = problem.copy(userAnswer = "3.0")
         assertEquals("3.0", copy4.userAnswer)
-        assertEquals(UserAnswerStatus.RIGHT_ANSWER, copy4.status)
+        assertEquals(AnswerStatus.RIGHT_ANSWER, copy4.status)
 
         val copy5 = problem.copy(userAnswer = "3.1")
         assertEquals("3.1", copy5.userAnswer)
-        assertEquals(UserAnswerStatus.WRONG_ANSWER, copy5.status)
+        assertEquals(AnswerStatus.WRONG_ANSWER, copy5.status)
 
         val copy6 = problem.copy(userAnswer = "2.9")
         assertEquals("2.9", copy6.userAnswer)
-        assertEquals(UserAnswerStatus.WRONG_ANSWER, copy6.status)
+        assertEquals(AnswerStatus.WRONG_ANSWER, copy6.status)
 
     }
 
@@ -78,7 +78,7 @@ class UserProblemTest {
 
     @Test
     fun getProblem() {
-        println("quizProblem.problem = ${problem.problem}")
+        println("quizProblem.problem = ${problem.algebraProblem}")
     }
 
 }

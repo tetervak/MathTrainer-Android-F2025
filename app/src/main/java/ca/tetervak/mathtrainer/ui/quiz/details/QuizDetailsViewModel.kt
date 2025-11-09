@@ -29,7 +29,7 @@ class QuizDetailsViewModel @Inject constructor(
                 flowOf(QuizDetailsUiState.Loading)
             } else {
                 combine(
-                quizRepository.getQuizByIdFlow(quizId).filterNotNull(),
+                    quizRepository.getQuizByIdFlow(quizId).filterNotNull(),
                     quizRepository.getQuizStatusFlow(quizId).filterNotNull()
                 )
                 { quiz, quizStatus ->
@@ -51,8 +51,8 @@ class QuizDetailsViewModel @Inject constructor(
         quizIdFlow.value = quizId
     }
 
-    fun deleteQuiz(){
-        quizIdFlow.value?.let{ quizId ->
+    fun deleteQuiz() {
+        quizIdFlow.value?.let { quizId ->
             quizRepository.deleteQuizWithProblems(quizId = quizId)
         }
     }

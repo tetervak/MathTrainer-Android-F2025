@@ -35,7 +35,7 @@ class ProblemListViewModel @Inject constructor(
                         val quiz: Quiz = repository.getQuizByIdFlow(quizId).filterNotNull().first()
                         val rightAnswers = repository.getNumberOfRightAnswers(quizId)
                         ProblemListUiState.Success(
-                            quizNumber = quiz.order,
+                            quizNumber = quiz.quizNumber,
                             problemList = problems,
                             rightAnswers = rightAnswers
                         )

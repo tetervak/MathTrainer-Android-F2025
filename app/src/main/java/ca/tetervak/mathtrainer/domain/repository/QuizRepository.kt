@@ -55,7 +55,7 @@ class QuizRepository(
         withContext(context = dispatcher) {
             val problemCount = localQuizRepository.getQuizProblemCount(quizId)!!
             val rightAnswers = localProblemRepository.getNumberOfRightAnswers(quizId)
-            QuizScore(numberOfProblems = problemCount, rightAnswers)
+            QuizScore(problemCount = problemCount, rightAnswers)
         }
 
 
