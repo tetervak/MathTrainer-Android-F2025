@@ -4,18 +4,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
@@ -41,13 +39,16 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import ca.tetervak.mathtrainer.R
 import ca.tetervak.mathtrainer.domain.model.ProblemGeneration
 import ca.tetervak.mathtrainer.domain.model.UserPreferences
+import ca.tetervak.mathtrainer.ui.HomeButton
 import ca.tetervak.mathtrainer.ui.QuizTopBar
 import ca.tetervak.mathtrainer.ui.theme.MathTrainerTheme
+import ca.tetervak.mathtrainer.ui.theme.Purple40
 
 @Composable
 fun SettingsScreen(
     onHomeClick: () -> Unit,
     onHelpClick: () -> Unit,
+    onBackClick: () -> Unit
 ){
     val viewModel: SettingsViewModel = hiltViewModel()
     val uiState: UserPreferences by viewModel.uiState.collectAsState()
@@ -58,7 +59,8 @@ fun SettingsScreen(
         onNumberOfProblemsChange = viewModel::saveNumberOfProblems,
         onProblemGenerationChange = viewModel::saveProblemGeneration,
         onHomeClick = onHomeClick,
-        onHelpClick = onHelpClick
+        onHelpClick = onHelpClick,
+        onBackClick = onBackClick
     )
 
 
@@ -72,7 +74,8 @@ fun SettingsScreenBody(
     onNumberOfProblemsChange: (Int) -> Unit,
     onProblemGenerationChange: (ProblemGeneration) -> Unit,
     onHomeClick: () -> Unit,
-    onHelpClick: () -> Unit
+    onHelpClick: () -> Unit,
+    onBackClick: () -> Unit
 ) {
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -82,6 +85,7 @@ fun SettingsScreenBody(
             QuizTopBar(
                 title = stringResource(R.string.settings),
                 onHelpClick = onHelpClick,
+                onBackClick = onBackClick,
                 scrollBehavior = scrollBehavior
             )
         },
@@ -91,36 +95,37 @@ fun SettingsScreenBody(
     ) { innerPadding ->
 
         Column(
-
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(24.dp),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
                 .padding(innerPadding)
-                .padding(24.dp)
+                .fillMaxSize()
         ) {
-            NumberOfProblemsInput(
-                numberOfProblems = numberOfProblems,
-                onChange = onNumberOfProblemsChange
-            )
-            ProblemGenerationInput(
-                problemGeneration = problemGeneration,
-                onChange = onProblemGenerationChange
-            )
-            OutlinedButton(
-                modifier = Modifier
-                    .fillMaxWidth(0.5f)
-                    .padding(16.dp),
-                onClick = onHomeClick,
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Home,
-                    contentDescription = stringResource(R.string.home)
-                )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(24.dp),
+                modifier = Modifier.fillMaxWidth().padding(48.dp)
+            ){
                 Text(
-                    modifier = Modifier.padding(start = 8.dp),
-                    text = stringResource(R.string.home)
+                    text = "New Quiz Settings",
+                    fontSize = 32.sp,
+                    color = Purple40
+                )
+                NumberOfProblemsInput(
+                    numberOfProblems = numberOfProblems,
+                    onChange = onNumberOfProblemsChange
+                )
+                ProblemGenerationInput(
+                    problemGeneration = problemGeneration,
+                    onChange = onProblemGenerationChange
                 )
             }
+            Spacer(modifier = Modifier.weight(1f))
+            HorizontalDivider()
+            HomeButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                onClick = onHomeClick,
+            )
         }
     }
 }
@@ -242,7 +247,8 @@ fun SettingsScreenBodyPreview(){
             onNumberOfProblemsChange = {},
             onProblemGenerationChange = {},
             onHomeClick = {},
-            onHelpClick = {}
+            onHelpClick = {},
+            onBackClick = {}
         )
     }
 }

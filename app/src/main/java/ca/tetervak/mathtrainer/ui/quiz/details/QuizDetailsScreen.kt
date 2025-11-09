@@ -62,7 +62,11 @@ fun QuizDetailsScreen(
             onProblemClick = onProblemClick,
             onListProblemsClick = onListProblemsClick,
             onBackClick = onBackClick,
-            onHelpClick = onHelpClick
+            onHelpClick = onHelpClick,
+            onDeleteQuizClick = {
+                viewModel.deleteQuiz()
+                onHomeClick()
+            }
         )
     }
 }
@@ -75,7 +79,8 @@ fun QuizDetailsScreenBody(
     onProblemClick: (String) -> Unit,
     onListProblemsClick: (String, String?) -> Unit,
     onBackClick: () -> Unit,
-    onHelpClick: () -> Unit
+    onHelpClick: () -> Unit,
+    onDeleteQuizClick: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
@@ -149,7 +154,7 @@ fun QuizDetailsScreenBody(
             )
             OutlinedButton(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = { onListProblemsClick(state.quiz.id, state.firstProblemId) }
+                onClick = onDeleteQuizClick
             ) {
                 Icon(
                     imageVector = Icons.Default.DeleteForever,
@@ -275,7 +280,8 @@ fun QuizDetailsScreenBodyPreview(){
             onProblemClick = {},
             onListProblemsClick = {_,_->},
             onBackClick = {},
-            onHelpClick = {}
+            onHelpClick = {},
+            onDeleteQuizClick = {}
         )
     }
 }

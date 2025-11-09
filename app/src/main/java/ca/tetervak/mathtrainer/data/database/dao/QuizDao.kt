@@ -26,4 +26,7 @@ interface QuizDao {
 
     @Query("SELECT quiz_number FROM quizzes WHERE quiz_id = :quizId")
     suspend fun getQuizOrder(quizId: String): Int?
+
+    @Query("DELETE FROM quizzes WHERE quiz_id = :quizId")
+    suspend fun deleteQuizById(quizId: String)
 }

@@ -7,29 +7,24 @@ import ca.tetervak.mathtrainer.domain.model.QuizStatus
 import ca.tetervak.mathtrainer.domain.model.UserAnswerStatus
 import ca.tetervak.mathtrainer.domain.model.Problem
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @OptIn(DelicateCoroutinesApi::class)
 class LocalProblemRepository(
-    val problemDao: ProblemDao,
-    private val externalScope: CoroutineScope,
+    private val problemDao: ProblemDao,
     private val dispatcher: CoroutineDispatcher
 ) {
 
     @Inject
-    constructor(dao: ProblemDao) : this(
-        problemDao = dao,
-        externalScope = GlobalScope,
+    constructor(problemDao: ProblemDao) : this(
+        problemDao = problemDao,
         dispatcher = Dispatchers.IO
     )
 
@@ -63,23 +58,21 @@ class LocalProblemRepository(
             problemDao.getQuizProblemByOrder(quizId, order = 1)?.pId
         }
 
-    fun insertAlgebraProblems(
+    suspend fun insertAlgebraProblems(
         quizId: String,
         list: List<AlgebraProblem>,
         firstOrder: Int = 1
-    ) {
-        externalScope.launch(context = dispatcher) {
-            problemDao.insertProblems(
-                entities = list.mapIndexed { index, algebraProblem ->
-                    algebraProblem.toEntity(
-                        quizId = quizId,
-                        order = index + firstOrder,
-                        userAnswer = null,
-                        status = UserAnswerStatus.NOT_ANSWERED
-                    )
-                }
-            )
-        }
+    ) = withContext(context = dispatcher) {
+        problemDao.insertProblems(
+            entities = list.mapIndexed { index, algebraProblem ->
+                algebraProblem.toEntity(
+                    quizId = quizId,
+                    order = index + firstOrder,
+                    userAnswer = null,
+                    status = UserAnswerStatus.NOT_ANSWERED
+                )
+            }
+        )
     }
 
     fun getQuizScoreFlow(quizId: String): Flow<QuizScore> {
@@ -135,6 +128,11 @@ class LocalProblemRepository(
                 quizId = quizId,
                 status = UserAnswerStatus.RIGHT_ANSWER
             )
+        }
+
+    suspend fun deleteProblemsByQuizId(quizId: String) =
+        withContext(context = dispatcher) {
+            problemDao.deleteProblemsByQuizId(quizId = quizId)
         }
 }
 

@@ -47,9 +47,13 @@ class QuizDetailsViewModel @Inject constructor(
             initialValue = QuizDetailsUiState.Loading
         )
 
-
-
     fun loadQuiz(quizId: String) {
         quizIdFlow.value = quizId
+    }
+
+    fun deleteQuiz(){
+        quizIdFlow.value?.let{ quizId ->
+            quizRepository.deleteQuizWithProblems(quizId = quizId)
+        }
     }
 }

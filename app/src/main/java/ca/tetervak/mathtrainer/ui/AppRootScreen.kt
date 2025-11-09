@@ -146,6 +146,7 @@ fun AppRootScreen() {
                     SettingsScreen(
                         onHelpClick = onHelpClick,
                         onHomeClick = onHomeClick,
+                        onBackClick = onBackClick
                     )
                 }
 

@@ -54,6 +54,7 @@ fun QuizListScreen(
 
     QuizListScreenBody(
         stateList = stateList,
+        onAddNewQuizClick = viewModel::addNewQuiz,
         onHomeClick = onHomeClick,
         onQuizClick = onQuizClick,
         onBackClick = onBackClick,
@@ -66,6 +67,7 @@ fun QuizListScreen(
 @Composable
 fun QuizListScreenBody(
     stateList: List<QuizListItemUiState>,
+    onAddNewQuizClick: () -> Unit,
     onHomeClick: () -> Unit,
     onQuizClick: (String) -> Unit,
     onBackClick: () -> Unit,
@@ -113,7 +115,7 @@ fun QuizListScreenBody(
                     onClick = onHomeClick,
                 )
                 OutlinedButton(
-                    onClick = { /*TODO*/ },
+                    onClick = onAddNewQuizClick,
                 ){
                     Icon(
                         imageVector = Icons.Default.AddCircleOutline,
@@ -199,6 +201,7 @@ fun QuizListScreenBodyPreview() {
                     ),
                 )
             },
+            onAddNewQuizClick = {},
             onHomeClick = {},
             onQuizClick = {},
             onBackClick = {},

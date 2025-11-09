@@ -38,9 +38,9 @@ class ProblemDetailsViewModel @Inject constructor(
                 repository.getProblemByIdFlow(problemId)
                     .filterNotNull()
                     .onEach { problem ->
-                        if (problem.status == UserAnswerStatus.RIGHT_ANSWER) {
-                            answerInput = checkNotNull(problem.userAnswer)
-                        }
+                        answerInput = if (problem.status == UserAnswerStatus.RIGHT_ANSWER) {
+                            checkNotNull(problem.userAnswer)
+                        } else { "" }
                     }
                     .map { problem -> successState(problem) }
             }

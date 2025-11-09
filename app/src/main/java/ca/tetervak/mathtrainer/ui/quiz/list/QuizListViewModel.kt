@@ -35,10 +35,8 @@ class QuizListViewModel @Inject constructor(
                 initialValue = QuizListUiState(stateList = emptyList())
             )
 
-//    fun addGeneratedQuiz() {
-//        viewModelScope.launch {
-//            quizRepository.insertGeneratedQuiz()
-//        }
-//    }
+    fun addNewQuiz() {
+        quizRepository.addNewGeneratedQuiz()
+    }
 
 }

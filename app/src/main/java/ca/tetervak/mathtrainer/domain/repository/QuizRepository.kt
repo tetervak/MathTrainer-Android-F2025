@@ -7,14 +7,35 @@ import ca.tetervak.mathtrainer.domain.model.QuizScore
 import ca.tetervak.mathtrainer.domain.model.QuizStatus
 import ca.tetervak.mathtrainer.domain.model.Problem
 import ca.tetervak.mathtrainer.domain.model.Quiz
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class QuizRepository @Inject constructor(
+class QuizRepository(
     private val localProblemRepository: LocalProblemRepository,
     private val localQuizRepository: LocalQuizRepository,
-    private val randomQuizRepository: RandomQuizRepository
+    private val randomQuizRepository: RandomQuizRepository,
+    private val externalScope: CoroutineScope,
+    private val dispatcher: CoroutineDispatcher
 ) {
+
+    @OptIn(DelicateCoroutinesApi::class)
+    @Inject constructor(
+        localProblemRepository: LocalProblemRepository,
+        localQuizRepository: LocalQuizRepository,
+        randomQuizRepository: RandomQuizRepository
+    ): this(
+        localProblemRepository = localProblemRepository,
+        localQuizRepository = localQuizRepository,
+        randomQuizRepository = randomQuizRepository,
+        externalScope = GlobalScope,
+        dispatcher = Dispatchers.IO
+    )
 
     fun getUserQuizzesFlow(): Flow<List<Quiz>> =
         localQuizRepository.getUserQuizzesFlow()
@@ -34,16 +55,25 @@ class QuizRepository @Inject constructor(
     fun getQuizStatusFlow(quizId: String): Flow<QuizStatus> =
         localProblemRepository.getQuizStatusDataFlow(quizId)
 
-    suspend fun insertGeneratedUserProblems(quizId: String){
+    suspend fun insertNewGeneratedProblems(quizId: String){
         localProblemRepository.insertAlgebraProblems(
             quizId = quizId,
             list = randomQuizRepository.getRandomQuizProblems()
         )
     }
 
-    suspend fun insertGeneratedQuiz(){
-        val quiz = localQuizRepository.insertQuiz()
-        insertGeneratedUserProblems(quizId = quiz.id)
+    fun addNewGeneratedQuiz(){
+        externalScope.launch(context = dispatcher) {
+            val quiz = localQuizRepository.insertQuiz()
+            insertNewGeneratedProblems(quizId = quiz.id)
+        }
+    }
+
+    fun deleteQuizWithProblems(quizId: String){
+        externalScope.launch(context = dispatcher) {
+            localProblemRepository.deleteProblemsByQuizId(quizId)
+            localQuizRepository.deleteQuizById(quizId)
+        }
     }
 
     suspend fun getNextProblemId(problem: Problem): String? =

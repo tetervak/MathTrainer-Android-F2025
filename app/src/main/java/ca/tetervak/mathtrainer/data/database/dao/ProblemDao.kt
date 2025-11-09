@@ -43,7 +43,7 @@ interface ProblemDao {
     suspend fun insertProblems(entities: List<ProblemEntity>)
 
     @Query("DELETE FROM problems WHERE quiz_id = :quizId")
-    suspend fun deleteAllQuizProblems(quizId: String)
+    suspend fun deleteProblemsByQuizId(quizId: String)
 
     @Query("SELECT COUNT(*) FROM problems WHERE quiz_id = :quizId")
     fun getQuizProblemCountFlow(quizId: String): Flow<Int>
