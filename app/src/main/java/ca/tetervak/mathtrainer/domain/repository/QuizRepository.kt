@@ -3,6 +3,7 @@ package ca.tetervak.mathtrainer.domain.repository
 import ca.tetervak.mathtrainer.data.repository.LocalProblemRepository
 import ca.tetervak.mathtrainer.data.repository.LocalQuizRepository
 import ca.tetervak.mathtrainer.data.repository.RandomQuizRepository
+import ca.tetervak.mathtrainer.domain.model.AlgebraProblem
 import ca.tetervak.mathtrainer.domain.model.QuizScore
 import ca.tetervak.mathtrainer.domain.model.QuizStatus
 import ca.tetervak.mathtrainer.domain.model.Problem
@@ -55,17 +56,20 @@ class QuizRepository(
     fun getQuizStatusFlow(quizId: String): Flow<QuizStatus> =
         localProblemRepository.getQuizStatusDataFlow(quizId)
 
-    suspend fun insertNewGeneratedProblems(quizId: String){
+    suspend fun insertNewGeneratedProblems(quizId: String): Int {
+        val problems: List<AlgebraProblem> = randomQuizRepository.getRandomQuizProblems()
         localProblemRepository.insertAlgebraProblems(
             quizId = quizId,
-            list = randomQuizRepository.getRandomQuizProblems()
+            list = problems
         )
+        return problems.size
     }
 
     fun addNewGeneratedQuiz(){
         externalScope.launch(context = dispatcher) {
             val quiz = localQuizRepository.insertQuiz()
-            insertNewGeneratedProblems(quizId = quiz.id)
+            val count = insertNewGeneratedProblems(quizId = quiz.id)
+            localQuizRepository.updateProblemCount(quizId = quiz.id, problemCount = count)
         }
     }
 

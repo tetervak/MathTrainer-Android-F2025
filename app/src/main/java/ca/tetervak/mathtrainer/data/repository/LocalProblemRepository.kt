@@ -88,6 +88,23 @@ class LocalProblemRepository(
             )
         }
 
+    fun getQuizScoreFlow(quizId: String): Flow<QuizScore> {
+        val quizScoreFlow: Flow<QuizScore> = combine(
+            problemDao.getQuizProblemCountFlow(quizId = quizId),
+            problemDao.getQuizProblemCountByStatusFlow(
+                quizId = quizId,
+                status = UserAnswerStatus.RIGHT_ANSWER
+            ),
+        ) { numberOfProblems, rightAnswers ->
+            QuizScore(
+                numberOfProblems = numberOfProblems,
+                rightAnswers = rightAnswers
+            )
+        }
+        return quizScoreFlow.flowOn(context = dispatcher)
+    }
+
+
     fun getQuizStatusDataFlow(quizId: String): Flow<QuizStatus> {
         val quizStatusFlow: Flow<QuizStatus> = combine(
             problemDao.getQuizProblemCountFlow(quizId = quizId),

@@ -26,7 +26,7 @@ fun HomeButton(
             contentDescription = stringResource(R.string.home)
         )
         Text(
-            modifier = Modifier.Companion.padding(start = 8.dp),
+            modifier = Modifier.padding(start = 8.dp),
             text = stringResource(R.string.home)
         )
     }

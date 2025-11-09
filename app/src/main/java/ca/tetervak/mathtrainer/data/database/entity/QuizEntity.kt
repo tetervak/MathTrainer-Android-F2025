@@ -14,6 +14,8 @@ data class QuizEntity(
     val order: Int,
     @ColumnInfo(name = "user_id")
     val userId: String,
+    @ColumnInfo(name = "problem_count")
+    val problemCount: Int = 0,
     @ColumnInfo(name = "created_at")
     val createdAt: Date = Date()
 )

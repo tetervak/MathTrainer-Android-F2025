@@ -63,5 +63,9 @@ class LocalQuizRepository(
             quizDao.getQuizOrder(quizId) ?: 0
         }
 
+    suspend fun updateProblemCount(quizId: String, problemCount: Int) =
+        withContext(context = dispatcher){
+            quizDao.updateProblemCount(quizId, problemCount)
+        }
 
 }

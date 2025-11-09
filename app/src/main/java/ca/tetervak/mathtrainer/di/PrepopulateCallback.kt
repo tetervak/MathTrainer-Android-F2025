@@ -54,7 +54,8 @@ class PrepopulateCallback(
         // 2. Insert default quiz
         val quiz = QuizEntity(
             userId = demoUser.uId,
-            order = 1
+            order = 1,
+            problemCount = 3
         )
         quizDao.insertQuiz(quiz)
 

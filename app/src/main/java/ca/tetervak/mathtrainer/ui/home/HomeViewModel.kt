@@ -8,12 +8,11 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val repository: QuizRepository,
+    repository: QuizRepository,
 ) : ViewModel() {
 
     val uiState: StateFlow<HomeUiState> =
@@ -24,18 +23,4 @@ class HomeViewModel @Inject constructor(
                 started = SharingStarted.WhileSubscribed(5000),
                 initialValue = HomeUiState(quizCount = 0)
             )
-
-//    init {
-//        viewModelScope.launch {
-//            if (repository.isEmpty()) {
-//                repository.insertGeneratedUserProblems()
-//            }
-//        }
-//    }
-//
-//    fun makeNewProblems() {
-//        viewModelScope.launch {
-//            repository.emptyAndInsertGeneratedUserProblems()
-//        }
-//    }
 }

@@ -29,4 +29,7 @@ interface QuizDao {
 
     @Query("DELETE FROM quizzes WHERE quiz_id = :quizId")
     suspend fun deleteQuizById(quizId: String)
+
+    @Query("UPDATE quizzes SET problem_count = :problemCount WHERE quiz_id = :quizId")
+    suspend fun updateProblemCount(quizId: String, problemCount: Int)
 }
