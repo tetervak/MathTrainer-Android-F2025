@@ -74,7 +74,7 @@ class ProblemDetailsViewModel @Inject constructor(
 
     private suspend fun successState(problem: Problem): ProblemDetailsUiState.Success{
         val numberOfProblems = repository.getNumberOfProblems(problem.quizId)
-        val quizNumber = repository.getQuizOrder(problem.quizId)
+        val quizNumber = repository.getQuizNumber(problem.quizId)
         val numberOfRightAnswers =
             repository.getNumberOfRightAnswers(problem.quizId)
         val firstProblemId = if (problem.problemNumber > 1) {

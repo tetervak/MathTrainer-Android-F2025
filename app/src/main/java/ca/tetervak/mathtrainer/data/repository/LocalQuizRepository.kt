@@ -70,7 +70,7 @@ class LocalQuizRepository(
             quizDao.deleteQuizWithProblems(quizId)
         }
 
-    suspend fun getQuizOrder(quizId: String): Int =
+    suspend fun getQuizNumber(quizId: String): Int =
         withContext(context = dispatcher) {
             quizDao.getQuizNumber(quizId) ?: 0
         }

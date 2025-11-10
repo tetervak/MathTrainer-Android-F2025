@@ -90,8 +90,8 @@ class QuizRepository(
     suspend fun getNumberOfRightAnswers(quizId: String): Int =
         localProblemRepository.getNumberOfRightAnswers(quizId)
 
-    suspend fun getQuizOrder(quizId: String): Int =
-        localQuizRepository.getQuizOrder(quizId)
+    suspend fun getQuizNumber(quizId: String): Int =
+        localQuizRepository.getQuizNumber(quizId)
 
     fun getQuizByIdFlow(quizId: String): Flow<Quiz?> =
         localQuizRepository.getQuizByIdFlow(quizId)
