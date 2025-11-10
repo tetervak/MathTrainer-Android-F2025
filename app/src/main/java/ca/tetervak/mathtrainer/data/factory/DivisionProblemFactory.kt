@@ -9,21 +9,16 @@ class DivisionProblemFactory(
 ) {
 
     fun createRandomProblem(): AlgebraProblem {
-        val first = getRandomFirstValue()
-        val second = getRandomSecondValue()
-        return if (random.nextBoolean()) {
-            AlgebraProblem(
-                firstNumber = first * second,
-                secondNumber = first,
-                algebraOperation = AlgebraOperation.DIVISION
-            )
-        } else {
-            AlgebraProblem(
-                firstNumber = first * second,
-                secondNumber = second,
-                algebraOperation = AlgebraOperation.DIVISION
-            )
-        }
+        val firstValue = getRandomFirstValue()
+        val secondValue = getRandomSecondValue()
+        val dividend = firstValue * secondValue
+        val divisor = if (random.nextBoolean()) firstValue else secondValue
+
+        return AlgebraProblem(
+            firstNumber = dividend,
+            secondNumber = divisor,
+            algebraOperation = AlgebraOperation.DIVISION
+        )
     }
 
     private fun getRandomFirstValue() =

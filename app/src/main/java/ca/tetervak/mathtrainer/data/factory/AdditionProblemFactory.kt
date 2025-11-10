@@ -7,26 +7,27 @@ import kotlin.random.Random
 class AdditionProblemFactory(
     private val random: Random = Random.Default
 ) {
-
     fun createRandomProblem(): AlgebraProblem {
-        val larger = getRandomLargerValue()
-        val smaller = getRandomSmallerValue(larger)
+        val targetSum = getRandomTargetSum()
+        val secondAddend = getRandomSecondAddend(targetSum)
+        val firstAddend = targetSum - secondAddend
+
         return AlgebraProblem(
-            firstNumber = larger - smaller,
-            secondNumber = smaller,
+            firstNumber = firstAddend,
+            secondNumber = secondAddend,
             algebraOperation = AlgebraOperation.ADDITION
         )
     }
 
-    private fun getRandomLargerValue() =
-        random.nextInt(LARGER_VALUE_FROM, LARGER_VALUE_UNTIL)
+    private fun getRandomTargetSum() =
+        random.nextInt(TARGET_SUM_MIN, TARGET_SUM_MAX)
 
-    private fun getRandomSmallerValue(larger: Int) =
-        random.nextInt(SMALLER_VALUE_FROM, larger)
+    private fun getRandomSecondAddend(targetSum: Int) =
+        random.nextInt(SECOND_ADDEND_MIN, targetSum)
 
     private companion object {
-        private const val LARGER_VALUE_UNTIL: Int = 50
-        private const val LARGER_VALUE_FROM: Int = 12
-        private const val SMALLER_VALUE_FROM: Int = 7
+        private const val TARGET_SUM_MIN: Int = 12
+        private const val TARGET_SUM_MAX: Int = 50
+        private const val SECOND_ADDEND_MIN: Int = 7
     }
 }

@@ -9,18 +9,18 @@ class MultiplicationProblemFactory(
 ) {
 
     fun createRandomProblem(): AlgebraProblem {
-        val first = getRandomFirstValue()
-        val second = getRandomSecondValue()
+        val firstValue = getRandomFirstValue()
+        val secondValue = getRandomSecondValue()
         return if (random.nextBoolean()) {
             AlgebraProblem(
-                firstNumber = first,
-                secondNumber = second,
+                firstNumber = firstValue,
+                secondNumber = secondValue,
                 algebraOperation = AlgebraOperation.MULTIPLICATION
             )
         } else {
             AlgebraProblem(
-                firstNumber = second,
-                secondNumber = first,
+                firstNumber = secondValue,
+                secondNumber = firstValue,
                 algebraOperation = AlgebraOperation.MULTIPLICATION
             )
         }

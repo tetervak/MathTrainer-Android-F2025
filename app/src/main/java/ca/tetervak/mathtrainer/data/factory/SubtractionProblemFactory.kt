@@ -7,26 +7,25 @@ import kotlin.random.Random
 class SubtractionProblemFactory(
     private val random: Random = Random.Default
 ){
-
     fun createRandomProblem(): AlgebraProblem {
-        val larger = getRandomLargerValue()
-        val smaller = getRandomSmallerValue(larger)
+        val minuend = getRandomMinuend()
+        val subtrahend = getRandomSubtrahend(minuend)
         return AlgebraProblem(
-            firstNumber = larger,
-            secondNumber = smaller,
+            firstNumber = minuend,
+            secondNumber = subtrahend,
             algebraOperation = AlgebraOperation.SUBTRACTION
         )
     }
 
-    private fun getRandomLargerValue() =
-        random.nextInt(LARGER_VALUE_FROM, LARGER_VALUE_UNTIL)
+    private fun getRandomMinuend() =
+        random.nextInt(MINUEND_MIN, MINUEND_MAX)
 
-    private fun getRandomSmallerValue(larger: Int) =
-        random.nextInt(SMALLER_VALUE_FROM, larger)
+    private fun getRandomSubtrahend(minuend: Int) =
+        random.nextInt(SUBTRAHEND_MIN, minuend)
 
     private companion object {
-        private const val LARGER_VALUE_UNTIL: Int = 50
-        private const val LARGER_VALUE_FROM: Int = 12
-        private const val SMALLER_VALUE_FROM: Int = 7
+        private const val MINUEND_MIN: Int = 12
+        private const val MINUEND_MAX: Int = 50
+        private const val SUBTRAHEND_MIN: Int = 7
     }
 }
