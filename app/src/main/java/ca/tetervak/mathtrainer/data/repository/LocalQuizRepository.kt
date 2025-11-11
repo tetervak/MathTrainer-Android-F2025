@@ -49,7 +49,7 @@ class LocalQuizRepository(
             val problemEntities = problems.mapIndexed { index, problem ->
                 problem.toEntity(
                     quizId = quizId,
-                    order = index + 1,
+                    problemNumber = index + 1,
                     userAnswer = null,
                     status = AnswerStatus.NOT_ANSWERED
                 )

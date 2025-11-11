@@ -21,7 +21,7 @@ fun Problem.toEntity(): ProblemEntity =
     this.algebraProblem.toEntity(
         id = this.id,
         quizId = this.quizId,
-        order = this.problemNumber,
+        problemNumber = this.problemNumber,
         userAnswer = this.userAnswer,
         status = this.status
     )
@@ -29,13 +29,13 @@ fun Problem.toEntity(): ProblemEntity =
 fun AlgebraProblem.toEntity(
     id: String = UUID.randomUUID().toString(),
     quizId: String,
-    order: Int,
+    problemNumber: Int,
     userAnswer: String?,
     status: AnswerStatus
 ): ProblemEntity = ProblemEntity(
             id = id,
             quizId = quizId,
-            problemNumber = order,
+            problemNumber = problemNumber,
             firstNumber = this.firstNumber,
             algebraOperation = this.algebraOperation,
             secondNumber = this.secondNumber,
