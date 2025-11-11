@@ -2,29 +2,25 @@ package ca.tetervak.mathtrainer.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ca.tetervak.mathtrainer.data.repository.UserProblemRepository
-import ca.tetervak.mathtrainer.domain.NewQuizUseCase
+import ca.tetervak.mathtrainer.domain.repository.QuizRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val repository: UserProblemRepository,
-    private val newQuizUseCase: NewQuizUseCase
+    repository: QuizRepository,
 ) : ViewModel() {
 
-    init {
-        viewModelScope.launch {
-            if (repository.isEmpty()) {
-                repository.insertUserProblems(list = newQuizUseCase(numberOfProblems = 20))
-            }
-        }
-    }
-
-    fun makeNewProblems() {
-        viewModelScope.launch {
-            repository.emptyAndInsertUserProblems(list = newQuizUseCase(numberOfProblems = 20))
-        }
-    }
+    val uiState: StateFlow<HomeUiState> =
+        repository.getQuizCountFlow()
+            .map { count -> HomeUiState(quizCount = count) }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = HomeUiState(quizCount = 0)
+            )
 }

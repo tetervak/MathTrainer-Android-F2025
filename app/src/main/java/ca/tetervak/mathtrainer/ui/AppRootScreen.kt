@@ -15,19 +15,48 @@
  */
 package ca.tetervak.mathtrainer.ui
 
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import ca.tetervak.mathtrainer.ui.details.ProblemDetailsScreen
+import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavEntry
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.ui.NavDisplay
+import ca.tetervak.mathtrainer.ui.common.AboutDialog
+import ca.tetervak.mathtrainer.ui.problem.details.ProblemDetailsScreen
 import ca.tetervak.mathtrainer.ui.home.HomeScreen
-import ca.tetervak.mathtrainer.ui.list.ProblemListScreen
+import ca.tetervak.mathtrainer.ui.problem.list.ProblemListScreen
+import ca.tetervak.mathtrainer.ui.quiz.details.QuizDetailsScreen
+import ca.tetervak.mathtrainer.ui.quiz.list.QuizListScreen
+import ca.tetervak.mathtrainer.ui.settings.SettingsScreen
+import kotlinx.serialization.Serializable
+
+@Serializable
+object Home : NavKey
+
+@Serializable
+object Settings : NavKey
+
+@Serializable
+data class ProblemDetails(val problemId: String) : NavKey
+
+@Serializable
+data class ProblemList(
+    val quizId: String,
+    val selectedId: String? = null,
+) : NavKey
+
+@Serializable
+data class QuizDetails(
+    val quizId: String,
+) : NavKey
+
+@Serializable
+object QuizList: NavKey
 
 @Composable
 fun AppRootScreen() {
@@ -36,54 +65,101 @@ fun AppRootScreen() {
         mutableStateOf(false)
     }
 
-    val navController = rememberNavController()
-    NavHost(
-        navController = navController,
-        startDestination = "home"
-    ) {
-        composable(route = "home") {
-            HomeScreen(
-                onFirstClick = { navController.navigate("problem/1") },
-                onListClick = { navController.navigate("list-problems") },
-                onHelpClick = { showAboutDialog = true }
-            )
-        }
-        composable(
-            route = "list-problems?selected={selected}",
-            arguments = listOf(navArgument("selected") {
-                type = NavType.IntType
-                defaultValue = 0
-            })
-        ) {
-            backStackEntry ->
-            val selected = backStackEntry.arguments?.getInt("selected") ?: 0
-            ProblemListScreen(
-                selected = selected,
-                onProblemClick = { problemId ->
-                    navController.navigate("problem/$problemId")
-                },
-                onHomeClick = { navController.navigate("home") },
-                onHelpClick = { showAboutDialog = true }
-            )
-        }
-        composable(
-            route = "problem/{problemId}",
-            arguments = listOf(navArgument("problemId") { type = NavType.IntType })
-        ) {
-            backStackEntry ->
-            val problemId = backStackEntry.arguments?.getInt("problemId") ?: 0
-            ProblemDetailsScreen(
-                onHelpClick = { showAboutDialog = true },
-                onHomeClick = { navController.navigate("home") },
-                onListClick = { navController.navigate("list-problems?selected=$problemId") },
-                onProblemNavClick = { problemId ->
-                    navController.navigate("problem/$problemId")
-                }
-            )
-        }
+    val onHelpClick: () -> Unit = { showAboutDialog = true }
+    val onDismissHelpClick: () -> Unit = { showAboutDialog = false }
+
+    val backStack: NavBackStack<NavKey> = rememberNavBackStack(Home)
+
+    val onBackClick: () -> Unit = { backStack.removeLastOrNull() }
+    val onHomeClick: () -> Unit = { backStack.removeIf { it !is Home } }
+    val onListQuizzesClick: () -> Unit = { backStack.add(QuizList) }
+    val onSettingsClick: () -> Unit = { backStack.add(Settings) }
+    val onQuizClick: (String) -> Unit = { quizId ->
+        backStack.add(QuizDetails(quizId = quizId))
+    }
+    val onProblemClick: (String) -> Unit = { problemId ->
+        backStack.add(ProblemDetails(problemId = problemId))
+    }
+    val onListProblemsClick: (String, String?) -> Unit = { quizId, selectedId ->
+        backStack.add(ProblemList(quizId = quizId, selectedId = selectedId))
     }
 
+    NavDisplay(
+        backStack = backStack,
+        onBack = onBackClick,
+        entryProvider = { key ->
+            when (key) {
+                is Home -> NavEntry(key) {
+                    HomeScreen(
+                        onListQuizzesClick = onListQuizzesClick,
+                        onSettingsClick = onSettingsClick,
+                        onHelpClick = onHelpClick
+                    )
+                }
+
+                is QuizList -> NavEntry(key) {
+                    QuizListScreen(
+                        onHomeClick = onHomeClick,
+                        onQuizClick = onQuizClick,
+                        onBackClick = onBackClick,
+                        onHelpClick = onHelpClick,
+                    )
+                }
+
+                is ProblemList -> NavEntry(key) {
+                    val quizId: String = key.quizId
+                    val selectedId: String? = key.selectedId
+                    ProblemListScreen(
+                        quizId = quizId,
+                        selectedId = selectedId,
+                        onProblemClick = onProblemClick,
+                        onHomeClick = onHomeClick,
+                        onHelpClick = onHelpClick,
+                        onBackClick = onBackClick,
+                        onQuizClick = onQuizClick
+                    )
+                }
+
+                is ProblemDetails -> NavEntry(key) {
+                    val problemId: String = key.problemId
+                    ProblemDetailsScreen(
+                        problemId = problemId,
+                        onHelpClick = onHelpClick,
+                        onHomeClick = onHomeClick,
+                        onListProblemsClick = onListProblemsClick,
+                        onProblemClick = onProblemClick,
+                        onQuizClick = onQuizClick,
+                        onBackClick = onBackClick
+                    )
+                }
+
+                is QuizDetails -> NavEntry(key) {
+                    val quizId: String = key.quizId
+                    QuizDetailsScreen(
+                        quizId = quizId,
+                        onHomeClick = onHomeClick,
+                        onProblemClick = onProblemClick,
+                        onListProblemsClick = onListProblemsClick,
+                        onBackClick = onBackClick,
+                        onHelpClick = onHelpClick
+                    )
+                }
+
+                is Settings -> NavEntry(key) {
+                    SettingsScreen(
+                        onHelpClick = onHelpClick,
+                        onHomeClick = onHomeClick,
+                        onBackClick = onBackClick
+                    )
+                }
+
+                else -> NavEntry(key) { Text("Unknown route") }
+            }
+
+        }
+    )
+
     if (showAboutDialog) {
-        AboutDialog(onDismissRequest = { showAboutDialog = false })
+        AboutDialog(onDismissRequest = onDismissHelpClick)
     }
 }

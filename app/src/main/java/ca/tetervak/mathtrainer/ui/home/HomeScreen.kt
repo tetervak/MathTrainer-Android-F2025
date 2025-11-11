@@ -7,9 +7,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
-import androidx.compose.material.icons.filled.Replay
-import androidx.compose.material.icons.filled.Start
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -27,34 +27,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import ca.tetervak.mathtrainer.R
-import ca.tetervak.mathtrainer.domain.ScoreData
-import ca.tetervak.mathtrainer.ui.QuizTopBar
-import ca.tetervak.mathtrainer.ui.score.ScoreViewModel
-import ca.tetervak.mathtrainer.ui.score.Score
+import ca.tetervak.mathtrainer.ui.common.QuizTopBar
+import ca.tetervak.mathtrainer.ui.theme.MathTrainerTheme
 import ca.tetervak.mathtrainer.ui.theme.Purple40
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    onFirstClick: () -> Unit,
-    onListClick: () -> Unit,
+    onListQuizzesClick: () -> Unit,
+    onSettingsClick: () -> Unit,
     onHelpClick: () -> Unit,
 ) {
 
     val homeViewModel: HomeViewModel = hiltViewModel()
-
-    val scoreViewModel: ScoreViewModel = hiltViewModel()
-    val scoreData: ScoreData by scoreViewModel.uiState.collectAsState()
+    val state: HomeUiState by homeViewModel.uiState.collectAsState()
 
     HomeScreenBody(
-        score = scoreData.rightAnswers,
-        numberOfProblems = scoreData.numberOfProblems,
-        onFirstClick = onFirstClick,
-        onListClick = onListClick,
-        onMakeNewProblemsClick = {
-            homeViewModel.makeNewProblems()
-            onListClick()
-        },
+        numberOfQuizzes = state.quizCount,
+        onListQuizzesClick = onListQuizzesClick,
+        onSettingsClick = onSettingsClick,
         onHelpClick = onHelpClick
     )
 }
@@ -62,11 +53,9 @@ fun HomeScreen(
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun HomeScreenBody(
-    score: Int,
-    numberOfProblems: Int,
-    onFirstClick: () -> Unit,
-    onListClick: () -> Unit,
-    onMakeNewProblemsClick: () -> Unit,
+    numberOfQuizzes: Int,
+    onListQuizzesClick: () -> Unit,
+    onSettingsClick: () -> Unit,
     onHelpClick: () -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -74,7 +63,7 @@ private fun HomeScreenBody(
         topBar = {
             QuizTopBar(
                 title = stringResource(R.string.home),
-                onHelpButtonClick = onHelpClick,
+                onHelpClick = onHelpClick,
                 scrollBehavior = scrollBehavior
             )
         },
@@ -97,64 +86,66 @@ private fun HomeScreenBody(
             )
             Button(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = onFirstClick
+                onClick = onListQuizzesClick
             ) {
 
                 Text(
                     modifier = Modifier.padding(end = 8.dp),
-                    text = stringResource(R.string.first_problem)
-                )
-                Icon(
-                    imageVector = Icons.Filled.Start,
-                    contentDescription = stringResource(R.string.first)
-                )
-            }
-            Button(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = onListClick
-            ) {
-
-                Text(
-                    modifier = Modifier.padding(end = 8.dp),
-                    text = stringResource(R.string.list_all_problems)
+                    text = stringResource(R.string.list_all_quizzes)
                 )
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.List,
-                    contentDescription = stringResource(R.string.list)
+                    contentDescription = stringResource(R.string.list_all_quizzes)
                 )
             }
             Button(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = onMakeNewProblemsClick
+                onClick = onSettingsClick
             ) {
 
                 Text(
                     modifier = Modifier.padding(end = 8.dp),
-                    text = stringResource(R.string.make_new_problems)
+                    text = stringResource(R.string.settings)
                 )
                 Icon(
-                    imageVector = Icons.Filled.Replay,
+                    imageVector = Icons.Filled.Settings,
                     contentDescription = stringResource(R.string.first)
                 )
             }
-            Score(
-                rightAnswers = score,
-                numberOfProblems = numberOfProblems,
-                modifier = Modifier.padding(20.dp)
+            QuizCountCard(
+                numberOfQuizzes = numberOfQuizzes,
+                modifier = Modifier.padding(top = 32.dp)
             )
         }
     }
 }
 
+@Composable
+fun QuizCountCard(
+    numberOfQuizzes: Int,
+    modifier: Modifier = Modifier
+){
+    Card(
+        modifier = modifier
+    ) {
+        Text(
+            text = stringResource(R.string.number_of_quizzes_n, numberOfQuizzes),
+            fontSize = 20.sp,
+            modifier = Modifier.padding(16.dp)
+        )
+    }
+}
+
+
 @Preview
 @Composable
 fun HomeScreenPreview() {
-    HomeScreenBody(
-        score = 3,
-        numberOfProblems = 5,
-        onFirstClick = {},
-        onListClick = {},
-        onMakeNewProblemsClick = {},
-        onHelpClick = {}
-    )
+    MathTrainerTheme{
+        HomeScreenBody(
+            numberOfQuizzes = 1,
+            onListQuizzesClick = {},
+            onSettingsClick = {},
+            onHelpClick = {}
+        )
+    }
 }

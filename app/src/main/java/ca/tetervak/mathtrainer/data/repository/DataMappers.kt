@@ -1,34 +1,57 @@
 package ca.tetervak.mathtrainer.data.repository
 
-import ca.tetervak.mathtrainer.data.database.LocalProblem
-import ca.tetervak.mathtrainer.domain.AlgebraProblem
-import ca.tetervak.mathtrainer.domain.UserAnswerStatus
-import ca.tetervak.mathtrainer.domain.UserProblem
+import ca.tetervak.mathtrainer.data.database.entity.ProblemEntity
+import ca.tetervak.mathtrainer.data.database.entity.QuizEntity
+import ca.tetervak.mathtrainer.domain.model.AlgebraProblem
+import ca.tetervak.mathtrainer.domain.model.AnswerStatus
+import ca.tetervak.mathtrainer.domain.model.Problem
+import ca.tetervak.mathtrainer.domain.model.Quiz
+import java.util.UUID
 
-fun LocalProblem.toUserProblem(): UserProblem =
-    UserProblem(
-        problem = AlgebraProblem(a, b, op),
+fun ProblemEntity.toDomain(): Problem =
+    Problem(
+        algebraProblem = AlgebraProblem(firstNumber, secondNumber, algebraOperation),
         userAnswer = userAnswer,
-        id = id
+        id = id,
+        problemNumber = problemNumber,
+        quizId = quizId
     )
 
-fun UserProblem.toLocalProblem(): LocalProblem =
-    this.problem.toLocalProblem(
+fun Problem.toEntity(): ProblemEntity =
+    this.algebraProblem.toEntity(
         id = this.id,
+        quizId = this.quizId,
+        problemNumber = this.problemNumber,
         userAnswer = this.userAnswer,
         status = this.status
     )
 
-fun AlgebraProblem.toLocalProblem(
-    id: Int,
+fun AlgebraProblem.toEntity(
+    id: String = UUID.randomUUID().toString(),
+    quizId: String,
+    problemNumber: Int,
     userAnswer: String?,
-    status: UserAnswerStatus
-): LocalProblem = LocalProblem(
+    status: AnswerStatus
+): ProblemEntity = ProblemEntity(
             id = id,
-            a = this.a,
-            op = this.op,
-            b = this.b,
-            answer = this.answer,
+            quizId = quizId,
+            problemNumber = problemNumber,
+            firstNumber = this.firstNumber,
+            algebraOperation = this.algebraOperation,
+            secondNumber = this.secondNumber,
+            correctAnswer = this.answer,
             userAnswer = userAnswer,
-            status = status
+            answerStatus = status
         )
+
+fun QuizEntity.toDomain(): Quiz = Quiz(
+    id = this.id,
+    quizNumber = this.quizNumber,
+    userId = this.userId
+)
+
+fun Quiz.toEntity(): QuizEntity = QuizEntity(
+    id = this.id,
+    quizNumber = this.quizNumber,
+    userId = this.userId
+)

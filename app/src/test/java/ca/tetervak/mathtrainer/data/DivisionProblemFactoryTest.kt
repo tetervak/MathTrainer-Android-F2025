@@ -23,8 +23,8 @@ class DivisionProblemFactoryTest {
 
     @Test
     fun createRandomProblem() {
-        println("making 25 problems")
-        repeat(25){
+        println("making 50 problems")
+        repeat(50){
             println("problem: ${factory.createRandomProblem().text}")
         }
     }
