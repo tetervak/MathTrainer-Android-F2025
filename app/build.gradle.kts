@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.devtools.ksp)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -56,6 +57,7 @@ dependencies {
     implementation(libs.androidx.compose.material.icons.extended)
 
     implementation(libs.androidx.room.runtime)
+
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
 
@@ -73,6 +75,10 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 
     implementation(libs.androidx.datastore.preferences)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.firestore.ktx)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
