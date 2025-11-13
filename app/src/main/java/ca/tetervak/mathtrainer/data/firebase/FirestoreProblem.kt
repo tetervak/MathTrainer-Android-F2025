@@ -13,15 +13,29 @@ data class FirestoreProblem(
     val userAnswer: String? = null,
     val answerStatus: AnswerStatus = AnswerStatus.NOT_ANSWERED,
     val updatedAt: Timestamp? = null
-)
+){
+    companion object
+}
 
 // the id is not in the map to avoid data duplication
 fun FirestoreProblem.toMap(): Map<String, Any?> = mapOf(
     "problemNumber" to problemNumber,
     "firstNumber" to firstNumber,
     "secondNumber" to secondNumber,
-    "algebraOperation" to algebraOperation,
+    "algebraOperation" to algebraOperation.name,
     "userAnswer" to userAnswer,
-    "answerStatus" to answerStatus,
+    "answerStatus" to answerStatus.name,
     "updatedAt" to updatedAt
 )
+
+fun FirestoreProblem.Companion.fromMap(problemId: String, data: Map<String, Any>) =
+    FirestoreProblem(
+        id = problemId,
+        problemNumber = (data["problemNumber"] as Long).toInt(),
+        firstNumber = (data["firstNumber"] as Long).toInt(),
+        secondNumber = (data["secondNumber"] as Long).toInt(),
+        algebraOperation = AlgebraOperation.valueOf(data["algebraOperation"] as String),
+        userAnswer = data["userAnswer"] as String?,
+        answerStatus = AnswerStatus.valueOf(data["answerStatus"] as String),
+        updatedAt = data["updatedAt"] as Timestamp?
+    )

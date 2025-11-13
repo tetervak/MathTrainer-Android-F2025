@@ -4,7 +4,7 @@ import com.google.firebase.Timestamp
 import javax.inject.Inject
 
 class QuizRepositoryImpl @Inject constructor(
-    private val firestore: FirestoreService
+    private val firestore: FirestoreDataSource
 ) {
 
     suspend fun createQuiz(title: String, problems: List<FirestoreProblem>): String {
