@@ -10,20 +10,23 @@ import java.util.UUID
 
 fun ProblemEntity.toDomain(): Problem =
     Problem(
-        algebraProblem = AlgebraProblem(firstNumber, secondNumber, algebraOperation),
-        userAnswer = userAnswer,
         id = id,
+        quizId = quizId,
         problemNumber = problemNumber,
-        quizId = quizId
+        text = text,
+        correctAnswer = correctAnswer,
+        userAnswer = userAnswer
     )
 
 fun Problem.toEntity(): ProblemEntity =
-    this.algebraProblem.toEntity(
-        id = this.id,
-        quizId = this.quizId,
-        problemNumber = this.problemNumber,
-        userAnswer = this.userAnswer,
-        status = this.status
+    ProblemEntity(
+        id = id,
+        quizId = quizId,
+        problemNumber = problemNumber,
+        text = text,
+        correctAnswer = correctAnswer,
+        userAnswer = userAnswer,
+        answerStatus = answerStatus
     )
 
 fun AlgebraProblem.toEntity(
@@ -31,18 +34,16 @@ fun AlgebraProblem.toEntity(
     quizId: String,
     problemNumber: Int,
     userAnswer: String?,
-    status: AnswerStatus
+    answerStatus: AnswerStatus
 ): ProblemEntity = ProblemEntity(
-            id = id,
-            quizId = quizId,
-            problemNumber = problemNumber,
-            firstNumber = this.firstNumber,
-            algebraOperation = this.algebraOperation,
-            secondNumber = this.secondNumber,
-            correctAnswer = this.answer,
-            userAnswer = userAnswer,
-            answerStatus = status
-        )
+    id = id,
+    quizId = quizId,
+    problemNumber = problemNumber,
+    text = text,
+    correctAnswer = answer,
+    userAnswer = userAnswer,
+    answerStatus = answerStatus
+)
 
 fun QuizEntity.toDomain(): Quiz = Quiz(
     id = this.id,

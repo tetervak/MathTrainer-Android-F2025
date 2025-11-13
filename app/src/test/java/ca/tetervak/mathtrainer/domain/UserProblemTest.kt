@@ -42,33 +42,33 @@ class UserProblemTest {
 
         val copy1 = problem.copy(userAnswer = "3")
         assertEquals("3", copy1.userAnswer)
-        assertEquals(AnswerStatus.RIGHT_ANSWER, copy1.status)
+        assertEquals(AnswerStatus.RIGHT_ANSWER, copy1.answerStatus)
 
         val copy2 = problem.copy(userAnswer = "4")
         assertEquals("4", copy2.userAnswer)
-        assertEquals(AnswerStatus.WRONG_ANSWER, copy2.status)
+        assertEquals(AnswerStatus.WRONG_ANSWER, copy2.answerStatus)
 
         val copy3 = problem.copy(userAnswer = "whatever")
         assertEquals("whatever", copy3.userAnswer)
-        assertEquals(AnswerStatus.INVALID_INPUT, copy3.status)
+        assertEquals(AnswerStatus.INVALID_INPUT, copy3.answerStatus)
 
         val copy4 = problem.copy(userAnswer = "3.0")
         assertEquals("3.0", copy4.userAnswer)
-        assertEquals(AnswerStatus.RIGHT_ANSWER, copy4.status)
+        assertEquals(AnswerStatus.RIGHT_ANSWER, copy4.answerStatus)
 
         val copy5 = problem.copy(userAnswer = "3.1")
         assertEquals("3.1", copy5.userAnswer)
-        assertEquals(AnswerStatus.WRONG_ANSWER, copy5.status)
+        assertEquals(AnswerStatus.WRONG_ANSWER, copy5.answerStatus)
 
         val copy6 = problem.copy(userAnswer = "2.9")
         assertEquals("2.9", copy6.userAnswer)
-        assertEquals(AnswerStatus.WRONG_ANSWER, copy6.status)
+        assertEquals(AnswerStatus.WRONG_ANSWER, copy6.answerStatus)
 
     }
 
     @Test
     fun getStatus() {
-        println("quizProblem.status = ${problem.status}")
+        println("quizProblem.status = ${problem.answerStatus}")
     }
 
     @Test
