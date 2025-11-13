@@ -27,11 +27,12 @@ class QuizRepository(
 ) {
 
     @OptIn(DelicateCoroutinesApi::class)
-    @Inject constructor(
+    @Inject
+    constructor(
         localProblemRepository: LocalProblemRepository,
         localQuizRepository: LocalQuizRepository,
         randomQuizRepository: RandomQuizRepository
-    ): this(
+    ) : this(
         localProblemRepository = localProblemRepository,
         localQuizRepository = localQuizRepository,
         randomQuizRepository = randomQuizRepository,
@@ -62,14 +63,14 @@ class QuizRepository(
     fun getQuizStatusFlow(quizId: String): Flow<QuizStatus> =
         localProblemRepository.getQuizStatusDataFlow(quizId)
 
-    fun addNewGeneratedQuiz(){
+    fun addNewGeneratedQuiz() {
         externalScope.launch(context = dispatcher) {
             val problems: List<AlgebraProblem> = randomQuizRepository.getRandomQuizProblems()
             localQuizRepository.insertQuizWithProblems(problems)
         }
     }
 
-    fun deleteQuizWithProblems(quizId: String){
+    fun deleteQuizWithProblems(quizId: String) {
         externalScope.launch(context = dispatcher) {
             localQuizRepository.deleteQuizWithProblems(quizId)
         }

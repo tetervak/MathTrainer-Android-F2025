@@ -6,24 +6,32 @@ class Problem(
     val id: String = UUID.randomUUID().toString(),
     val quizId: String,
     val problemNumber: Int,
-    val algebraProblem: AlgebraProblem,
+    val text: String,
+    val correctAnswer: Int,
     val userAnswer: String? = null,
 ) {
 
-    val text: String
-        get() = algebraProblem.text
-
-    val status: AnswerStatus = AnswerStatus.getStatus(
-        correctAnswer = algebraProblem.answer,
+    val answerStatus: AnswerStatus = AnswerStatus.getStatus(
+        correctAnswer = correctAnswer,
         userAnswer = userAnswer
     )
 
     fun copy(userAnswer: String? = this.userAnswer) =
-        Problem(algebraProblem = algebraProblem,
-            userAnswer = userAnswer,
+        Problem(
             id = id,
+            quizId = quizId,
             problemNumber = problemNumber,
-            quizId = quizId
+            text = text,
+            correctAnswer = correctAnswer,
+            userAnswer = userAnswer,
         )
 
+    companion object{
+        val Preview = Problem(
+            quizId = "",
+            problemNumber = 1,
+            text = "2 + 2 = ?",
+            correctAnswer = 4
+        )
+    }
 }

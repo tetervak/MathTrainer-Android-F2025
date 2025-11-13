@@ -28,14 +28,10 @@ data class ProblemEntity(
     val quizId: String,
     @ColumnInfo(name = "problem_number")
     val problemNumber: Int, // problem number in the quiz
-    @ColumnInfo(name = "first_number")
-    val firstNumber: Int,
-    @ColumnInfo(name = "second_number")
-    val secondNumber: Int,
-    @ColumnInfo(name = "algebra_operation")
-    val algebraOperation: AlgebraOperation,
+    @ColumnInfo(name = "problem_text")
+    val text: String,
     @ColumnInfo(name = "correct_answer")
-    val correctAnswer: Int = algebraOperation.calculate(firstNumber, secondNumber),
+    val correctAnswer: Int,
     @ColumnInfo(name = "user_answer")
     val userAnswer: String? = null,
     @ColumnInfo(name = "answer_status")

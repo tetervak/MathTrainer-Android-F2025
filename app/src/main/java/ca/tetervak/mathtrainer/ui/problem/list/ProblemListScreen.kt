@@ -34,8 +34,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import ca.tetervak.mathtrainer.R
-import ca.tetervak.mathtrainer.domain.model.AlgebraOperation
-import ca.tetervak.mathtrainer.domain.model.AlgebraProblem
 import ca.tetervak.mathtrainer.domain.model.Problem
 import ca.tetervak.mathtrainer.domain.model.AnswerStatus
 import ca.tetervak.mathtrainer.ui.common.HomeButton
@@ -186,10 +184,10 @@ fun ProblemListItem(
                 color = Color.DarkGray
             )
             Text(
-                text = problem.algebraProblem.text,
+                text = problem.text,
                 fontSize = 24.sp
             )
-            when (problem.status) {
+            when (problem.answerStatus) {
                 AnswerStatus.NOT_ANSWERED -> Text(
                     text = stringResource(R.string.not_answered),
                     fontStyle = FontStyle.Italic,
@@ -229,11 +227,7 @@ fun ProblemListItem(
 fun ProblemListItemPreview() {
     MathTrainerTheme {
         ProblemListItem(
-            problem = Problem(
-                algebraProblem = AlgebraProblem(firstNumber = 1, secondNumber = 2, algebraOperation = AlgebraOperation.ADDITION),
-                problemNumber = 3,
-                quizId = ""
-            ),
+            problem = Problem.Preview,
             onClick = {}
         )
     }
@@ -244,11 +238,7 @@ fun ProblemListItemPreview() {
 fun ProblemListItemSelectedPreview() {
     MathTrainerTheme {
         ProblemListItem(
-            problem = Problem(
-                algebraProblem = AlgebraProblem(firstNumber = 1, secondNumber = 2, algebraOperation = AlgebraOperation.ADDITION),
-                problemNumber = 3,
-                quizId = ""
-            ),
+            problem = Problem.Preview,
             onClick = {},
             selected = true
         )
@@ -261,13 +251,8 @@ fun ProblemListScreenBodyPreview() {
     MathTrainerTheme {
         ProblemListScreenBody(
             state = ProblemListUiState.Success(
-                problemList = List(5) { index ->
-                    Problem(
-                        algebraProblem = AlgebraProblem(firstNumber = 1, secondNumber = 2, algebraOperation = AlgebraOperation.ADDITION),
-                        problemNumber = index + 1,
-                        quizId = "",
-                        id = index.toString()
-                    )
+                problemList = List(5) {
+                    Problem.Preview
                 },
                 quizNumber = 2,
                 rightAnswers = 3,

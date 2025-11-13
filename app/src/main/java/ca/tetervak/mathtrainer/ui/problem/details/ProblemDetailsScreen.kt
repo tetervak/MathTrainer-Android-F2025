@@ -157,7 +157,7 @@ fun ProblemDetailsScreenBody(
                 userAnswer = userAnswerInput,
                 onKeyboardDone = onSubmit,
                 currentProblemText = state.problem.text,
-                currentProblemStatus = state.problem.status,
+                currentProblemStatus = state.problem.answerStatus,
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
@@ -443,11 +443,7 @@ fun GameScreenPreview() {
     MathTrainerTheme {
         ProblemDetailsScreenBody(
             state = ProblemDetailsUiState.Success(
-                problem = Problem(
-                    algebraProblem = AlgebraProblem(firstNumber = 1, secondNumber = 2, algebraOperation = AlgebraOperation.ADDITION),
-                    problemNumber = 3,
-                    quizId = ""
-                ),
+                problem = Problem.Preview,
                 quizNumber = 2,
                 numberOfProblems = 5,
                 numberOfRightAnswers = 3,

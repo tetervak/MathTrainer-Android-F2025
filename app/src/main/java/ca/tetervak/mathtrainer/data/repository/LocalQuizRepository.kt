@@ -51,7 +51,7 @@ class LocalQuizRepository(
                     quizId = quizId,
                     problemNumber = index + 1,
                     userAnswer = null,
-                    status = AnswerStatus.NOT_ANSWERED
+                    answerStatus = AnswerStatus.NOT_ANSWERED
                 )
             }
             quizDao.insertQuizWithProblems(
