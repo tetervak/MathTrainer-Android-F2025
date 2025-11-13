@@ -3,8 +3,8 @@ package ca.tetervak.mathtrainer.data.repository
 import ca.tetervak.mathtrainer.data.remote.RemoteQuiz
 import ca.tetervak.mathtrainer.data.remote.RemoteProblem
 import ca.tetervak.mathtrainer.data.remote.RandomQuizApi
-import ca.tetervak.mathtrainer.domain.model.AlgebraOperation
 import ca.tetervak.mathtrainer.domain.model.AlgebraProblem
+import ca.tetervak.mathtrainer.domain.model.fromText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -23,10 +23,7 @@ class RemoteRandomQuizRepository @Inject constructor(
         }
 
     private fun RemoteProblem.toAlgebraProblem(): AlgebraProblem {
-        val parts: List<String> = this.text.split(" ", "=", limit = 4)
-        val a: Int = parts[0].toInt()
-        val op: AlgebraOperation = AlgebraOperation.fromSymbol(symbol = parts[1].first())
-        val b: Int = parts[2].toInt()
-        return AlgebraProblem(firstNumber = a, secondNumber = b, algebraOperation = op)
+        return AlgebraProblem.fromText(this.text)
     }
 }
+
