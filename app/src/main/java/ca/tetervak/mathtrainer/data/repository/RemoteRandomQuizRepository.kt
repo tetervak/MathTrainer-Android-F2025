@@ -4,7 +4,6 @@ import ca.tetervak.mathtrainer.data.remote.RemoteQuiz
 import ca.tetervak.mathtrainer.data.remote.RemoteProblem
 import ca.tetervak.mathtrainer.data.remote.RandomQuizApi
 import ca.tetervak.mathtrainer.domain.model.AlgebraProblem
-import ca.tetervak.mathtrainer.domain.model.fromText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
