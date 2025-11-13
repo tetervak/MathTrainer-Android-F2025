@@ -30,3 +30,11 @@ class AlgebraProblem(
         const val TOLERANCE: Double = 0.000001
     }
 }
+
+fun AlgebraProblem.Companion.fromText(text: String): AlgebraProblem {
+    val parts: List<String> = text.split(" ", "=", limit = 4)
+    val a: Int = parts[0].toInt()
+    val op: AlgebraOperation = AlgebraOperation.fromSymbol(symbol = parts[1].first())
+    val b: Int = parts[2].toInt()
+    return AlgebraProblem(firstNumber = a, secondNumber = b, algebraOperation = op)
+}
