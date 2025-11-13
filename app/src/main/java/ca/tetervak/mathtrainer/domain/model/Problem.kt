@@ -13,7 +13,10 @@ class Problem(
     val text: String
         get() = algebraProblem.text
 
-    val status: AnswerStatus = algebraProblem.checkAnswer(userAnswer = userAnswer)
+    val status: AnswerStatus = AnswerStatus.getStatus(
+        correctAnswer = algebraProblem.answer,
+        userAnswer = userAnswer
+    )
 
     fun copy(userAnswer: String? = this.userAnswer) =
         Problem(algebraProblem = algebraProblem,
