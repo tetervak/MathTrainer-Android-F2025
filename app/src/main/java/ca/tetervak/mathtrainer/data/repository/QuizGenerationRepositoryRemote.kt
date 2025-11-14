@@ -10,7 +10,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class RemoteRandomQuizRepository @Inject constructor(
+class QuizGenerationRepositoryRemote @Inject constructor(
     private val randomQuizApi: RandomQuizApi
 ) {
 

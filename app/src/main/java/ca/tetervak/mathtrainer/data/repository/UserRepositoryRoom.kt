@@ -7,7 +7,7 @@ import javax.inject.Singleton
 
 
 @Singleton
-class LocalUserRepository @Inject constructor(
+class UserRepositoryRoom @Inject constructor(
     private val userDao: UserDao
 ) {
 
