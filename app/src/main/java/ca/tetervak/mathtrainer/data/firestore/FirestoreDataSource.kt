@@ -220,7 +220,7 @@ class FirestoreDataSource @Inject constructor(
         problemsCollection()
             .whereEqualTo("quizId", quizId)
             .orderBy("problemNumber", Query.Direction.ASCENDING)
-            .snapshots().map{ snapshot ->
+            .snapshots().map { snapshot ->
                 snapshot.documents.mapNotNull { doc ->
                     doc.data?.let { data ->
                         ProblemDoc.fromMap(problemId = doc.id, data = data)
@@ -276,18 +276,9 @@ class FirestoreDataSource @Inject constructor(
             .get()
             .await()
             .documents
-            .firstOrNull()?.let{ doc ->
+            .firstOrNull()?.let { doc ->
                 ProblemDoc.fromMap(problemId = doc.id, data = doc.data!!)
             }
-
-
-    suspend fun updateProblem(problem: ProblemDoc) {
-        problemsCollection()
-            .document(problem.id)
-            .set(problem.toMap())
-            .await()
-    }
-
 
     suspend fun updateUserAnswerAndAnswerStatus(
         problemId: String,
@@ -297,7 +288,8 @@ class FirestoreDataSource @Inject constructor(
         problemsCollection().document(problemId)
             .update(
                 "userAnswer", userAnswer,
-                "answerStatus", answerStatus.name
+                "answerStatus", answerStatus.name,
+                "updatedAt", FieldValue.serverTimestamp()
             )
             .await()
     }
