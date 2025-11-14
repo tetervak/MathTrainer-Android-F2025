@@ -1,6 +1,8 @@
-package ca.tetervak.mathtrainer.data.firebase
+package ca.tetervak.mathtrainer.data.firestore
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import ca.tetervak.mathtrainer.data.firestore.docs.FdsProblem
+import ca.tetervak.mathtrainer.data.firestore.docs.QuizDoc
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
@@ -20,7 +22,7 @@ class FirestoreDataSourceTest {
     // --- Dependencies ---
     private lateinit var firestore: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
-    private lateinit var dataSource: FirestoreDataSource
+    private lateinit var dataSource: FirestoreDataSourceOld
 
     // --- Test Data ---
     private val testUserId = "testUser123"
@@ -44,7 +46,7 @@ class FirestoreDataSourceTest {
         firestore.firestoreSettings = settings
 
         // 3. Create the class we want to test
-        dataSource = FirestoreDataSource(firestore, auth)
+        dataSource = FirestoreDataSourceOld(firestore, auth)
 
         // 4. Sign in a test user to get a valid UID for the tests
         runBlocking {
@@ -75,7 +77,7 @@ class FirestoreDataSourceTest {
     @Test
     fun addAndGetQuiz_returnsCorrectData() = runBlocking {
         // ARRANGE
-        val quiz = FirestoreQuiz(quizNumber = 1, problemCount = 10)
+        val quiz = QuizDoc(quizNumber = 1, problemCount = 10)
 
         // ACT
         // Add the quiz using our data source
@@ -95,17 +97,17 @@ class FirestoreDataSourceTest {
     fun addAndGetProblems_returnsCorrectData() = runBlocking {
         // ARRANGE: First, create a quiz to own the problems
         val quizId = dataSource.addQuiz(
-            FirestoreQuiz(quizNumber = 2, problemCount = 2)
+            QuizDoc(quizNumber = 2, problemCount = 2)
         )
 
         val problems = listOf(
-            FirestoreProblem(
+            FdsProblem(
                 problemNumber = 1,
                 firstNumber = 10,
                 secondNumber = 5,
                 algebraOperation = AlgebraOperation.ADDITION
             ),
-            FirestoreProblem(
+            FdsProblem(
                 problemNumber = 2,
                 firstNumber = 20,
                 secondNumber = 7,

@@ -1,6 +1,8 @@
-package ca.tetervak.mathtrainer.data.firebase
+package ca.tetervak.mathtrainer.data.firestore
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import ca.tetervak.mathtrainer.data.firestore.docs.fromMap
+import ca.tetervak.mathtrainer.data.firestore.docs.toMap
 import ca.tetervak.mathtrainer.util.FirebaseEmulatorRule
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.runBlocking
