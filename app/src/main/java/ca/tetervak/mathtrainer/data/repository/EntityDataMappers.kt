@@ -47,12 +47,5 @@ fun AlgebraProblem.toEntity(
 
 fun QuizEntity.toDomain(): Quiz = Quiz(
     id = this.id,
-    quizNumber = this.quizNumber,
-    userId = this.userId
-)
-
-fun Quiz.toEntity(): QuizEntity = QuizEntity(
-    id = this.id,
-    quizNumber = this.quizNumber,
-    userId = this.userId
+    quizNumber = this.quizNumber
 )

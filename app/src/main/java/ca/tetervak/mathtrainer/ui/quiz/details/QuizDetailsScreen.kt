@@ -247,12 +247,7 @@ fun QuizStatusCard(quizStatus: QuizStatus, modifier: Modifier = Modifier) {
 fun QuizStatusPreview(){
     MathTrainerTheme {
         QuizStatusCard(
-            quizStatus = QuizStatus(
-                problemCount = 15,
-                rightAnswers = 8,
-                wrongAnswers = 2,
-                notAnswered = 3,
-            )
+            quizStatus = QuizStatus.Preview
         )
     }
 }
@@ -263,17 +258,8 @@ fun QuizDetailsScreenBodyPreview(){
     MathTrainerTheme {
         QuizDetailsScreenBody(
             state = QuizDetailsUiState.Success(
-                quiz = Quiz(
-                    id = "",
-                    quizNumber = 2,
-                    userId = ""
-                ),
-                quizStatus = QuizStatus(
-                    problemCount = 15,
-                    rightAnswers = 8,
-                    wrongAnswers = 2,
-                    notAnswered = 3,
-                ),
+                quiz = Quiz.Preview,
+                quizStatus = QuizStatus.Preview,
                 firstProblemId = null
             ),
             onHomeClick = {},

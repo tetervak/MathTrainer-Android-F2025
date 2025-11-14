@@ -170,15 +170,8 @@ fun QuizListItemPreview() {
     MathTrainerTheme{
         QuizListItem(
             onClick = {},
-            quiz = Quiz(
-                id = "",
-                quizNumber = 1,
-                userId = ""
-            ),
-            quizScore = QuizScore(
-                problemCount = 5,
-                rightAnswers = 4
-            ),
+            quiz = Quiz.Preview,
+            quizScore = QuizScore.Preview,
         )
     }
 }
@@ -190,11 +183,7 @@ fun QuizListScreenBodyPreview() {
         QuizListScreenBody(
             stateList = List( size = 5){ index ->
                 QuizListItemUiState(
-                    quiz = Quiz(
-                        quizNumber = index + 1,
-                        userId = "",
-                        id = ""
-                    ),
+                    quiz = Quiz.Preview,
                     quizScore = QuizScore(
                         problemCount = index + 5,
                         rightAnswers = index + 4
