@@ -18,6 +18,9 @@ interface QuizDao {
     @Query("SELECT COUNT(*) FROM quizzes WHERE user_id = :userId")
     fun getUserQuizCountFlow(userId: String): Flow<Int>
 
+    @Query("SELECT problem_count FROM quizzes WHERE id = :quizId")
+    fun getQuizProblemCountFlow(quizId: String): Flow<Int?>
+
     @Query("SELECT * FROM quizzes WHERE id = :quizId")
     fun getQuizByIdFlow(quizId: String): Flow<QuizEntity?>
 

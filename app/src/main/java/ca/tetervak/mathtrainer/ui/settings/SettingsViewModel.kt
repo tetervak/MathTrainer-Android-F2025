@@ -2,9 +2,9 @@ package ca.tetervak.mathtrainer.ui.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ca.tetervak.mathtrainer.domain.repository.PreferencesRepository
 import ca.tetervak.mathtrainer.domain.model.ProblemGeneration
 import ca.tetervak.mathtrainer.domain.model.UserPreferences
+import ca.tetervak.mathtrainer.domain.repository.PreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

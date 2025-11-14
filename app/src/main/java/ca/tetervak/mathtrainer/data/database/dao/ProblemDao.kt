@@ -42,12 +42,6 @@ interface ProblemDao {
     """)
     fun getProblemFlowById(problemId: String): Flow<ProblemEntity?>
 
-    @Query("SELECT COUNT(*) FROM problems WHERE quiz_id = :quizId")
-    fun getQuizProblemCountFlow(quizId: String): Flow<Int>
-
-    @Query("SELECT COUNT(*) FROM problems WHERE quiz_id = :quizId")
-    suspend fun getQuizProblemCount(quizId: String): Int
-
     @Query(
         """
         SELECT * FROM problems 
