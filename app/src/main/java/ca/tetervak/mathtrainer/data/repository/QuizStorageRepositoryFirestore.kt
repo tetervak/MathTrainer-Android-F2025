@@ -5,6 +5,7 @@ import ca.tetervak.mathtrainer.domain.model.AlgebraProblem
 import ca.tetervak.mathtrainer.domain.model.AnswerStatus
 import ca.tetervak.mathtrainer.domain.model.Problem
 import ca.tetervak.mathtrainer.domain.model.Quiz
+import ca.tetervak.mathtrainer.domain.model.QuizScore
 import ca.tetervak.mathtrainer.domain.model.QuizStatus
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -15,10 +16,10 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class FirestoreQuizRepository(
+class QuizStorageRepositoryFirestore(
     private val dataSource: FirestoreDataSource,
     private val dispatcher: CoroutineDispatcher
-) {
+) : QuizStorageRepository {
 
     @Inject
     constructor(
@@ -28,7 +29,7 @@ class FirestoreQuizRepository(
         dispatcher = Dispatchers.IO
     )
 
-    fun getUserQuizzesFlow(): Flow<List<Quiz>> =
+    override fun getUserQuizzesFlow(): Flow<List<Quiz>> =
         dataSource
             .getUserQuizzesFlow()
             .map { docList ->
@@ -36,7 +37,7 @@ class FirestoreQuizRepository(
             }
             .flowOn(context = dispatcher)
 
-    fun getQuizByIdFlow(quizId: String): Flow<Quiz?> =
+    override fun getQuizByIdFlow(quizId: String): Flow<Quiz?> =
         dataSource
             .getQuizByIdFlow(quizId = quizId)
             .map { doc ->
@@ -44,37 +45,44 @@ class FirestoreQuizRepository(
             }
             .flowOn(context = dispatcher)
 
-    fun getQuizCountFlow(): Flow<Int> =
+    override fun getQuizCountFlow(): Flow<Int> =
         dataSource
             .getUserQuizCountFlow()
             .flowOn(context = dispatcher)
 
-    suspend fun createQuizWithProblems(
+    override suspend fun insertQuizWithProblems(
         problems: List<AlgebraProblem>
-    ) = withContext(context = dispatcher) {
-        dataSource.createQuizWithProblems(
-            problems = problems.map { algebraProblem ->
-                algebraProblem.toDoc()
-            }
-        )
+    ) {
+        withContext(context = dispatcher) {
+            dataSource.createQuizWithProblems(
+                problems = problems.map { algebraProblem ->
+                    algebraProblem.toDoc()
+                }
+            )
+        }
     }
 
-    suspend fun getQuizProblemCount(quizId: String): Int =
+    override suspend fun getQuizProblemCount(quizId: String): Int =
         withContext(context = dispatcher) {
             dataSource.getQuizProblemCount(quizId = quizId)
         }
 
-    suspend fun deleteQuizWithProblems(quizId: String) =
+    override fun getQuizProblemCountFlow(quizId: String): Flow<Int> =
+        dataSource
+            .getQuizProblemCountFlow(quizId = quizId)
+            .flowOn(context = dispatcher)
+
+    override suspend fun deleteQuizWithProblems(quizId: String) =
         withContext(context = dispatcher) {
             dataSource.deleteQuizWithProblems(quizId = quizId)
         }
 
-    suspend fun getQuizNumber(quizId: String): Int =
-        withContext(context = dispatcher){
+    override suspend fun getQuizNumber(quizId: String): Int =
+        withContext(context = dispatcher) {
             dataSource.getQuizNumber(quizId = quizId)
         }
 
-    fun getQuizProblemsFlow(quizId: String): Flow<List<Problem>> =
+    override fun getQuizProblemsFlow(quizId: String): Flow<List<Problem>> =
         dataSource
             .getQuizProblemsFlow(quizId = quizId)
             .map { docList ->
@@ -82,7 +90,7 @@ class FirestoreQuizRepository(
             }
             .flowOn(context = dispatcher)
 
-    fun getProblemByIdFlow(problemId: String): Flow<Problem?> =
+    override fun getProblemByIdFlow(problemId: String): Flow<Problem?> =
         dataSource
             .getProblemByIdFlow(problemId = problemId)
             .map { doc ->
@@ -90,35 +98,31 @@ class FirestoreQuizRepository(
             }
             .flowOn(context = dispatcher)
 
-    suspend fun updateUserAnswerAndAnswerStatus(
-        problemId: String,
-        userAnswer: String,
-        answerStatus: AnswerStatus
-    ) = withContext(context = dispatcher) {
+    override suspend fun updateProblem(problem: Problem) = withContext(context = dispatcher) {
         dataSource.updateUserAnswerAndAnswerStatus(
-            problemId = problemId,
-            userAnswer = userAnswer,
-            answerStatus = answerStatus
+            problemId = problem.id,
+            userAnswer = problem.userAnswer,
+            answerStatus = problem.answerStatus
         )
     }
 
-    suspend fun getNextProblemId(problem: Problem): String? =
+    override suspend fun getNextProblemId(problem: Problem): String? =
         withContext(context = dispatcher) {
             dataSource.getQuizProblemByNumber(
-                quizId = problem.id,
+                quizId = problem.quizId,
                 problemNumber = problem.problemNumber + 1
             )?.id
         }
 
-    suspend fun getPreviousProblemId(problem: Problem): String? =
+    override suspend fun getPreviousProblemId(problem: Problem): String? =
         withContext(context = dispatcher) {
             dataSource.getQuizProblemByNumber(
-                quizId = problem.id,
+                quizId = problem.quizId,
                 problemNumber = problem.problemNumber - 1
             )?.id
         }
 
-    suspend fun getFirstProblemId(quizId: String): String? =
+    override suspend fun getFirstProblemId(quizId: String): String? =
         withContext(context = dispatcher) {
             dataSource.getQuizProblemByNumber(
                 quizId = quizId,
@@ -126,7 +130,31 @@ class FirestoreQuizRepository(
             )?.id
         }
 
-    fun getStatusDataFlow(quizId: String): Flow<QuizStatus> {
+    override suspend fun getQuizScore(quizId: String): QuizScore =
+        withContext(dispatcher) {
+            QuizScore(
+                problemCount = getQuizProblemCount(quizId),
+                rightAnswers = getNumberOfRightAnswers(quizId)
+            )
+        }
+
+    override fun getQuizScoreFlow(quizId: String): Flow<QuizScore> {
+        val quizScoreFlow: Flow<QuizScore> = combine(
+            dataSource.getQuizProblemCountFlow(quizId = quizId),
+            dataSource.getQuizProblemCountByStatusFlow(
+                quizId = quizId,
+                answerStatus = AnswerStatus.RIGHT_ANSWER
+            )
+        ) { problemCount, rightAnswerCount ->
+            QuizScore(
+                problemCount = problemCount,
+                rightAnswers = rightAnswerCount
+            )
+        }
+        return quizScoreFlow.flowOn(context = dispatcher)
+    }
+
+    override fun getQuizStatusDataFlow(quizId: String): Flow<QuizStatus> {
         val quizStatusFlow: Flow<QuizStatus> = combine(
             dataSource.getQuizProblemCountFlow(quizId = quizId),
             dataSource.getQuizProblemCountByStatusFlow(
@@ -141,7 +169,7 @@ class FirestoreQuizRepository(
                 quizId = quizId,
                 answerStatus = AnswerStatus.WRONG_ANSWER
             )
-        ){ problemCount, rightAnswerCount, notAnsweredCount, wrongAnswerCount ->
+        ) { problemCount, rightAnswerCount, notAnsweredCount, wrongAnswerCount ->
             QuizStatus(
                 problemCount = problemCount,
                 rightAnswers = rightAnswerCount,
@@ -152,7 +180,7 @@ class FirestoreQuizRepository(
         return quizStatusFlow.flowOn(context = dispatcher)
     }
 
-    suspend fun getNumberOfRightAnswers(quizId: String): Int =
+    override suspend fun getNumberOfRightAnswers(quizId: String): Int =
         withContext(context = dispatcher) {
             dataSource.getQuizProblemCountByStatus(
                 quizId = quizId,
