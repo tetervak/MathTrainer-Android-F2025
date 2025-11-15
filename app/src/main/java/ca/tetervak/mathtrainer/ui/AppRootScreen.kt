@@ -100,39 +100,39 @@ fun AppRootScreen() {
                 onQuizClick = onQuizClick
             )
         }
-            composable<ProblemDetails> { backStackEntry ->
-                val problemDetails: ProblemDetails = backStackEntry.toRoute()
-                val problemId: String = problemDetails.problemId
-                ProblemDetailsScreen(
-                    problemId = problemId,
-                    onHelpClick = onHelpClick,
-                    onHomeClick = onHomeClick,
-                    onListProblemsClick = onListProblemsClick,
-                    onProblemClick = onProblemClick,
-                    onQuizClick = onQuizClick,
-                    onBackClick = onBackClick
-                )
-            }
-            composable<QuizDetails> { backStackEntry ->
-                val quizDetails: QuizDetails = backStackEntry.toRoute()
-                val quizId: String = quizDetails.quizId
-                QuizDetailsScreen(
-                    quizId = quizId,
-                    onHomeClick = onHomeClick,
-                    onProblemClick = onProblemClick,
-                    onListProblemsClick = onListProblemsClick,
-                    onBackClick = onBackClick,
-                    onHelpClick = onHelpClick
-                )
-            }
-            composable<Settings> {
-                SettingsScreen(
-                    onHelpClick = onHelpClick,
-                    onHomeClick = onHomeClick,
-                    onBackClick = onBackClick
-                )
-            }
+        composable<ProblemDetails> { backStackEntry ->
+            val problemDetails: ProblemDetails = backStackEntry.toRoute()
+            val problemId: String = problemDetails.problemId
+            ProblemDetailsScreen(
+                problemId = problemId,
+                onHelpClick = onHelpClick,
+                onHomeClick = onHomeClick,
+                onListProblemsClick = onListProblemsClick,
+                onProblemClick = onProblemClick,
+                onQuizClick = onQuizClick,
+                onBackClick = onBackClick
+            )
         }
+        composable<QuizDetails> { backStackEntry ->
+            val quizDetails: QuizDetails = backStackEntry.toRoute()
+            val quizId: String = quizDetails.quizId
+            QuizDetailsScreen(
+                quizId = quizId,
+                onHomeClick = onHomeClick,
+                onProblemClick = onProblemClick,
+                onListProblemsClick = onListProblemsClick,
+                onBackClick = onBackClick,
+                onHelpClick = onHelpClick
+            )
+        }
+        composable<Settings> {
+            SettingsScreen(
+                onHelpClick = onHelpClick,
+                onHomeClick = onHomeClick,
+                onBackClick = onBackClick
+            )
+        }
+    }
 
     if (showAboutDialog) {
         AboutDialog(onDismissRequest = onDismissHelpClick)
