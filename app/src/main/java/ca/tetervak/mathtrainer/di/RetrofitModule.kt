@@ -21,7 +21,7 @@ object RetrofitModule {
     @Singleton
     fun provideRetrofit(): Retrofit =
         Retrofit.Builder()
-            .addConverterFactory(Json.Default.asConverterFactory("application/json".toMediaType()))
+            .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
             .baseUrl(BASE_URL)
             .build()
 

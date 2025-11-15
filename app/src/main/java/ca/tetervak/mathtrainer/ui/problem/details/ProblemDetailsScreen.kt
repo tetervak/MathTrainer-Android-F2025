@@ -57,8 +57,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import ca.tetervak.mathtrainer.R
-import ca.tetervak.mathtrainer.domain.model.AlgebraOperation
-import ca.tetervak.mathtrainer.domain.model.AlgebraProblem
 import ca.tetervak.mathtrainer.domain.model.Problem
 import ca.tetervak.mathtrainer.domain.model.AnswerStatus
 import ca.tetervak.mathtrainer.ui.common.QuizButton
