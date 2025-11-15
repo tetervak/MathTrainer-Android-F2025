@@ -8,7 +8,6 @@ import ca.tetervak.mathtrainer.data.database.dao.QuizDao
 import ca.tetervak.mathtrainer.data.database.dao.UserDao
 import ca.tetervak.mathtrainer.data.database.entity.ProblemEntity
 import ca.tetervak.mathtrainer.data.database.entity.UserEntity
-import ca.tetervak.mathtrainer.domain.model.AlgebraOperation
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
