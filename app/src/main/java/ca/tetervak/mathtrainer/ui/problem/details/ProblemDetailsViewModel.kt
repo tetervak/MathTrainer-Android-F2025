@@ -65,9 +65,17 @@ class ProblemDetailsViewModel @Inject constructor(
         val uiState = uiState.value
         if (uiState !is ProblemDetailsUiState.Success) return
 
-        val userProblem = uiState.problem.copy(userAnswer = answerInput)
+        val problem = uiState.problem
+        val userAnswer = answerInput
         viewModelScope.launch {
-            repository.updateProblem(userProblem)
+            repository.updateProblem(
+                problemId = problem.id,
+                userAnswer = userAnswer,
+                answerStatus = AnswerStatus.getStatus(
+                    correctAnswer = problem.correctAnswer,
+                    userAnswer = userAnswer
+                )
+            )
             answerInput = ""
         }
     }

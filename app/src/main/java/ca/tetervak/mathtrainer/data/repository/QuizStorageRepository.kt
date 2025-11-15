@@ -1,6 +1,7 @@
 package ca.tetervak.mathtrainer.data.repository
 
 import ca.tetervak.mathtrainer.domain.model.AlgebraProblem
+import ca.tetervak.mathtrainer.domain.model.AnswerStatus
 import ca.tetervak.mathtrainer.domain.model.Problem
 import ca.tetervak.mathtrainer.domain.model.Quiz
 import ca.tetervak.mathtrainer.domain.model.QuizScore
@@ -18,7 +19,7 @@ interface QuizStorageRepository {
     suspend fun getQuizNumber(quizId: String): Int
     fun getQuizProblemsFlow(quizId: String): Flow<List<Problem>>
     fun getProblemByIdFlow(problemId: String): Flow<Problem?>
-    suspend fun updateProblem(problem: Problem)
+    suspend fun updateProblem(problemId: String, userAnswer: String?, answerStatus: AnswerStatus)
     suspend fun getNextProblemId(problem: Problem): String?
     suspend fun getPreviousProblemId(problem: Problem): String?
     suspend fun getFirstProblemId(quizId: String): String?

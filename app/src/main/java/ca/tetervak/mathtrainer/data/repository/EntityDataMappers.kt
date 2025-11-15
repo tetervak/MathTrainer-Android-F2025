@@ -18,17 +18,6 @@ fun ProblemEntity.toDomain(): Problem =
         userAnswer = userAnswer
     )
 
-fun Problem.toEntity(): ProblemEntity =
-    ProblemEntity(
-        id = id,
-        quizId = quizId,
-        problemNumber = problemNumber,
-        text = text,
-        correctAnswer = correctAnswer,
-        userAnswer = userAnswer,
-        answerStatus = answerStatus
-    )
-
 fun AlgebraProblem.toEntity(
     id: String = UUID.randomUUID().toString(),
     quizId: String,
