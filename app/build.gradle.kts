@@ -57,18 +57,13 @@ dependencies {
     implementation(libs.androidx.compose.material.icons.extended)
 
     implementation(libs.androidx.room.runtime)
-
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
 
     implementation(libs.hilt.android)
-    //implementation(libs.androidx.hilt.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.hilt.lifecycle.viewmodel.compose)
     ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
-
-    implementation(libs.androidx.navigation3.runtime)
-    implementation(libs.androidx.navigation3.ui)
-    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
 
     implementation(libs.retrofit2.kotlinx.serialization.converter)
     implementation(libs.retrofit)
@@ -76,18 +71,10 @@ dependencies {
 
     implementation(libs.androidx.datastore.preferences)
 
-    // Comment out the Firebase BoM for this test
-    // implementation(platform("com.google.firebase:firebase-bom:33.1.0"))
-
-    // --- Firebase Dependencies with Explicit Versions ---
-    implementation("com.google.firebase:firebase-auth:23.0.0")
-    implementation("com.google.firebase:firebase-firestore:25.0.0")
-    implementation("com.google.firebase:firebase-firestore-ktx:25.0.0")
-
-    // --- Coroutine Support ---
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.0")
-
-
+    implementation(libs.kotlinx.coroutines.play.services)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.auth)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
