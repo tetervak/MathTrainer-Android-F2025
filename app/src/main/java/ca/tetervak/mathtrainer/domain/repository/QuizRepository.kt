@@ -1,5 +1,6 @@
 package ca.tetervak.mathtrainer.domain.repository
 
+import ca.tetervak.mathtrainer.domain.model.AnswerStatus
 import ca.tetervak.mathtrainer.domain.model.QuizScore
 import ca.tetervak.mathtrainer.domain.model.QuizStatus
 import ca.tetervak.mathtrainer.domain.model.Problem
@@ -10,7 +11,7 @@ interface QuizRepository {
     fun getUserQuizzesFlow(): Flow<List<Quiz>>
     fun getQuizProblemsFlow(quizId: String): Flow<List<Problem>>
     fun getProblemByIdFlow(problemId: String): Flow<Problem?>
-    suspend fun updateProblem(problem: Problem)
+    suspend fun updateProblem(problemId: String, userAnswer: String?, answerStatus: AnswerStatus)
     suspend fun getQuizScore(quizId: String): QuizScore
     fun getQuizStatusFlow(quizId: String): Flow<QuizStatus>
     fun addNewGeneratedQuiz()

@@ -98,11 +98,15 @@ class QuizStorageRepositoryFirestore(
             }
             .flowOn(context = dispatcher)
 
-    override suspend fun updateProblem(problem: Problem) = withContext(context = dispatcher) {
-        dataSource.updateUserAnswerAndAnswerStatus(
-            problemId = problem.id,
-            userAnswer = problem.userAnswer,
-            answerStatus = problem.answerStatus
+    override suspend fun updateProblem(
+        problemId: String,
+        userAnswer: String?,
+        answerStatus: AnswerStatus
+    ) = withContext(context = dispatcher) {
+        dataSource.updateProblem(
+            problemId = problemId,
+            userAnswer = userAnswer,
+            answerStatus = answerStatus
         )
     }
 

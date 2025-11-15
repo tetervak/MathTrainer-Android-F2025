@@ -102,10 +102,19 @@ class QuizStorageRepositoryRoom(
             .map { localProblem -> localProblem?.toDomain() } 
             .flowOn(context = dispatcher)
 
-    override suspend fun updateProblem(problem: Problem) =
+    override suspend fun updateProblem(
+        problemId: String,
+        userAnswer: String?,
+        answerStatus: AnswerStatus
+    ) {
         withContext(context = dispatcher) {
-            problemDao.updateProblem(entity = problem.toEntity())
+            problemDao.updateProblem(
+                problemId = problemId,
+                userAnswer = userAnswer,
+                answerStatus = answerStatus
+            )
         }
+    }
 
     override suspend fun getNextProblemId(problem: Problem): String? =
         withContext(context = dispatcher) {

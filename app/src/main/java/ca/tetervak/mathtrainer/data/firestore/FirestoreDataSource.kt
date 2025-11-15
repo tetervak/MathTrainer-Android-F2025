@@ -280,7 +280,7 @@ class FirestoreDataSource @Inject constructor(
                 ProblemDoc.fromMap(problemId = doc.id, data = doc.data!!)
             }
 
-    suspend fun updateUserAnswerAndAnswerStatus(
+    suspend fun updateProblem(
         problemId: String,
         userAnswer: String?,
         answerStatus: AnswerStatus

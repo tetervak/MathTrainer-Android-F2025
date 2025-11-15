@@ -17,8 +17,15 @@ interface ProblemDao {
     """)
     fun getQuizProblemsFlow(quizId: String): Flow<List<ProblemEntity>>
 
-    @Update
-    suspend fun updateProblem(entity: ProblemEntity)
+    @Query("""
+        UPDATE problems SET user_answer = :userAnswer, answer_status = :answerStatus
+        WHERE id = :problemId
+    """)
+    suspend fun updateProblem(
+        problemId: String,
+        userAnswer: String?,
+        answerStatus: AnswerStatus
+    )
 
     @Query(
         """
