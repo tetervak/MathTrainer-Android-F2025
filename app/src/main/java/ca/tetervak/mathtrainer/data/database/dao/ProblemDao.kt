@@ -2,7 +2,6 @@ package ca.tetervak.mathtrainer.data.database.dao
 
 import androidx.room.Dao
 import androidx.room.Query
-import androidx.room.Update
 import ca.tetervak.mathtrainer.data.database.entity.ProblemEntity
 import ca.tetervak.mathtrainer.domain.model.AnswerStatus
 import kotlinx.coroutines.flow.Flow
