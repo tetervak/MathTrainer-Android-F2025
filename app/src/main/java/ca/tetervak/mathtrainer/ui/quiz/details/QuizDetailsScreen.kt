@@ -42,11 +42,11 @@ import ca.tetervak.mathtrainer.ui.theme.Purple40
 @Composable
 fun QuizDetailsScreen(
     quizId: String,
-    onHomeClick: () -> Unit,
-    onProblemClick: (String) -> Unit,
-    onListProblemsClick: (String, String?) -> Unit,
-    onBackClick: () -> Unit,
-    onHelpClick: () -> Unit,
+    toHome: () -> Unit,
+    toProblem: (String) -> Unit,
+    toProblemList: (String, String?) -> Unit,
+    toBack: () -> Unit,
+    onShowHelp: () -> Unit,
 ) {
     val viewModel: QuizDetailsViewModel = hiltViewModel()
     LaunchedEffect(quizId) {
@@ -58,14 +58,14 @@ fun QuizDetailsScreen(
     if(state is QuizDetailsUiState.Success){
         QuizDetailsScreenBody(
             state = state,
-            onHomeClick = onHomeClick,
-            onProblemClick = onProblemClick,
-            onListProblemsClick = onListProblemsClick,
-            onBackClick = onBackClick,
-            onHelpClick = onHelpClick,
+            toHome = toHome,
+            toProblem = toProblem,
+            toProblemList = toProblemList,
+            toBack = toBack,
+            onShowHelp = onShowHelp,
             onDeleteQuizClick = {
                 viewModel.deleteQuiz()
-                onHomeClick()
+                toHome()
             }
         )
     }
@@ -75,11 +75,11 @@ fun QuizDetailsScreen(
 @Composable
 fun QuizDetailsScreenBody(
     state: QuizDetailsUiState.Success,
-    onHomeClick: () -> Unit,
-    onProblemClick: (String) -> Unit,
-    onListProblemsClick: (String, String?) -> Unit,
-    onBackClick: () -> Unit,
-    onHelpClick: () -> Unit,
+    toHome: () -> Unit,
+    toProblem: (String) -> Unit,
+    toProblemList: (String, String?) -> Unit,
+    toBack: () -> Unit,
+    onShowHelp: () -> Unit,
     onDeleteQuizClick: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -92,8 +92,8 @@ fun QuizDetailsScreenBody(
                     state.quiz.quizNumber
                 ),
                 scrollBehavior = scrollBehavior,
-                onHelpClick = onHelpClick,
-                onBackClick = onBackClick
+                onHelpClick = onShowHelp,
+                onBackClick = toBack
             )
         },
         modifier = Modifier
@@ -119,7 +119,7 @@ fun QuizDetailsScreenBody(
             )
             OutlinedButton(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = { state.firstProblemId?.let { onProblemClick(it) }}
+                onClick = { state.firstProblemId?.let { toProblem(it) }}
             ) {
 
                 Text(
@@ -133,7 +133,7 @@ fun QuizDetailsScreenBody(
             }
             OutlinedButton(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = { onListProblemsClick(state.quiz.id, state.firstProblemId) }
+                onClick = { toProblemList(state.quiz.id, state.firstProblemId) }
             ) {
 
                 Text(
@@ -170,7 +170,7 @@ fun QuizDetailsScreenBody(
             }
             Spacer(Modifier.weight(1f))
             HomeButton(
-                onClick = onHomeClick,
+                onClick = toHome,
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -262,11 +262,11 @@ fun QuizDetailsScreenBodyPreview(){
                 quizStatus = QuizStatus.Preview,
                 firstProblemId = null
             ),
-            onHomeClick = {},
-            onProblemClick = {},
-            onListProblemsClick = {_,_->},
-            onBackClick = {},
-            onHelpClick = {},
+            toHome = {},
+            toProblem = {},
+            toProblemList = { _, _->},
+            toBack = {},
+            onShowHelp = {},
             onDeleteQuizClick = {}
         )
     }

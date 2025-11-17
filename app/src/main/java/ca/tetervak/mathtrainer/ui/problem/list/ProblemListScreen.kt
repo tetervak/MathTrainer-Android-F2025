@@ -47,11 +47,11 @@ import ca.tetervak.mathtrainer.ui.theme.MathTrainerTheme
 fun ProblemListScreen(
     quizId: String,
     selectedId: String?,
-    onProblemClick: (String) -> Unit,
-    onQuizClick: (String) -> Unit,
-    onHomeClick: () -> Unit,
-    onHelpClick: () -> Unit,
-    onBackClick: () -> Unit
+    toProblem: (String) -> Unit,
+    toQuiz: (String) -> Unit,
+    toHome: () -> Unit,
+    onShowHelp: () -> Unit,
+    toBack: () -> Unit
 ) {
     val viewModel: ProblemListViewModel = hiltViewModel()
 
@@ -65,11 +65,11 @@ fun ProblemListScreen(
         ProblemListScreenBody(
             state = state,
             selectedId = selectedId,
-            onProblemClick = onProblemClick,
-            onQuizClick = onQuizClick,
-            onHomeClick = onHomeClick,
-            onHelpClick = onHelpClick,
-            onBackClick = onBackClick
+            toProblem = toProblem,
+            toQuiz = toQuiz,
+            toHome = toHome,
+            onShowHelp = onShowHelp,
+            toBack = toBack
         )
 }
 
@@ -78,11 +78,11 @@ fun ProblemListScreen(
 fun ProblemListScreenBody(
     state: ProblemListUiState.Success,
     selectedId: String?,
-    onProblemClick: (String) -> Unit,
-    onQuizClick: (String) -> Unit,
-    onHomeClick: () -> Unit,
-    onHelpClick: () -> Unit,
-    onBackClick: () -> Unit,
+    toProblem: (String) -> Unit,
+    toQuiz: (String) -> Unit,
+    toHome: () -> Unit,
+    onShowHelp: () -> Unit,
+    toBack: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val listState = rememberLazyListState()
@@ -100,8 +100,8 @@ fun ProblemListScreenBody(
         topBar = {
             QuizTopBar(
                 title = stringResource(R.string.quiz_n_problems, state.quizNumber),
-                onHelpClick = onHelpClick,
-                onBackClick = onBackClick,
+                onHelpClick = onShowHelp,
+                onBackClick = toBack,
                 scrollBehavior = scrollBehavior
             )
         },
@@ -121,7 +121,7 @@ fun ProblemListScreenBody(
             ) {
                 items(items = state.problemList) { problem ->
                     ProblemListItem(
-                        onClick = { onProblemClick(problem.id) },
+                        onClick = { toProblem(problem.id) },
                         problem = problem,
                         selected = problem.id == selectedId
                     )
@@ -134,12 +134,12 @@ fun ProblemListScreenBody(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 HomeButton(
-                    onClick = onHomeClick,
+                    onClick = toHome,
                     modifier = Modifier.padding(8.dp)
                 )
                 QuizButton(
                     quizNumber = state.quizNumber,
-                    onClick = { onQuizClick(state.problemList.first().quizId) },
+                    onClick = { toQuiz(state.problemList.first().quizId) },
                     modifier = Modifier.padding(8.dp)
                 )
                 ScoreCard(
@@ -258,11 +258,11 @@ fun ProblemListScreenBodyPreview() {
                 rightAnswers = 3,
             ),
             selectedId = 3.toString(),
-            onProblemClick = {},
-            onHomeClick = {},
-            onHelpClick = {},
-            onQuizClick = {},
-            onBackClick = {}
+            toProblem = {},
+            toHome = {},
+            onShowHelp = {},
+            toQuiz = {},
+            toBack = {}
         )
     }
 }

@@ -46,9 +46,9 @@ import ca.tetervak.mathtrainer.ui.theme.Purple40
 
 @Composable
 fun SettingsScreen(
-    onHomeClick: () -> Unit,
-    onHelpClick: () -> Unit,
-    onBackClick: () -> Unit
+    toHome: () -> Unit,
+    onShowHelp: () -> Unit,
+    toBack: () -> Unit
 ){
     val viewModel: SettingsViewModel = hiltViewModel()
     val uiState: UserPreferences by viewModel.uiState.collectAsState()
@@ -58,9 +58,9 @@ fun SettingsScreen(
         problemGeneration = uiState.problemGeneration,
         onNumberOfProblemsChange = viewModel::saveNumberOfProblems,
         onProblemGenerationChange = viewModel::saveProblemGeneration,
-        onHomeClick = onHomeClick,
-        onHelpClick = onHelpClick,
-        onBackClick = onBackClick
+        toHome = toHome,
+        onShowHelp = onShowHelp,
+        toBack = toBack
     )
 
 
@@ -73,9 +73,9 @@ fun SettingsScreenBody(
     problemGeneration: ProblemGeneration,
     onNumberOfProblemsChange: (Int) -> Unit,
     onProblemGenerationChange: (ProblemGeneration) -> Unit,
-    onHomeClick: () -> Unit,
-    onHelpClick: () -> Unit,
-    onBackClick: () -> Unit
+    toHome: () -> Unit,
+    onShowHelp: () -> Unit,
+    toBack: () -> Unit
 ) {
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -84,8 +84,8 @@ fun SettingsScreenBody(
         topBar = {
             QuizTopBar(
                 title = stringResource(R.string.settings),
-                onHelpClick = onHelpClick,
-                onBackClick = onBackClick,
+                onHelpClick = onShowHelp,
+                onBackClick = toBack,
                 scrollBehavior = scrollBehavior
             )
         },
@@ -124,7 +124,7 @@ fun SettingsScreenBody(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp),
-                onClick = onHomeClick,
+                onClick = toHome,
             )
         }
     }
@@ -246,9 +246,9 @@ fun SettingsScreenBodyPreview(){
             problemGeneration = ProblemGeneration.LOCAL,
             onNumberOfProblemsChange = {},
             onProblemGenerationChange = {},
-            onHomeClick = {},
-            onHelpClick = {},
-            onBackClick = {}
+            toHome = {},
+            onShowHelp = {},
+            toBack = {}
         )
     }
 }

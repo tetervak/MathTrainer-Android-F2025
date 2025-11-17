@@ -65,20 +65,20 @@ fun AppRootScreen() {
 
     val navController = rememberNavController()
 
-    val onHelpClick: () -> Unit = { showAboutDialog = true }
-    val onDismissHelpClick: () -> Unit = { showAboutDialog = false }
+    val onShowHelp: () -> Unit = { showAboutDialog = true }
+    val onDismissHelp: () -> Unit = { showAboutDialog = false }
 
-    val onBackClick: () -> Unit = { navController.popBackStack() }
-    val onHomeClick: () -> Unit = { navController.popBackStack(route = Home, inclusive = false) }
-    val onListQuizzesClick: () -> Unit = { navController.navigate(route = QuizList) }
-    val onSettingsClick: () -> Unit = { navController.navigate(route = Settings) }
-    val onQuizClick: (String) -> Unit = { quizId ->
+    val toBack: () -> Unit = { navController.popBackStack() }
+    val toHome: () -> Unit = { navController.popBackStack(route = Home, inclusive = false) }
+    val toQuizList: () -> Unit = { navController.navigate(route = QuizList) }
+    val toSettings: () -> Unit = { navController.navigate(route = Settings) }
+    val toQuiz: (String) -> Unit = { quizId ->
         navController.navigate(route = QuizDetails(quizId = quizId))
     }
-    val onProblemClick: (String) -> Unit = { problemId ->
+    val toProblem: (String) -> Unit = { problemId ->
         navController.navigate(route = ProblemDetails(problemId = problemId))
     }
-    val onListProblemsClick: (String, String?) -> Unit = { quizId, selectedId ->
+    val toProblemList: (String, String?) -> Unit = { quizId, selectedId ->
         navController.navigate(route = ProblemList(quizId = quizId, selectedId = selectedId))
     }
 
@@ -88,17 +88,17 @@ fun AppRootScreen() {
     ) {
         composable<Home> {
             HomeScreen(
-                onListQuizzesClick = onListQuizzesClick,
-                onSettingsClick = onSettingsClick,
-                onHelpClick = onHelpClick
+                toQuizList = toQuizList,
+                toSettings = toSettings,
+                onShowHelp = onShowHelp
             )
         }
         composable<QuizList> {
             QuizListScreen(
-                onHomeClick = onHomeClick,
-                onQuizClick = onQuizClick,
-                onBackClick = onBackClick,
-                onHelpClick = onHelpClick,
+                toHome = toHome,
+                toQuiz = toQuiz,
+                toBack = toBack,
+                onShowHelp = onShowHelp,
             )
         }
         composable<ProblemList> { backStackEntry ->
@@ -108,11 +108,11 @@ fun AppRootScreen() {
             ProblemListScreen(
                 quizId = quizId,
                 selectedId = selectedId,
-                onProblemClick = onProblemClick,
-                onHomeClick = onHomeClick,
-                onHelpClick = onHelpClick,
-                onBackClick = onBackClick,
-                onQuizClick = onQuizClick
+                toProblem = toProblem,
+                toHome = toHome,
+                onShowHelp = onShowHelp,
+                toBack = toBack,
+                toQuiz = toQuiz
             )
         }
         composable<ProblemDetails> { backStackEntry ->
@@ -120,12 +120,12 @@ fun AppRootScreen() {
             val problemId: String = problemDetails.problemId
             ProblemDetailsScreen(
                 problemId = problemId,
-                onHelpClick = onHelpClick,
-                onHomeClick = onHomeClick,
-                onListProblemsClick = onListProblemsClick,
-                onProblemClick = onProblemClick,
-                onQuizClick = onQuizClick,
-                onBackClick = onBackClick
+                onShowHelp = onShowHelp,
+                toHome = toHome,
+                toProblemList = toProblemList,
+                toProblem = toProblem,
+                toQuiz = toQuiz,
+                toBack = toBack
             )
         }
         composable<QuizDetails> { backStackEntry ->
@@ -133,23 +133,23 @@ fun AppRootScreen() {
             val quizId: String = quizDetails.quizId
             QuizDetailsScreen(
                 quizId = quizId,
-                onHomeClick = onHomeClick,
-                onProblemClick = onProblemClick,
-                onListProblemsClick = onListProblemsClick,
-                onBackClick = onBackClick,
-                onHelpClick = onHelpClick
+                toHome = toHome,
+                toProblem = toProblem,
+                toProblemList = toProblemList,
+                toBack = toBack,
+                onShowHelp = onShowHelp
             )
         }
         composable<Settings> {
             SettingsScreen(
-                onHelpClick = onHelpClick,
-                onHomeClick = onHomeClick,
-                onBackClick = onBackClick
+                onShowHelp = onShowHelp,
+                toHome = toHome,
+                toBack = toBack
             )
         }
     }
 
     if (showAboutDialog) {
-        AboutDialog(onDismissRequest = onDismissHelpClick)
+        AboutDialog(onDismissRequest = onDismissHelp)
     }
 }
