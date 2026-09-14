@@ -15,7 +15,7 @@ import ca.tetervak.mathtrainer.R
 @Composable
 fun HomeButton(
     onClick: () -> Unit,
-    modifier: Modifier = Modifier.Companion
+    modifier: Modifier = Modifier
 ){
     OutlinedButton(
         modifier = modifier,

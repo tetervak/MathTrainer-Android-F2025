@@ -57,8 +57,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import ca.tetervak.mathtrainer.R
-import ca.tetervak.mathtrainer.domain.model.AlgebraOperation
-import ca.tetervak.mathtrainer.domain.model.AlgebraProblem
 import ca.tetervak.mathtrainer.domain.model.Problem
 import ca.tetervak.mathtrainer.domain.model.AnswerStatus
 import ca.tetervak.mathtrainer.ui.common.QuizButton
@@ -70,12 +68,12 @@ import ca.tetervak.mathtrainer.ui.theme.MathTrainerTheme
 @Composable
 fun ProblemDetailsScreen(
     problemId: String,
-    onHelpClick: () -> Unit,
-    onHomeClick: () -> Unit,
-    onListProblemsClick: (String, String?) -> Unit,
-    onProblemClick: (String) -> Unit,
-    onQuizClick: (String) -> Unit,
-    onBackClick: () -> Unit
+    onShowHelp: () -> Unit,
+    toHome: () -> Unit,
+    toProblemList: (String, String?) -> Unit,
+    toProblem: (String) -> Unit,
+    toQuiz: (String) -> Unit,
+    toBack: () -> Unit
 ) {
 
     val viewModel: ProblemDetailsViewModel = hiltViewModel()
@@ -90,12 +88,12 @@ fun ProblemDetailsScreen(
             userAnswerInput = viewModel.answerInput,
             onChangeUserAnswerInput = viewModel::updateAnswerInput,
             onSubmit = viewModel::onSubmit,
-            onHelpClick = onHelpClick,
-            onHomeClick = onHomeClick,
-            onListProblemsClick = onListProblemsClick,
-            onProblemClick = onProblemClick,
-            onQuizClick = onQuizClick,
-            onBackClick = onBackClick
+            onShowHelp = onShowHelp,
+            toHome = toHome,
+            toProblemList = toProblemList,
+            toProblem = toProblem,
+            toQuiz = toQuiz,
+            toBack = toBack
         )
     }
 
@@ -108,12 +106,12 @@ fun ProblemDetailsScreenBody(
     userAnswerInput: String,
     onChangeUserAnswerInput: (String) -> Unit,
     onSubmit: () -> Unit,
-    onHelpClick: () -> Unit,
-    onHomeClick: () -> Unit,
-    onListProblemsClick: (String, String?) -> Unit,
-    onProblemClick: (String) -> Unit,
-    onQuizClick: (String) -> Unit,
-    onBackClick: () -> Unit
+    onShowHelp: () -> Unit,
+    toHome: () -> Unit,
+    toProblemList: (String, String?) -> Unit,
+    toProblem: (String) -> Unit,
+    toQuiz: (String) -> Unit,
+    toBack: () -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
@@ -124,15 +122,15 @@ fun ProblemDetailsScreenBody(
                     state.quizNumber, state.problem.problemNumber
                 ),
                 scrollBehavior = scrollBehavior,
-                onHelpClick = onHelpClick,
-                onBackClick = onBackClick
+                onHelpClick = onShowHelp,
+                onBackClick = toBack
             )
         },
         bottomBar = {
             DetailsBottomBar(
-                onHomeClick = onHomeClick,
-                onListClick = { onListProblemsClick(state.problem.quizId, state.problem.id ) },
-                onFirstClick = { state.firstProblemId?.let{onProblemClick(it)} }
+                onHomeClick = toHome,
+                onListClick = { toProblemList(state.problem.quizId, state.problem.id ) },
+                onFirstClick = { state.firstProblemId?.let{toProblem(it)} }
             )
         },
         modifier = Modifier
@@ -157,7 +155,7 @@ fun ProblemDetailsScreenBody(
                 userAnswer = userAnswerInput,
                 onKeyboardDone = onSubmit,
                 currentProblemText = state.problem.text,
-                currentProblemStatus = state.problem.status,
+                currentProblemStatus = state.problem.answerStatus,
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
@@ -193,7 +191,7 @@ fun ProblemDetailsScreenBody(
                     verticalAlignment = Alignment.Bottom
                 ) {
                     OutlinedButton(
-                        onClick = { state.previousProblemId?.let{ onProblemClick(it) } },
+                        onClick = { state.previousProblemId?.let{ toProblem(it) } },
                         modifier = Modifier.weight(1f),
                         enabled = state.problem.problemNumber > 1
                     ) {
@@ -207,7 +205,7 @@ fun ProblemDetailsScreenBody(
                         )
                     }
                     OutlinedButton(
-                        onClick = { state.nextProblemId?.let{ onProblemClick(it) } },
+                        onClick = { state.nextProblemId?.let{ toProblem(it) } },
                         modifier = Modifier.weight(1f),
                         enabled = state.problem.problemNumber < state.numberOfProblems
                     ) {
@@ -231,7 +229,7 @@ fun ProblemDetailsScreenBody(
             Spacer(modifier = Modifier.weight(1f))
             QuizButton(
                 quizNumber = state.quizNumber,
-                onClick = { onQuizClick(state.problem.quizId) },
+                onClick = { toQuiz(state.problem.quizId) },
                 modifier = Modifier.fillMaxWidth().padding(16.dp)
             )
         }
@@ -443,11 +441,7 @@ fun GameScreenPreview() {
     MathTrainerTheme {
         ProblemDetailsScreenBody(
             state = ProblemDetailsUiState.Success(
-                problem = Problem(
-                    algebraProblem = AlgebraProblem(firstNumber = 1, secondNumber = 2, algebraOperation = AlgebraOperation.ADDITION),
-                    problemNumber = 3,
-                    quizId = ""
-                ),
+                problem = Problem.Preview,
                 quizNumber = 2,
                 numberOfProblems = 5,
                 numberOfRightAnswers = 3,
@@ -458,12 +452,12 @@ fun GameScreenPreview() {
             userAnswerInput = "",
             onChangeUserAnswerInput = {},
             onSubmit = {},
-            onHelpClick = {},
-            onHomeClick = {},
-            onListProblemsClick = {_,_ ->},
-            onProblemClick = {},
-            onQuizClick = {},
-            onBackClick = {}
+            onShowHelp = {},
+            toHome = {},
+            toProblemList = { _, _ ->},
+            toProblem = {},
+            toQuiz = {},
+            toBack = {}
         )
     }
 }

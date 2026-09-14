@@ -34,9 +34,9 @@ import ca.tetervak.mathtrainer.ui.theme.Purple40
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    onListQuizzesClick: () -> Unit,
-    onSettingsClick: () -> Unit,
-    onHelpClick: () -> Unit,
+    toQuizList: () -> Unit,
+    toSettings: () -> Unit,
+    onShowHelp: () -> Unit,
 ) {
 
     val homeViewModel: HomeViewModel = hiltViewModel()
@@ -44,9 +44,9 @@ fun HomeScreen(
 
     HomeScreenBody(
         numberOfQuizzes = state.quizCount,
-        onListQuizzesClick = onListQuizzesClick,
-        onSettingsClick = onSettingsClick,
-        onHelpClick = onHelpClick
+        toQuizList = toQuizList,
+        toSettings = toSettings,
+        onShowHelp = onShowHelp
     )
 }
 
@@ -54,16 +54,16 @@ fun HomeScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 private fun HomeScreenBody(
     numberOfQuizzes: Int,
-    onListQuizzesClick: () -> Unit,
-    onSettingsClick: () -> Unit,
-    onHelpClick: () -> Unit
+    toQuizList: () -> Unit,
+    toSettings: () -> Unit,
+    onShowHelp: () -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
         topBar = {
             QuizTopBar(
                 title = stringResource(R.string.home),
-                onHelpClick = onHelpClick,
+                onHelpClick = onShowHelp,
                 scrollBehavior = scrollBehavior
             )
         },
@@ -86,7 +86,7 @@ private fun HomeScreenBody(
             )
             Button(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = onListQuizzesClick
+                onClick = toQuizList
             ) {
 
                 Text(
@@ -100,7 +100,7 @@ private fun HomeScreenBody(
             }
             Button(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = onSettingsClick
+                onClick = toSettings
             ) {
 
                 Text(
@@ -143,9 +143,9 @@ fun HomeScreenPreview() {
     MathTrainerTheme{
         HomeScreenBody(
             numberOfQuizzes = 1,
-            onListQuizzesClick = {},
-            onSettingsClick = {},
-            onHelpClick = {}
+            toQuizList = {},
+            toSettings = {},
+            onShowHelp = {}
         )
     }
 }

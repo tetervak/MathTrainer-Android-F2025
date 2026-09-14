@@ -11,14 +11,15 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface QuizDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertQuiz(entity: QuizEntity)
 
     @Query("SELECT * FROM quizzes WHERE user_id = :userId ORDER BY quiz_number ASC")
     fun getUserQuizzesFlow(userId: String): Flow<List<QuizEntity>>
 
     @Query("SELECT COUNT(*) FROM quizzes WHERE user_id = :userId")
     fun getUserQuizCountFlow(userId: String): Flow<Int>
+
+    @Query("SELECT problem_count FROM quizzes WHERE id = :quizId")
+    fun getQuizProblemCountFlow(quizId: String): Flow<Int?>
 
     @Query("SELECT * FROM quizzes WHERE id = :quizId")
     fun getQuizByIdFlow(quizId: String): Flow<QuizEntity?>
@@ -31,6 +32,9 @@ interface QuizDao {
 
     @Query("SELECT problem_count FROM quizzes WHERE id = :quizId")
     suspend fun getQuizProblemCount(quizId: String): Int?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertQuiz(entity: QuizEntity)
 
     @Insert
     suspend fun insertProblems(entities: List<ProblemEntity>)

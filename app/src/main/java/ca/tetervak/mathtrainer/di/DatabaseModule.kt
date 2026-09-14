@@ -23,7 +23,7 @@ object DatabaseModule {
         callback: PrepopulateCallback
     ): MathTrainerDatabase =
         Room.databaseBuilder(
-            context, MathTrainerDatabase::class.java, "multiple_quiz_db")
+            context, MathTrainerDatabase::class.java, "multiple_quizzes_db")
             .addCallback(callback)
             .fallbackToDestructiveMigration(dropAllTables = true)
             .build()

@@ -1,26 +1,26 @@
 package ca.tetervak.mathtrainer.domain.model
 
-import java.util.UUID
-
-class Problem(
-    val id: String = UUID.randomUUID().toString(),
+data class Problem(
+    val id: String,
     val quizId: String,
     val problemNumber: Int,
-    val algebraProblem: AlgebraProblem,
+    val text: String,
+    val correctAnswer: Int,
     val userAnswer: String? = null,
 ) {
 
-    val text: String
-        get() = algebraProblem.text
+    val answerStatus: AnswerStatus = AnswerStatus.getStatus(
+        correctAnswer = correctAnswer,
+        userAnswer = userAnswer
+    )
 
-    val status: AnswerStatus = algebraProblem.checkAnswer(userAnswer = userAnswer)
-
-    fun copy(userAnswer: String? = this.userAnswer) =
-        Problem(algebraProblem = algebraProblem,
-            userAnswer = userAnswer,
-            id = id,
-            problemNumber = problemNumber,
-            quizId = quizId
+    companion object{
+        val Preview = Problem(
+            id = "",
+            quizId = "",
+            problemNumber = 1,
+            text = "2 + 2 = ?",
+            correctAnswer = 4
         )
-
+    }
 }

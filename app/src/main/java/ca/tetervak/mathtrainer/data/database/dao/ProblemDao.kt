@@ -2,7 +2,6 @@ package ca.tetervak.mathtrainer.data.database.dao
 
 import androidx.room.Dao
 import androidx.room.Query
-import androidx.room.Update
 import ca.tetervak.mathtrainer.data.database.entity.ProblemEntity
 import ca.tetervak.mathtrainer.domain.model.AnswerStatus
 import kotlinx.coroutines.flow.Flow
@@ -17,8 +16,15 @@ interface ProblemDao {
     """)
     fun getQuizProblemsFlow(quizId: String): Flow<List<ProblemEntity>>
 
-    @Update
-    suspend fun updateProblem(entity: ProblemEntity)
+    @Query("""
+        UPDATE problems SET user_answer = :userAnswer, answer_status = :answerStatus
+        WHERE id = :problemId
+    """)
+    suspend fun updateProblem(
+        problemId: String,
+        userAnswer: String?,
+        answerStatus: AnswerStatus
+    )
 
     @Query(
         """
@@ -41,12 +47,6 @@ interface ProblemDao {
         WHERE id = :problemId
     """)
     fun getProblemFlowById(problemId: String): Flow<ProblemEntity?>
-
-    @Query("SELECT COUNT(*) FROM problems WHERE quiz_id = :quizId")
-    fun getQuizProblemCountFlow(quizId: String): Flow<Int>
-
-    @Query("SELECT COUNT(*) FROM problems WHERE quiz_id = :quizId")
-    fun getQuizProblemCount(quizId: String): Int
 
     @Query(
         """

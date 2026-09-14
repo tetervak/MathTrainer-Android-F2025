@@ -34,8 +34,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import ca.tetervak.mathtrainer.R
-import ca.tetervak.mathtrainer.domain.model.AlgebraOperation
-import ca.tetervak.mathtrainer.domain.model.AlgebraProblem
 import ca.tetervak.mathtrainer.domain.model.Problem
 import ca.tetervak.mathtrainer.domain.model.AnswerStatus
 import ca.tetervak.mathtrainer.ui.common.HomeButton
@@ -49,11 +47,11 @@ import ca.tetervak.mathtrainer.ui.theme.MathTrainerTheme
 fun ProblemListScreen(
     quizId: String,
     selectedId: String?,
-    onProblemClick: (String) -> Unit,
-    onQuizClick: (String) -> Unit,
-    onHomeClick: () -> Unit,
-    onHelpClick: () -> Unit,
-    onBackClick: () -> Unit
+    toProblem: (String) -> Unit,
+    toQuiz: (String) -> Unit,
+    toHome: () -> Unit,
+    onShowHelp: () -> Unit,
+    toBack: () -> Unit
 ) {
     val viewModel: ProblemListViewModel = hiltViewModel()
 
@@ -67,11 +65,11 @@ fun ProblemListScreen(
         ProblemListScreenBody(
             state = state,
             selectedId = selectedId,
-            onProblemClick = onProblemClick,
-            onQuizClick = onQuizClick,
-            onHomeClick = onHomeClick,
-            onHelpClick = onHelpClick,
-            onBackClick = onBackClick
+            toProblem = toProblem,
+            toQuiz = toQuiz,
+            toHome = toHome,
+            onShowHelp = onShowHelp,
+            toBack = toBack
         )
 }
 
@@ -80,11 +78,11 @@ fun ProblemListScreen(
 fun ProblemListScreenBody(
     state: ProblemListUiState.Success,
     selectedId: String?,
-    onProblemClick: (String) -> Unit,
-    onQuizClick: (String) -> Unit,
-    onHomeClick: () -> Unit,
-    onHelpClick: () -> Unit,
-    onBackClick: () -> Unit,
+    toProblem: (String) -> Unit,
+    toQuiz: (String) -> Unit,
+    toHome: () -> Unit,
+    onShowHelp: () -> Unit,
+    toBack: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val listState = rememberLazyListState()
@@ -102,8 +100,8 @@ fun ProblemListScreenBody(
         topBar = {
             QuizTopBar(
                 title = stringResource(R.string.quiz_n_problems, state.quizNumber),
-                onHelpClick = onHelpClick,
-                onBackClick = onBackClick,
+                onHelpClick = onShowHelp,
+                onBackClick = toBack,
                 scrollBehavior = scrollBehavior
             )
         },
@@ -123,7 +121,7 @@ fun ProblemListScreenBody(
             ) {
                 items(items = state.problemList) { problem ->
                     ProblemListItem(
-                        onClick = { onProblemClick(problem.id) },
+                        onClick = { toProblem(problem.id) },
                         problem = problem,
                         selected = problem.id == selectedId
                     )
@@ -136,12 +134,12 @@ fun ProblemListScreenBody(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 HomeButton(
-                    onClick = onHomeClick,
+                    onClick = toHome,
                     modifier = Modifier.padding(8.dp)
                 )
                 QuizButton(
                     quizNumber = state.quizNumber,
-                    onClick = { onQuizClick(state.problemList.first().quizId) },
+                    onClick = { toQuiz(state.problemList.first().quizId) },
                     modifier = Modifier.padding(8.dp)
                 )
                 ScoreCard(
@@ -186,10 +184,10 @@ fun ProblemListItem(
                 color = Color.DarkGray
             )
             Text(
-                text = problem.algebraProblem.text,
+                text = problem.text,
                 fontSize = 24.sp
             )
-            when (problem.status) {
+            when (problem.answerStatus) {
                 AnswerStatus.NOT_ANSWERED -> Text(
                     text = stringResource(R.string.not_answered),
                     fontStyle = FontStyle.Italic,
@@ -229,11 +227,7 @@ fun ProblemListItem(
 fun ProblemListItemPreview() {
     MathTrainerTheme {
         ProblemListItem(
-            problem = Problem(
-                algebraProblem = AlgebraProblem(firstNumber = 1, secondNumber = 2, algebraOperation = AlgebraOperation.ADDITION),
-                problemNumber = 3,
-                quizId = ""
-            ),
+            problem = Problem.Preview,
             onClick = {}
         )
     }
@@ -244,11 +238,7 @@ fun ProblemListItemPreview() {
 fun ProblemListItemSelectedPreview() {
     MathTrainerTheme {
         ProblemListItem(
-            problem = Problem(
-                algebraProblem = AlgebraProblem(firstNumber = 1, secondNumber = 2, algebraOperation = AlgebraOperation.ADDITION),
-                problemNumber = 3,
-                quizId = ""
-            ),
+            problem = Problem.Preview,
             onClick = {},
             selected = true
         )
@@ -261,23 +251,18 @@ fun ProblemListScreenBodyPreview() {
     MathTrainerTheme {
         ProblemListScreenBody(
             state = ProblemListUiState.Success(
-                problemList = List(5) { index ->
-                    Problem(
-                        algebraProblem = AlgebraProblem(firstNumber = 1, secondNumber = 2, algebraOperation = AlgebraOperation.ADDITION),
-                        problemNumber = index + 1,
-                        quizId = "",
-                        id = index.toString()
-                    )
+                problemList = List(5) {
+                    Problem.Preview
                 },
                 quizNumber = 2,
                 rightAnswers = 3,
             ),
             selectedId = 3.toString(),
-            onProblemClick = {},
-            onHomeClick = {},
-            onHelpClick = {},
-            onQuizClick = {},
-            onBackClick = {}
+            toProblem = {},
+            toHome = {},
+            onShowHelp = {},
+            toQuiz = {},
+            toBack = {}
         )
     }
 }

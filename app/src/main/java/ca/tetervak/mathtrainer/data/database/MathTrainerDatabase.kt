@@ -3,7 +3,6 @@ package ca.tetervak.mathtrainer.data.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import ca.tetervak.mathtrainer.data.database.converter.AlgebraOperationConverter
 import ca.tetervak.mathtrainer.data.database.converter.DateConverter
 import ca.tetervak.mathtrainer.data.database.dao.ProblemDao
 import ca.tetervak.mathtrainer.data.database.dao.QuizDao
@@ -17,7 +16,7 @@ import ca.tetervak.mathtrainer.data.database.entity.UserEntity
     version = 1,
     exportSchema = false
 )
-@TypeConverters(DateConverter::class, AlgebraOperationConverter::class)
+@TypeConverters(DateConverter::class)
 abstract class MathTrainerDatabase : RoomDatabase() {
 
     abstract fun userDao(): UserDao

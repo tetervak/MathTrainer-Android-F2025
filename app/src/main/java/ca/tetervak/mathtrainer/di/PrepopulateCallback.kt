@@ -8,7 +8,6 @@ import ca.tetervak.mathtrainer.data.database.dao.QuizDao
 import ca.tetervak.mathtrainer.data.database.dao.UserDao
 import ca.tetervak.mathtrainer.data.database.entity.ProblemEntity
 import ca.tetervak.mathtrainer.data.database.entity.UserEntity
-import ca.tetervak.mathtrainer.domain.model.AlgebraOperation
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
@@ -55,23 +54,20 @@ class PrepopulateCallback(
             ProblemEntity(
                 quizId = quizId,
                 problemNumber = 1,
-                firstNumber = 1,
-                secondNumber = 2,
-                algebraOperation = AlgebraOperation.ADDITION
+                text = "1 + 2 = ?",
+                correctAnswer = 3,
             ),
             ProblemEntity(
                 quizId = quizId,
                 problemNumber = 2,
-                firstNumber = 6,
-                secondNumber = 4,
-                algebraOperation = AlgebraOperation.SUBTRACTION
+                text = "6 - 4 = ?",
+                correctAnswer = 2,
             ),
             ProblemEntity(
                 quizId = quizId,
                 problemNumber = 3,
-                firstNumber = 2,
-                secondNumber = 4,
-                algebraOperation = AlgebraOperation.MULTIPLICATION
+                text = "2 x 4 = ?",
+                correctAnswer = 8
             ),
 
         )

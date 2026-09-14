@@ -38,7 +38,7 @@ class ProblemDetailsViewModel @Inject constructor(
                 repository.getProblemByIdFlow(problemId)
                     .filterNotNull()
                     .onEach { problem ->
-                        answerInput = if (problem.status == AnswerStatus.RIGHT_ANSWER) {
+                        answerInput = if (problem.answerStatus == AnswerStatus.RIGHT_ANSWER) {
                             checkNotNull(problem.userAnswer)
                         } else { "" }
                     }
@@ -65,15 +65,23 @@ class ProblemDetailsViewModel @Inject constructor(
         val uiState = uiState.value
         if (uiState !is ProblemDetailsUiState.Success) return
 
-        val userProblem = uiState.problem.copy(userAnswer = answerInput)
+        val problem = uiState.problem
+        val userAnswer = answerInput
         viewModelScope.launch {
-            repository.updateProblem(userProblem)
+            repository.updateProblem(
+                problemId = problem.id,
+                userAnswer = userAnswer,
+                answerStatus = AnswerStatus.getStatus(
+                    correctAnswer = problem.correctAnswer,
+                    userAnswer = userAnswer
+                )
+            )
             answerInput = ""
         }
     }
 
     private suspend fun successState(problem: Problem): ProblemDetailsUiState.Success{
-        val numberOfProblems = repository.getNumberOfProblems(problem.quizId)
+        val numberOfProblems = repository.getQuizProblemCount(problem.quizId)
         val quizNumber = repository.getQuizNumber(problem.quizId)
         val numberOfRightAnswers =
             repository.getNumberOfRightAnswers(problem.quizId)

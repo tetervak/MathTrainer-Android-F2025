@@ -42,10 +42,10 @@ import ca.tetervak.mathtrainer.ui.theme.MathTrainerTheme
 
 @Composable
 fun QuizListScreen(
-    onHomeClick: () -> Unit,
-    onQuizClick: (String) -> Unit,
-    onBackClick: () -> Unit,
-    onHelpClick: () -> Unit,
+    toHome: () -> Unit,
+    toQuiz: (String) -> Unit,
+    toBack: () -> Unit,
+    onShowHelp: () -> Unit,
 ) {
 
     val viewModel: QuizListViewModel = hiltViewModel()
@@ -55,10 +55,10 @@ fun QuizListScreen(
     QuizListScreenBody(
         stateList = stateList,
         onAddNewQuizClick = viewModel::addNewQuiz,
-        onHomeClick = onHomeClick,
-        onQuizClick = onQuizClick,
-        onBackClick = onBackClick,
-        onHelpClick = onHelpClick
+        toHome = toHome,
+        toQuiz = toQuiz,
+        toBack = toBack,
+        onShowHelp = onShowHelp
     )
 
 }
@@ -68,10 +68,10 @@ fun QuizListScreen(
 fun QuizListScreenBody(
     stateList: List<QuizListItemUiState>,
     onAddNewQuizClick: () -> Unit,
-    onHomeClick: () -> Unit,
-    onQuizClick: (String) -> Unit,
-    onBackClick: () -> Unit,
-    onHelpClick: () -> Unit,
+    toHome: () -> Unit,
+    toQuiz: (String) -> Unit,
+    toBack: () -> Unit,
+    onShowHelp: () -> Unit,
 ) {
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -79,8 +79,8 @@ fun QuizListScreenBody(
         topBar = {
             QuizTopBar(
                 title = stringResource(R.string.quiz_list),
-                onHelpClick = onHelpClick,
-                onBackClick = onBackClick,
+                onHelpClick = onShowHelp,
+                onBackClick = toBack,
                 scrollBehavior = scrollBehavior
             )
         },
@@ -98,7 +98,7 @@ fun QuizListScreenBody(
             ) {
                 items(items = stateList) { itemState ->
                     QuizListItem(
-                        onClick = { onQuizClick(itemState.quiz.id) },
+                        onClick = { toQuiz(itemState.quiz.id) },
                         quiz = itemState.quiz,
                         quizScore = itemState.quizScore
                     )
@@ -112,7 +112,7 @@ fun QuizListScreenBody(
                 horizontalArrangement = Arrangement.SpaceBetween,
             ){
                 HomeButton(
-                    onClick = onHomeClick,
+                    onClick = toHome,
                 )
                 OutlinedButton(
                     onClick = onAddNewQuizClick,
@@ -170,15 +170,8 @@ fun QuizListItemPreview() {
     MathTrainerTheme{
         QuizListItem(
             onClick = {},
-            quiz = Quiz(
-                id = "",
-                quizNumber = 1,
-                userId = ""
-            ),
-            quizScore = QuizScore(
-                problemCount = 5,
-                rightAnswers = 4
-            ),
+            quiz = Quiz.Preview,
+            quizScore = QuizScore.Preview,
         )
     }
 }
@@ -190,11 +183,7 @@ fun QuizListScreenBodyPreview() {
         QuizListScreenBody(
             stateList = List( size = 5){ index ->
                 QuizListItemUiState(
-                    quiz = Quiz(
-                        quizNumber = index + 1,
-                        userId = "",
-                        id = ""
-                    ),
+                    quiz = Quiz.Preview,
                     quizScore = QuizScore(
                         problemCount = index + 5,
                         rightAnswers = index + 4
@@ -202,10 +191,10 @@ fun QuizListScreenBodyPreview() {
                 )
             },
             onAddNewQuizClick = {},
-            onHomeClick = {},
-            onQuizClick = {},
-            onBackClick = {},
-            onHelpClick = {}
+            toHome = {},
+            toQuiz = {},
+            toBack = {},
+            onShowHelp = {}
         )
     }
 }
